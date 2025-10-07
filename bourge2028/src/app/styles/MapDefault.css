@@ -1,0 +1,15 @@
+.map-container {
+  flex: 1;
+  background-color: #f3f4f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.map-container img {
+  width: 75%;
+  height: 75%;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
