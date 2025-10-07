@@ -73,3 +73,13 @@
 .sidebar li:hover {
   background-color: #374151;
 }
+
+.search-results {
+  position: absolute;
+  background: aliceblue;
+  min-width: 240px;
+  margin: -20px 30px;
+}
+.search-results li{
+  color: black;
+}
