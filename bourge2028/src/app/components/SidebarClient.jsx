@@ -8,15 +8,13 @@ export default function SidebarClient({ map }) {
   const [filters, setFilters] = useState([]);
 
   useEffect(() => {
-    // Charger les filtres JSON
     fetch("/data/filtres/filtre-carte.json")
       .then((response) => response.json())
       .then((data) => setFilters(Object.keys(data.carte)))
       .catch((err) => console.error("Erreur de chargement des filtres :", err));
 
-    if (!map) return; // attendre que la map soit prête
+    if (!map) return;
 
-    // Ajouter GeoSearchControl
     const provider = new OpenStreetMapProvider();
     const searchControl = new GeoSearchControl({
       provider,
@@ -39,7 +37,7 @@ export default function SidebarClient({ map }) {
 
   return (
     <div className={`sidebar ${open ? "" : "collapsed"}`}>
-      <div className="sidebar-search">
+      <div className="sidebar-search" ref={findboxRef}>
         <div id="findbox"></div>
       </div>
       <div className="sidebar-header">
@@ -48,7 +46,7 @@ export default function SidebarClient({ map }) {
           {open ? "<" : ">"}
         </button>
       </div>
-      <ul>
+      <ul className="filter-list">
         {filters.map((filter, index) => (
           <li key={index}>{open ? filter : `T${index + 1}`}</li>
         ))}

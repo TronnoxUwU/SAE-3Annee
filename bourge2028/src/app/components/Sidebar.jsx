@@ -11,6 +11,26 @@ export default function Sidebar({ map, onFilterChange }) {
   const [results, setResults] = useState([]);
   const [provider, setProvider] = useState(null);
   const [regionGeoJSON, setRegionGeoJSON] = useState(null);
+  const findboxRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // console.log(results)
+      if (findboxRef.current && !findboxRef.current.contains(event.target)) {
+        if(results.length > 0) {
+          setResults([]);
+        }
+        
+      } else if(results.length == 0) {
+          console.log(query)
+        }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [findboxRef, results, query]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -133,7 +153,7 @@ export default function Sidebar({ map, onFilterChange }) {
         
       </div>
 {results.length > 0 && (
-          <ul className="search-results">
+          <ul className="search-results" ref={findboxRef}>
             {results.slice(0, 5).map((r, i) => (
               <li key={i} onClick={() => handleResultClick(r)}>
                 {r.label}

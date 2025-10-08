@@ -10,6 +10,8 @@ const Map = dynamic(() => import('./components/Map'), {
 });
 const Sidebar = dynamic(() => import("./components/Sidebar"), { ssr: false });
 
+
+
 export default function Page() {
   const [mapInstance, setMapInstance] = useState(null);
   const [mapFilter, setMapFilter] = useState(null);
