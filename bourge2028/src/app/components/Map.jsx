@@ -1,6 +1,6 @@
 "use client";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap } from "react-leaflet";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import "leaflet-geosearch/dist/geosearch.css";
 import "../styles/MapDefault.css";
@@ -16,8 +16,6 @@ function ChangeView({ center, zoom }) {
 export default function Map({ mapFilter, onMapReady }) {
   const [geojsonData, setGeojsonData] = useState(null);
   const [position, setPosition] = useState(null);
-  const mapRef = useRef(null);
-  const containerRef = useRef(null);
 
   useEffect(() => {
     fetch("/data/cartes/region-centre-val-de-loire.geojson")
@@ -47,23 +45,10 @@ export default function Map({ mapFilter, onMapReady }) {
     fetchPosition();
   }, [mapFilter]);
 
-  // Cleanup complet de la carte
-  useEffect(() => {
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
-      // Nettoyer le conteneur DOM
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
-        containerRef.current._leaflet_id = null;
-      }
-    };
-  }, []);
+
 
   return (
-    <div ref={containerRef} style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: "100vh", width: "100%" }}>
       <MapContainer
         center={[47.7, 1.7]}
         zoom={8}
@@ -71,7 +56,6 @@ export default function Map({ mapFilter, onMapReady }) {
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
         whenReady={(mapInstance) => {
-          mapRef.current = mapInstance.target;
           if (onMapReady) onMapReady(mapInstance.target);
         }}
       >
