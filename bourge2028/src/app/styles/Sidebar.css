@@ -4,7 +4,8 @@
   left: 0;
   height: 100vh;
   max-height: 96vh;
-  width: 300px;
+  min-width: 10vw;
+  width: 16vw;
   margin: 2vh;
   border-radius: 20px;
 
@@ -22,7 +23,7 @@
 .sidebar-search {
   display: flex;
   border-radius: 20px;
-  margin: 20px;
+  margin: 1vw;
   padding: 0px 5px;
   border: 1px solid #374151;
   min-height: 50px;
@@ -62,8 +63,9 @@
 .search-results {
   position: absolute;
   background: aliceblue;
-  min-width: 260px;
-  margin: -45px 20px;
+  min-width: 14vw;
+  max-width: 14vw;
+  margin: -45px 1vw;
   padding: 0;
   list-style: none;
   border-radius: 10px;

@@ -14,20 +14,43 @@ export default function Sidebar({ map, onFilterChange }) {
   const resultsRef = useRef(null);
   const searchRef = useRef(null);
 
+
+  useEffect(() => {
+    function handleEnterSelect(e) {
+      if (e.key === "Enter" && results.length > 0) {
+        e.preventDefault();
+
+        // selectionne
+        const firstResult = results[0];
+        if (map && firstResult && firstResult.y && firstResult.x) {
+          map.setView([firstResult.y, firstResult.x], 13);
+        }
+
+        // remet l'input et retire la pred
+        const input = document.querySelector("#findbox input");
+        if (input) input.value = firstResult.label;
+        setResults([]);
+      }
+    }
+
+    const findbox = document.querySelector("#findbox");
+    if (findbox) findbox.addEventListener("keydown", handleEnterSelect);
+
+    return () => {
+      if (findbox) findbox.removeEventListener("keydown", handleEnterSelect);
+    };
+  }, [results, map]);
+
+
   // Gestion du clic en dehors de la recherche
   useEffect(() => {
     function handleClickOutside(event) {
       if ( (resultsRef.current && !resultsRef.current.contains(event.target)) && (searchRef.current && !searchRef.current.contains(event.target)) ) {
-        // console.log(resultsRef.current.contains(event.target));
-        // console.log(searchRef.current.contains(event.target));
         if (results.length > 0) {
-          // console.log("suppr")
           setResults([]);
         }
       } else if((resultsRef.current && resultsRef.current.contains(event.target)) || (searchRef.current && searchRef.current.contains(event.target)) && results.length == 0) {
-          // console.log(query)
           if(provider){recherche(provider, query)}
-          
         }
     }
 
@@ -35,6 +58,8 @@ export default function Sidebar({ map, onFilterChange }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+
+
   }, [results]);
 
   // Init
@@ -84,6 +109,7 @@ export default function Sidebar({ map, onFilterChange }) {
           return (priority[a.type] || 99) - (priority[b.type] || 99);
         });
 
+        console.log(uniqueResults)
         return sortedResults;
       }
     }
@@ -207,6 +233,8 @@ export default function Sidebar({ map, onFilterChange }) {
       console.error("Erreur de recherche :", err);
     }
   };
+
+
 
 
 }
