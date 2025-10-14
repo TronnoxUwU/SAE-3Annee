@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@prisma/client": "^6.17.0",
     "@turf/turf": "^7.2.0",
     "leaflet": "^1.9.4",
     "leaflet-geosearch": "^4.2.2",
@@ -15,5 +16,11 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-leaflet": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.7.0",
+    "@types/react": "19.2.2",
+    "prisma": "^6.17.0",
+    "typescript": "5.9.3"
   }
 }
