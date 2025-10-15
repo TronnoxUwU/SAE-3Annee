@@ -2,6 +2,7 @@
   background-color: rgba(31, 29, 52, 0.9);
   display: flex;
   position: fixed;
+  justify-content: space-between;
   z-index: 999;
 
   min-width: 76vw;
@@ -14,5 +15,24 @@
 
   border-radius: 20px;
 
-  font-size: 1vw;
+  font-size: larger;
+}
+
+.connect {
+  display: flex;
+  justify-content: space-evenly;
+  
+  max-height: 2.4em;
+  min-width: 15%;
+  padding: 0.2em;
+  border-radius: 20px;
+
+  background-color:goldenrod;
+}
+.connect img {
+  max-height: 2em;
+}
+.connect p {
+  align-self: center;
+  font-weight: bold;
 }
