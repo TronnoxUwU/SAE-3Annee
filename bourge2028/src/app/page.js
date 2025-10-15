@@ -2,26 +2,43 @@
 
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import "./styles/home.css";
 
-// import des composants
-const Map = dynamic(() => import('./components/Map'), {
-  ssr: false,
-  loading: () => <div>Chargement de la carte...</div>
-});
+const Map = dynamic(() => import("./components/Map"), { ssr: false });
 const Sidebar = dynamic(() => import("./components/Sidebar"), { ssr: false });
 import Topbar from "./components/Topbar.jsx";
 
 
 
 export default function Page() {
+  const router = useRouter();
   const [mapInstance, setMapInstance] = useState(null);
   const [mapFilter, setMapFilter] = useState(null);
 
+  const goToAnnuaire = () => {
+    router.push("/annuaire"); // juste naviguer, animation gérée côté /annuaire
+  };
+
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
-      <Map mapFilter={mapFilter} onMapReady={setMapInstance} />
-      <Topbar />
-    </div>
+    <main className="main-container">
+      <section className="section-map">
+        <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
+
+        <div className="map-wrapper">
+          <div className="map-inner">
+            <Map mapFilter={mapFilter} onMapReady={setMapInstance} />
+            <Topbar />
+          </div>
+        </div>
+
+        <button
+          className="toggle-btn bottom"
+          onClick={goToAnnuaire}
+        >
+          Aller à l’Annuaire ↓
+        </button>
+      </section>
+    </main>
   );
 }
