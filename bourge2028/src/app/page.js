@@ -14,31 +14,28 @@ export default function Page() {
   const [showAnnuaire, setShowAnnuaire] = useState(false);
   const [mapVisible, setMapVisible] = useState(true);
 
-  const TRANSITION_DURATION = 600; // correspond à la durée CSS de l'annuaire
+  const TRANSITION_DURATION = 600; // doit correspondre à la durée CSS
 
   const handleToggleView = () => {
     if (!showAnnuaire) {
-      // Faire glisser l'annuaire par-dessus la map
+      // Faire glisser l'annuaire vers le haut
       setShowAnnuaire(true);
 
-      // Après la transition CSS (0.6s), décharger la map
-      setTimeout(() => {
-        setMapVisible(false);
-      }, 600);
+      // Après la transition CSS, décharger la map
+      setTimeout(() => setMapVisible(false), TRANSITION_DURATION);
     } else {
-      // Revenir à la map : afficher map + faire redescendre l'annuaire
+      // Revenir à la carte
       setMapVisible(true);
       setShowAnnuaire(false);
     }
   };
 
-
   return (
     <main className="main-container">
-      {/* Section map */}
       <section className="section-map">
         <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
 
+        {/* --- MAP --- */}
         <div className="map-wrapper">
           <div
             className="map-inner"
@@ -49,18 +46,15 @@ export default function Page() {
           >
             <Map mapFilter={mapFilter} onMapReady={setMapInstance} />
           </div>
-
-          {/* Overlay blanche si map est déchargée */}
-          {!mapVisible && <div className="map-overlay"></div>}
         </div>
 
-        {/* Annuaire superposé */}
+        {/* --- ANNUAIRE --- */}
         <section className={`section-annuaire ${showAnnuaire ? "show" : ""}`}>
           <Annuaire mapFilter={mapFilter} />
         </section>
       </section>
 
-      {/* Bouton flottant */}
+      {/* --- BOUTON FLOTTANT --- */}
       <button
         className={`toggle-btn ${showAnnuaire ? "top" : "bottom"}`}
         onClick={handleToggleView}
