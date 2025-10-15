@@ -183,7 +183,8 @@ model Contenir {
 
 model Composant {
   id                Int     @id @default(autoincrement())
-  positionComposant Int?
+  positionComposant Int
+  type              String
   article           Article @relation(fields: [articleId], references: [id])
   articleId         Int
 
