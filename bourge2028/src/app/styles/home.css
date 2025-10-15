@@ -59,12 +59,12 @@
 
 /* Position quand la carte est affichée */
 .toggle-btn.bottom {
-  bottom: 30px;
+  bottom: 10px;
 }
 
 /* Position quand l'annuaire est affiché */
 .toggle-btn.top {
-  top: 30px;
+  top: 10px;
 }
 
 /* Hover */
