@@ -48,7 +48,7 @@ export default function Map({ mapFilter, onMapReady }) {
 
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div className="map" style={{ height: "100vh", width: "100%" }}>
       <MapContainer
         center={[47.7, 1.7]}
         zoom={8}

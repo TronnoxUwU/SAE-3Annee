@@ -1,0 +1,239 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Structure {
+  id            Int          @id @default(autoincrement())
+  description   String?
+  dateCreation  DateTime?
+  departement   Departement? @relation(fields: [departementId], references: [id])
+  departementId Int?
+
+  // relations
+  personnes    Appartenir[] // Appartenir (avec role)
+  realisations Realisation[] // Réaliser
+  tags         StructureTag[] // Avoir
+}
+
+model Departement {
+  id           Int           @id @default(autoincrement())
+  nom          String
+  structures   Structure[]
+  personnes    Personne[]
+  realisations Realisation[]
+}
+
+model Personne {
+  id            Int          @id @default(autoincrement())
+  nom           String
+  departement   Departement? @relation(fields: [departementId], references: [id])
+  departementId Int?
+
+  structures Appartenir[]
+  redactions Rediger[]
+}
+
+model Appartenir {
+  id          Int       @id @default(autoincrement())
+  structure   Structure @relation(fields: [structureId], references: [id])
+  structureId Int
+  personne    Personne  @relation(fields: [personneId], references: [id])
+  personneId  Int
+
+  role String?
+
+  @@unique([structureId, personneId])
+}
+
+model Realisation {
+  id            Int          @id @default(autoincrement())
+  nom           String?
+  departement   Departement? @relation(fields: [departementId], references: [id])
+  departementId Int?
+  structure     Structure?   @relation(fields: [structureId], references: [id])
+  structureId   Int?
+
+  // Relations communes
+  tags      RealisationTag[]
+  // relations ISA 1:1
+  projet    Projet?
+  materiau  Materiau?
+  technique Technique?
+}
+
+model Projet {
+  id             Int         @id @default(autoincrement())
+  titreCaroussel String?
+  realisation    Realisation @relation(fields: [realisationId], references: [id])
+  realisationId  Int         @unique
+}
+
+model Materiau {
+  id             Int         @id @default(autoincrement())
+  titreCaroussel String?
+  realisation    Realisation @relation(fields: [realisationId], references: [id])
+  realisationId  Int         @unique
+}
+
+model Technique {
+  id             Int         @id @default(autoincrement())
+  titreCaroussel String?
+  realisation    Realisation @relation(fields: [realisationId], references: [id])
+  realisationId  Int         @unique
+}
+
+model Tag {
+  id  Int    @id @default(autoincrement())
+  nom String
+
+  category   Categorie? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+
+  realisations RealisationTag[]
+  structures   StructureTag[]
+}
+
+model RealisationTag {
+  id            Int         @id @default(autoincrement())
+  realisation   Realisation @relation(fields: [realisationId], references: [id])
+  realisationId Int
+  tag           Tag         @relation(fields: [tagId], references: [id])
+  tagId         Int
+
+  @@unique([realisationId, tagId])
+}
+
+model StructureTag {
+  id          Int       @id @default(autoincrement())
+  structure   Structure @relation(fields: [structureId], references: [id])
+  structureId Int
+  tag         Tag       @relation(fields: [tagId], references: [id])
+  tagId       Int
+
+  @@unique([structureId, tagId])
+}
+
+model Categorie {
+  id  Int    @id @default(autoincrement())
+  nom String
+
+  tags Tag[]
+}
+
+model Article {
+  id         Int         @id @default(autoincrement())
+  redactions Rediger[]
+  composants Composant[]
+  contenir   Contenir[]
+}
+
+model Rediger {
+  id         Int      @id @default(autoincrement())
+  article    Article  @relation(fields: [articleId], references: [id])
+  articleId  Int
+  personne   Personne @relation(fields: [personneId], references: [id])
+  personneId Int
+
+  dateRedaction DateTime?
+  dateModif     DateTime?
+
+  @@unique([articleId, personneId])
+}
+
+/**
+ * ----- DOCUMENTS liés à un ARTICLE via CONTENIR -----
+ */
+model Document {
+  id        Int        @id @default(autoincrement())
+  lien      String
+  contenirs Contenir[]
+}
+
+model Contenir {
+  id         Int      @id @default(autoincrement())
+  article    Article  @relation(fields: [articleId], references: [id])
+  articleId  Int
+  document   Document @relation(fields: [documentId], references: [id])
+  documentId Int
+
+  @@unique([articleId, documentId])
+}
+
+/**
+ * ----- COMPOSANTS polymorphes liés à un ARTICLE -----
+ */
+
+model Composant {
+  id                Int     @id @default(autoincrement())
+  positionComposant Int?
+  article           Article @relation(fields: [articleId], references: [id])
+  articleId         Int
+
+  // Relations ISA (1:1)
+  paragraphe Paragraphe?
+  titre      Titre?
+  image      Image?
+  caroussels Caroussel[]
+}
+
+/**
+ * ----- Sous-types ISA -----
+ */
+
+model Paragraphe {
+  id              Int       @id @default(autoincrement())
+  texteParagraphe String?
+  composant       Composant @relation(fields: [composantId], references: [id])
+  composantId     Int       @unique
+}
+
+model Titre {
+  id          Int       @id @default(autoincrement())
+  niveauTitre Int?
+  texteTitre  String?
+  composant   Composant @relation(fields: [composantId], references: [id])
+  composantId Int       @unique
+}
+
+model Image {
+  id          Int       @id @default(autoincrement())
+  lienImage   String?
+  titreImage  String?
+  copyright   String?
+  composant   Composant @relation(fields: [composantId], references: [id])
+  composantId Int       @unique
+
+  caroussel   Caroussel? @relation(fields: [carousselId], references: [id])
+  carousselId Int?
+}
+
+/**
+ * ----- CAROUSSEL contenant plusieurs images -----
+ */
+
+model Caroussel {
+  id             Int       @id @default(autoincrement())
+  titreCaroussel String?
+  composant      Composant @relation(fields: [composantId], references: [id])
+  composantId    Int
+
+  images Image[] // 2..N relation
+}
