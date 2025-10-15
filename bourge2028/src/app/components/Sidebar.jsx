@@ -20,15 +20,14 @@ export default function Sidebar({ map, onFilterChange }) {
       if (e.key === "Enter" && results.length > 0) {
         e.preventDefault();
 
-        // selectionne
+        // affiche sur la map
         const firstResult = results[0];
-        if (map && firstResult && firstResult.y && firstResult.x) {
+        if (map && firstResult?.y && firstResult?.x) {
           map.setView([firstResult.y, firstResult.x], 13);
         }
 
-        // remet l'input et retire la pred
-        const input = document.querySelector("#findbox input");
-        if (input) input.value = firstResult.label;
+        // update input et resultats de prediction
+        setQuery(firstResult.label);
         setResults([]);
       }
     }
@@ -39,7 +38,7 @@ export default function Sidebar({ map, onFilterChange }) {
     return () => {
       if (findbox) findbox.removeEventListener("keydown", handleEnterSelect);
     };
-  }, [results, map]);
+  }, [results, map, setQuery, setResults]);
 
 
   // Gestion du clic en dehors de la recherche
