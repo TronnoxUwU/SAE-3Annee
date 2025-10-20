@@ -1,12 +1,11 @@
 .admin-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   font-family: sans-serif;
   background-color: #f9f9f9;
 }
 
-/* --- Topbar --- */
 .admin-topbar {
   background: #111827;
   color: white;
@@ -15,18 +14,17 @@
   font-weight: 600;
 }
 
-/* --- Content layout --- */
 .admin-content {
   display: flex;
   flex: 1;
 }
 
-/* --- Sidebar --- */
 .admin-sidebar {
   width: 220px;
   background: #1f2937;
   color: white;
   padding: 1.5rem 0;
+  border-top: solid 1px #374151;
 }
 
 .admin-sidebar ul {
@@ -57,8 +55,38 @@
   color: white;
 }
 
-/* --- Main content --- */
+
+
+
 .admin-main {
   flex: 1;
   padding: 2rem;
+}
+
+.admin-top-content {
+  margin-bottom: 4em;
+  color: black;
+}
+
+.admin-menu {
+  display: flex;
+  justify-content: space-between;
+}
+.content-bloc {
+  /* background-color: #111827;* */
+  background-color: white;
+  box-shadow: #111827 0px 0px 10px;
+  padding: 2em 4em;
+  border-radius: 20px;
+}
+.content-bloc p {
+  font-weight: bold;
+  color: black;
+  font-size: 2em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1em;
+}
+.content-bloc img {
+  max-height: 16em;
 }

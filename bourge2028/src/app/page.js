@@ -21,7 +21,7 @@ export default function Page() {
     <div style={{ display: "flex", height: "100vh" }}>
       <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
       <Map mapFilter={mapFilter} onMapReady={setMapInstance} />
-      <Topbar />
+      <Topbar fixed title="Bourges 2028"/>
     </div>
   );
 }

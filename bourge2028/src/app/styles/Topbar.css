@@ -1,19 +1,28 @@
 .topbar {
-  background-color: rgba(31, 29, 52, 0.9);
+  background-color: #1f2937;
   display: flex;
-  position: fixed;
   justify-content: space-between;
+}
+.topbar-fixed {
+  position: fixed;
   z-index: 999;
 
   min-width: 76vw;
   max-width: 76vw;
-  /* min-height: 4vw;
-  max-height: 4vw; */
 
   margin: 2vh 4vw 0 20vw;
   padding: 0.6em 2em;
 
   border-radius: 20px;
+
+  font-size: larger;
+}
+.topbar-bloc {
+
+  /* margin: 2vh 4vw 0 20vw; */
+  padding: 0.6em 2em;
+
+  /* border-radius: 20px; */
 
   font-size: larger;
 }
