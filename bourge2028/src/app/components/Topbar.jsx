@@ -2,24 +2,15 @@
 
 import React from "react";
 import { useSession, signOut } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
-import "../styles/Topbar.css";
+import '../styles/Topbar.css';
+import RegisterModal from '../register/RegisterModal';
+import LoginModal from '../login/LoginModal';
 
 export default function Topbar({ title = "Bourges 2028" }) {
   const { data: session } = useSession();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  const handleLogin = () => {
-    router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
-  };
-
-  const handleRegister = () => {
-    router.push(`/register?callbackUrl=${encodeURIComponent(pathname)}`);
-  };
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: pathname });
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
@@ -28,12 +19,8 @@ export default function Topbar({ title = "Bourges 2028" }) {
 
       {!session ? (
         <div style={{ display: "flex", gap: "10px" }}>
-          <button className="connect" onClick={handleLogin}>
-            <p>Se connecter</p>
-          </button>
-          <button className="connect" onClick={handleRegister}>
-            <p>Créer un compte</p>
-          </button>
+          <LoginModal />
+          <RegisterModal />
         </div>
       ) : (
         <button className="connect" onClick={handleLogout}>
