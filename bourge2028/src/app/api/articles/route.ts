@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { deserializeArticle } from "@/lib/deserializers";
 import { serializeArticle } from "@/lib/serializers";
