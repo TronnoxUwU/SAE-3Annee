@@ -11,12 +11,8 @@ export async function POST(req: Request) {
         ipAddress: req.headers.get("x-forwarded-for") || "unknown",
         page: page
       },
-      orderBy: {
-        dateVisite: 'desc',
-      },
-      select: {
-        dateVisite: true
-      }
+      orderBy: { dateVisite: 'desc' },
+      select: { dateVisite: true }
     });
 
     if (!access.length || access[0].dateVisite.getTime() <= Date.now() - 30*60*1000) {

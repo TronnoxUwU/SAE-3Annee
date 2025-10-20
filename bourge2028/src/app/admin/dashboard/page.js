@@ -1,4 +1,4 @@
-import DashboardServer from "./components/server";
+import DashboardServer from "./components/dashboard";
 import Topbar from "@/components/Topbar.jsx";
 
 export default function DashboardPage() {
