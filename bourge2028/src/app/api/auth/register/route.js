@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 export async function POST(req) {
   try {
-    const { email, password, name } = await req.json();
+    const { email, password, name, role } = await req.json();
     
 
     if (!email || !password) {
@@ -15,6 +15,7 @@ export async function POST(req) {
 
     // Vérifie si l'utilisateur existe déjà
     const existingUser = await prisma.user.findUnique({ where: { email } });
+    console.log(existingUser);
     if (existingUser) {
       return new Response(
         JSON.stringify({ error: "Utilisateur déjà existant" }),
@@ -27,11 +28,11 @@ export async function POST(req) {
 
     // Création utilisateur
     const user = await prisma.user.create({
-      data: { email, password: hashedPassword, name },
+      data: { email, password: hashedPassword, name, role },
     });
 
     return new Response(
-      JSON.stringify({ message: "Compte créé", user: { email: user.email, name: user.name } }),
+      JSON.stringify({ message: "Compte créé", user: { email: user.email, name: user.name, role: user.role } }),
       { status: 201, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {

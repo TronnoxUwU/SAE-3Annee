@@ -21,13 +21,12 @@ export default function RegisterModal() {
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, name }),
+      body: JSON.stringify({ email, password, name, role: "User" }),
     });
     const data = await res.json();
     if (res.ok) {
       setMessage("✅ Compte créé, vous pouvez maintenant vous connecter");
       setIsOpen(false);
-      router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
     } else {
       setMessage(`❌ ${data.error}`);
     }
