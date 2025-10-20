@@ -21,8 +21,9 @@
 .connect {
   display: flex;
   justify-content: space-evenly;
+  border: none;
   
-  max-height: 2.4em;
+  max-height: 3.4em;
   min-width: 15%;
   padding: 0.2em;
   border-radius: 20px;
@@ -30,9 +31,10 @@
   background-color:goldenrod;
 }
 .connect img {
-  max-height: 2em;
+  max-height: 3em;
 }
 .connect p {
   align-self: center;
   font-weight: bold;
+  font-size: large;
 }
