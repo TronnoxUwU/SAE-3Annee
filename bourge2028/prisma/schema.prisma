@@ -244,6 +244,5 @@ model Analytics {
   page        String
   ipAddress   String?     // need to be hashed
   userAgent   String?     // type d’appareil
-  duration    Int?
   dateVisite   DateTime @default(now())
 }

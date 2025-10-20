@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import "./styles/admin.css";
 
 
-import Topbar from "../components/Topbar.jsx";
+import Topbar from "@/components/Topbar.jsx";
 
 export default function AdminPage() {
   const pathname = usePathname();

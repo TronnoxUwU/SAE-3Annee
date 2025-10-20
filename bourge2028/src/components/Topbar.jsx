@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/Topbar.css";
+import "@/styles/Topbar.css";
 
 export default function Topbar({ title = "Bourges 2028", fixed = false }) {
   return (

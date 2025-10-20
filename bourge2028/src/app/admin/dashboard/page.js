@@ -1,6 +1,11 @@
-export default function Page() {
+import DashboardServer from "./components/server";
+import Topbar from "@/components/Topbar.jsx";
 
+export default function DashboardPage() {
   return (
-    <h1>Account</h1>
+    <main>
+      <Topbar title="Dashboard"/>
+      <DashboardServer />
+    </main>
   );
 }
