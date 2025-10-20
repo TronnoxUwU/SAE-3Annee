@@ -24,7 +24,7 @@
 }
 
 .register-form button:hover {
-    background-color: #45a049;
+    background-color: rgb(204, 155, 30);
 }
 
 .register-error {

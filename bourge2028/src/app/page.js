@@ -23,10 +23,11 @@ export default function Page() {
   return (
     <main className="main-container">
       <section className="section-map">
-        <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
+        
 
         <div className="map-wrapper">
           <div className="map-inner">
+            <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
             <Map mapFilter={mapFilter} onMapReady={setMapInstance} />
             <Topbar />
           </div>

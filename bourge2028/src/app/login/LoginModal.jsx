@@ -3,16 +3,22 @@
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import RegisterModal from "../register/RegisterModal";
 import Modal from "../components/Modal";
 import '../styles/login.css';
 import '../styles/modal.css';
 
 export default function LoginModal() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
-  const [isOpen, setIsOpen] = useState(false);
+
+  // --- États globaux ---
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+
+  // --- Formulaire Login ---
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -31,17 +37,19 @@ export default function LoginModal() {
       return;
     }
 
-    setIsOpen(false);
+    setShowLogin(false);
     router.push(res.url || "/");
   };
 
-
   return (
     <>
-      <button className="connect" onClick={() => setIsOpen(true)}>
+      {/* --- Bouton principal --- */}
+      <button className="connect" onClick={() => setShowLogin(true)}>
         <p>Se connecter</p>
       </button>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+
+      {/* --- Modal Connexion --- */}
+      <Modal isOpen={showLogin} onClose={() => setShowLogin(false)}>
         {!session ? (
           <>
             <h2>Connexion</h2>
@@ -60,6 +68,17 @@ export default function LoginModal() {
               />
               <button type="submit">Se connecter</button>
             </form>
+
+            <button
+              className="login-switch"
+              onClick={() => {
+                setShowLogin(false);  // ferme login
+                setShowRegister(true); // ouvre register
+              }}
+            >
+              Créer un compte
+            </button>
+
             {message && <p className="login-message">{message}</p>}
           </>
         ) : (
@@ -68,6 +87,16 @@ export default function LoginModal() {
           </div>
         )}
       </Modal>
+
+      {/* --- Register Modal --- */}
+      <RegisterModal
+        isOpen={showRegister}
+        onClose={() => setShowRegister(false)}
+        onSwitchToLogin={() => {
+          setShowRegister(false);
+          setShowLogin(true);
+        }}
+      />
     </>
   );
 }
