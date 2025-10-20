@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -236,4 +236,14 @@ model Caroussel {
   composantId    Int
 
   images Image[] // 2..N relation
+}
+
+
+model Analytics {
+  id          Int      @id @default(autoincrement())
+  page        String
+  ipAddress   String?     // need to be hashed
+  userAgent   String?     // type d’appareil
+  duration    Int?
+  dateVisite   DateTime @default(now())
 }
