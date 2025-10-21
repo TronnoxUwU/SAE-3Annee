@@ -7,7 +7,7 @@ import "./styles/home.css";
 
 const Map = dynamic(() => import("./components/Map"), { ssr: false });
 const Sidebar = dynamic(() => import("./components/Sidebar"), { ssr: false });
-import Topbar from "./components/Topbar.jsx";
+import Topbar from "@/components/Topbar.jsx";
 
 
 
@@ -29,7 +29,7 @@ export default function Page() {
           <div className="map-inner">
             <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
             <Map mapFilter={mapFilter} onMapReady={setMapInstance} />
-            <Topbar />
+            <Topbar fixed title="Carte de la culture à Bourges 2028 !"/>
           </div>
         </div>
 

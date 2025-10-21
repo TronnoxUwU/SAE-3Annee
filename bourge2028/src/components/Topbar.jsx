@@ -2,11 +2,11 @@
 
 import React from "react";
 import { useSession, signOut } from "next-auth/react";
-import '../styles/Topbar.css';
-import RegisterModal from '../register/RegisterModal';
-import LoginModal from '../login/LoginModal';
+import Styles from "./Topbar.module.css";
+import RegisterModal from '../app/register/RegisterModal';
+import LoginModal from '../app/login/LoginModal';
 
-export default function Topbar({ title = "Bourges 2028" }) {
+export default function Topbar({ title = "Bourges 2028", fixed = false }) {
   const { data: session } = useSession();
 
   const handleLogout = async () => {
@@ -14,7 +14,11 @@ export default function Topbar({ title = "Bourges 2028" }) {
   };
 
   return (
-    <header className="topbar">
+    <header 
+      className={`${Styles.topbar} ${
+          fixed ? Styles.topbar_fixed : Styles.topbar_bloc
+        }`}
+    >
       <h1>{title}</h1>
 
       {!session ? (
@@ -23,7 +27,7 @@ export default function Topbar({ title = "Bourges 2028" }) {
           <RegisterModal />
         </div>
       ) : (
-        <button className="connect" onClick={handleLogout}>
+        <button className={Styles.connect} onClick={handleLogout}>
           <p>Se déconnecter</p>
         </button>
       )}
