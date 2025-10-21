@@ -12,109 +12,91 @@ export default function ArticlePage() {
   useEffect(() => {
     // Données fictives
     const data = {
-      id: 1,
-      titre: "Mon premier article",
-      composants: [
+      "id": 15,
+      "composants": [
         {
-          id: 1,
-          positionComposant: 1,
-          type: "titre",
-          articleId: 1,
-          titre: {
-            id: 1,
-            niveauTitre: 1,
-            texteTitre: "Bienvenue sur mon article",
-            composantId: 1,
-          },
+          "id": 66,
+          "positionComposant": 1,
+          "type": "titre",
+          "articleId": 15,
+          "titre": {
+            "id": 15,
+            "niveauTitre": 1,
+            "texteTitre": "Hello world",
+            "composantId": 66
+          }
         },
         {
-          id: 2,
-          positionComposant: 2,
-          type: "image",
-          articleId: 1,
-          image: {
-            id: 1,
-            lienImage: "/images/map-remplacement.png",
-            titreImage: "Illustration d’exemple",
-            copyright: "",
-            composantId: 2,
-            carousselId: null,
-          },
+          "id": 67,
+          "positionComposant": 2,
+          "type": "image",
+          "articleId": 15,
+          "image": {
+            "id": 17,
+            "lienImage": "/images/tete.png",
+            "titreImage": "illustration de tête",
+            "copyright": "",
+            "composantId": 67,
+            "carousselId": null
+          }
         },
         {
-          id: 3,
-          positionComposant: 3,
-          type: "paragraphe",
-          articleId: 1,
-          paragraphe: {
-            id: 1,
-            texteParagraphe:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.",
-            composantId: 3,
-          },
+          "id": 68,
+          "positionComposant": 3,
+          "type": "paragraphe",
+          "articleId": 15,
+          "paragraphe": {
+            "id": 29,
+            "texteParagraphe": "blabla",
+            "composantId": 68
+          }
         },
         {
-          id: 4,
-          positionComposant: 4,
-          type: "paragraphe",
-          articleId: 1,
-          paragraphe: {
-            id: 2,
-            texteParagraphe:
-              "Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.",
-            composantId: 4,
-          },
+          "id": 69,
+          "positionComposant": 4,
+          "type": "paragraphe",
+          "articleId": 15,
+          "paragraphe": {
+            "id": 30,
+            "texteParagraphe": "blabla",
+            "composantId": 69
+          }
         },
         {
-          id: 5,
-          positionComposant: 5,
-          type: "titre",
-          articleId: 1,
-          titre: {
-            id: 1,
-            niveauTitre: 1,
-            texteTitre: "Bienvenue sur mon article",
-            composantId: 5,
-          },
-        },
-        {
-          id: 6,
-          positionComposant: 6,
-          type: "paragraphe",
-          articleId: 1,
-          paragraphe: {
-            id: 3,
-            texteParagraphe:
-              "Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.",
-            composantId: 6,
-          },
-        },
-        {
-          id: 7,
-          positionComposant: 7,
-          type: "paragraphe",
-          articleId: 1,
-          paragraphe: {
-            id: 4,
-            texteParagraphe:
-              "Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam.",
-            composantId: 7,
-          },
-        },
-        {
-          id: 7,
-          positionComposant: 7,
-          type: "paragraphe",
-          articleId: 1,
-          paragraphe: {
-            id: 5,
-            texteParagraphe:
-              "In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor.",
-            composantId: 7,
-          },
-        },
+          "id": 70,
+          "positionComposant": 5,
+          "type": "caroussel",
+          "articleId": 15,
+          "caroussels": [
+            {
+              "id": 8,
+              "titreCaroussel": "Galerie d’images",
+              "composantId": 70,
+              "images": [
+                {
+                  "id": 18,
+                  "lienImage": "/images/tete.png",
+                  "titreImage": "illustration de tête",
+                  "copyright": "",
+                  "composantId": 71,
+                  "carousselId": 8
+                }, {
+                  "id": 19,
+                  "lienImage": "/images/map-remplacement.png",
+                  "titreImage": "illustration de carte",
+                  "copyright": "",
+                  "composantId": 72,
+                  "carousselId": 8
+                }
+              ]
+            }
+          ]
+        }
       ],
-      contenir: [],
+      "documents": [
+        { "lien": "https://example.com/document1.pdf" },
+        { "lien": "https://example.com/document2.pdf" }
+      ]
     };
 
     setArticle(data);
@@ -143,6 +125,19 @@ export default function ArticlePage() {
                   alt={elt.image.titreImage || ""}
                   className="article-image"
                 />
+              );
+            case "caroussel":
+              return (
+                <div key={i} className="article-caroussel">
+                  {elt.caroussels[0].images.map((img, j) => (
+                    <img
+                      key={j}
+                      src={img.lienImage}
+                      alt={img.titreImage || ""}
+                      className="article-image"
+                    />
+                  ))}
+                </div>
               );
 
             default:

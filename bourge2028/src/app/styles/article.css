@@ -33,69 +33,100 @@
 .article-page img {
   display: block;
   margin: 16px auto;
-  width: 70%;
+  max-height: 40vh;
+  width: auto;
   object-fit: cover;
   border-radius: 8px;
 }
 
-/* Carousel horizontal simple centré */
-.carousel {
+/* Carousel d'images */
+.article-caroussel {
   display: flex;
-  justify-content: center;
-  gap: 12px;
+  gap: 16px;
   overflow-x: auto;
-  padding-bottom: 8px;
-  margin: 16px 0;
   scroll-behavior: smooth;
+  padding: 12px 0;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 32px auto;
+  width: 100%;
+  max-width: 900px;
+  position: relative;
 }
 
-.carousel img {
+/* Chaque image du carousel */
+.article-caroussel img {
   flex: 0 0 auto;
-  width: 200px;
-  height: 200px;
-  border-radius: 8px;
+  width: 240px;
+  height: 240px;
+  border-radius: 12px;
   object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
-/* Scrollbar stylée */
-.carousel::-webkit-scrollbar {
-  height: 6px;
+/* Effet hover sur les images */
+.article-caroussel img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-.carousel::-webkit-scrollbar-track {
-  background: #e2e8f0;
-  border-radius: 3px;
+/* Scrollbar stylisée */
+.article-caroussel::-webkit-scrollbar {
+  height: 8px;
 }
 
-.carousel::-webkit-scrollbar-thumb {
-  background: #a0aec0;
-  border-radius: 3px;
+.article-caroussel::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
 }
 
-/* Loading / error messages */
-.loading,
-.error {
-  text-align: center;
-  font-size: 1.2rem;
-  margin-top: 50px;
+.article-caroussel::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border-radius: 4px;
 }
 
-/* Responsive */
+.article-caroussel::-webkit-scrollbar-thumb:hover {
+  background: #8a8a8a;
+}
+
+/* Optionnel : flèches gauche/droite */
+.article-caroussel::before,
+.article-caroussel::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 50px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(to right, white 0%, transparent 100%);
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.article-caroussel::after {
+  right: 0;
+  transform: translateY(-50%) rotate(180deg);
+  background: linear-gradient(to left, white 0%, transparent 100%);
+}
+
+/* ================================
+   📱 Responsive
+=================================== */
 @media (max-width: 768px) {
-  .article-page h1 {
-    font-size: 2rem;
+  .article-caroussel img {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-caroussel {
+    gap: 10px;
   }
 
-  .article-page h2 {
-    font-size: 1.5rem;
-  }
-
-  .article-page img {
-    width: 90%;
-  }
-
-  .carousel img {
-    width: 150px;
-    height: 150px;
+  .article-caroussel img {
+    width: 120px;
+    height: 120px;
   }
 }
