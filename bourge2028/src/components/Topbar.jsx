@@ -1,18 +1,36 @@
+"use client";
+
 import React from "react";
+import { useSession, signOut } from "next-auth/react";
 import Styles from "./Topbar.module.css";
+import RegisterModal from '../app/register/RegisterModal';
+import LoginModal from '../app/login/LoginModal';
 
 export default function Topbar({ title = "Bourges 2028", fixed = false }) {
+  const { data: session } = useSession();
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
+
   return (
-    <header
+    <header 
       className={`${Styles.topbar} ${
-        fixed ? Styles.topbar_fixed : Styles.topbar_bloc
-      }`}
+          fixed ? Styles.topbar_fixed : Styles.topbar_bloc
+        }`}
     >
       <h1>{title}</h1>
-      <a className={Styles.connect} href="">
-        <img src="/images/tete.png" alt="tete" />
-        <p>Se connecter</p>
-      </a>
+
+      {!session ? (
+        <div style={{ display: "flex", gap: "10px" }}>
+          <LoginModal />
+          <RegisterModal />
+        </div>
+      ) : (
+        <button className={Styles.connect} onClick={handleLogout}>
+          <p>Se déconnecter</p>
+        </button>
+      )}
     </header>
   );
 }

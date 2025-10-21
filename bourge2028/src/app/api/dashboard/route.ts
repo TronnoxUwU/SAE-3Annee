@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 function getStartDate(filter: string | number): Date {
   const now = new Date();
