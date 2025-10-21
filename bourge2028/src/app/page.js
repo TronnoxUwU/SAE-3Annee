@@ -34,7 +34,7 @@ export default function Page() {
         </div>
 
         <button
-          className="toggle-btn bottom"
+          className="toggle-btn open"
           onClick={goToAnnuaire}
         >
           Aller à l’Annuaire ↓

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "../../styles/article.css";
+import Topbar from "@/app/components/Topbar";
 
 export default function ArticlePage() {
   const router = useRouter();
@@ -122,30 +123,33 @@ export default function ArticlePage() {
   if (!article) return <p>Chargement...</p>;
 
   return (
-    <div className="article-page">
-      <h1>{article.titre}</h1>
-      {article.composants.map((elt, i) => {
-        switch (elt.type) {
-          case "titre":
-            return <h2 key={i}>{elt.titre.texteTitre}</h2>;
+    <>
+      <Topbar />
+      <div className="article-page">
+        <h1>{article.titre}</h1>
+        {article.composants.map((elt, i) => {
+          switch (elt.type) {
+            case "titre":
+              return <h2 key={i}>{elt.titre.texteTitre}</h2>;
 
-          case "paragraphe":
-            return <p key={i}>{elt.paragraphe.texteParagraphe}</p>;
+            case "paragraphe":
+              return <p key={i}>{elt.paragraphe.texteParagraphe}</p>;
 
-          case "image":
-            return (
-              <img
-                key={i}
-                src={elt.image.lienImage}
-                alt={elt.image.titreImage || ""}
-                className="article-image"
-              />
-            );
+            case "image":
+              return (
+                <img
+                  key={i}
+                  src={elt.image.lienImage}
+                  alt={elt.image.titreImage || ""}
+                  className="article-image"
+                />
+              );
 
-          default:
-            return null;
-        }
-      })}
-    </div>
+            default:
+              return null;
+          }
+        })}
+      </div>
+    </>
   );
 }

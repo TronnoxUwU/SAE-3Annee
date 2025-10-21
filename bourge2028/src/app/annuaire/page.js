@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Topbar from "../components/Topbar.jsx";
 import "../styles/home.css";
 
 const Map = dynamic(() => import("../components/Map"), { ssr: false });
@@ -24,12 +25,13 @@ export default function AnnuairePage() {
 
   return (
     <main className="main-container">
+      <Topbar />
       <section className="section-map">
-        <Sidebar map={null} onFilterChange={() => {}} />
+        <Sidebar map={null} onFilterChange={() => { }} />
 
         <div className="map-wrapper">
           <div className="map-inner">
-            <Map mapFilter={null} onMapReady={() => {}} />
+            <Map mapFilter={null} onMapReady={() => { }} />
           </div>
         </div>
 
@@ -38,11 +40,12 @@ export default function AnnuairePage() {
         </section>
 
         <button
-          className={`toggle-btn ${animateDrawer ? "top" : "bottom"}`}
+          className={`toggle-btn ${animateDrawer ? "closed" : "open"}`}
           onClick={handleClose}
         >
-          {animateDrawer ? "Revenir à la carte ↑" : "Aller à l’Annuaire ↓"}
+          {animateDrawer ? "Revenir à la carte ↑" : "Aller à l’annuaire ↓"}
         </button>
+
       </section>
     </main>
   );
