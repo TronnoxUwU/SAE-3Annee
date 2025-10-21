@@ -17,13 +17,14 @@ export default function Page() {
   const [mapFilter, setMapFilter] = useState(null);
 
   const goToAnnuaire = () => {
+    sessionStorage.setItem("fromHome", "true");
     router.push("/annuaire"); // juste naviguer, animation gérée côté /annuaire
   };
 
   return (
     <main className="main-container">
       <section className="section-map">
-        
+
 
         <div className="map-wrapper">
           <div className="map-inner">

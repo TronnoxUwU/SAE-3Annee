@@ -1,11 +1,11 @@
 .annuaire {
   position: absolute;
-  top: 15vh !important;
+  top: 17vh !important;
   left: 18vw !important;
   height: 80vh !important;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-gap: 16px;
   justify-items: center; /* centre horizontalement chaque item */
   align-items: start;   /* aligne en haut chaque item */
   padding: 16px;

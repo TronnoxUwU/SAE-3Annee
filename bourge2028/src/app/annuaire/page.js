@@ -12,42 +12,58 @@ const Annuaire = dynamic(() => import("../components/annuaire/Annuaire"), { ssr:
 
 export default function AnnuairePage() {
   const router = useRouter();
-  const [drawerOpen, setDrawerOpen] = useState(true); // drawer ouvert par défaut
-  const [animate, setAnimate] = useState(false);      // contrôle l'animation
 
-  const handleToggleDrawer = () => {
-    setAnimate(true);        // activer l'animation
-    setDrawerOpen(!drawerOpen);
-  };
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [animate, setAnimate] = useState(false);
+  const [mounted, setMounted] = useState(false); // état pour forcer rendu initial
+
+  useEffect(() => {
+    const fromHome = sessionStorage.getItem("fromHome");
+    if (fromHome === "true") {
+      setAnimate(true);      // activer transition
+      setDrawerOpen(false);  // commence fermé
+      setMounted(true);      // monter le drawer dans le DOM
+
+      // déclencher l'ouverture dans le tick suivant
+      requestAnimationFrame(() => {
+        sessionStorage.removeItem("fromHome");
+        setDrawerOpen(true); // déclenche la transition
+      });
+    } else {
+      // rechargement direct → ouverture immédiate sans transition
+      setAnimate(false);
+      setDrawerOpen(true);
+      setMounted(true);
+    }
+  }, []);
 
   const handleClose = () => {
-    setAnimate(true);        // animation lors de la fermeture
+    setAnimate(true);
     setDrawerOpen(false);
-    setTimeout(() => router.push("/", { shallow: true }), 600);
+    setTimeout(() => router.push("/"), 600);
   };
-
-  const drawerClass = drawerOpen ? "show" : "";
-  const transitionClass = animate ? "" : "no-transition";
 
   return (
     <main className="main-container">
       <Topbar />
       <section className="section-map">
-        <Sidebar map={null} onFilterChange={() => {}} />
+        <Sidebar map={null} onFilterChange={() => { }} />
 
         <div className="map-wrapper">
           <div className="map-inner">
-            <Map mapFilter={null} onMapReady={() => {}} />
+            <Map mapFilter={null} onMapReady={() => { }} />
           </div>
         </div>
 
-        <section className={`section-annuaire ${drawerClass} ${transitionClass}`}>
-          <Annuaire mapFilter={null} />
-        </section>
+        {mounted && (
+          <section className={`section-annuaire ${drawerOpen ? "show" : ""} ${animate ? "" : "no-transition"}`}>
+            <Annuaire mapFilter={null} />
+          </section>
+        )}
 
         <button
-          className={`toggle-btn ${drawerOpen ? "closed" : "open"}`}
-          onClick={handleToggleDrawer}
+          className={`toggle-btn ${drawerOpen ? "closed" : "open"} ${animate ? "" : "no-transition"}`}
+          onClick={handleClose}
         >
           {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’annuaire ↓"}
         </button>
