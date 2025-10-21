@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
 }
-.topbar-fixed {
+.topbar_fixed {
   position: fixed;
   z-index: 999;
 
@@ -17,7 +17,7 @@
 
   font-size: larger;
 }
-.topbar-bloc {
+.topbar_bloc {
 
   /* margin: 2vh 4vw 0 20vw; */
   padding: 0.6em 2em;
