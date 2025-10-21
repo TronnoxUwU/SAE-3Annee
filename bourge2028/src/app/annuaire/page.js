@@ -12,40 +12,45 @@ const Annuaire = dynamic(() => import("../components/annuaire/Annuaire"), { ssr:
 
 export default function AnnuairePage() {
   const router = useRouter();
-  const [animateDrawer, setAnimateDrawer] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(true); // drawer ouvert par défaut
+  const [animate, setAnimate] = useState(false);      // contrôle l'animation
 
-  useEffect(() => {
-    setAnimateDrawer(true); // drawer ouvert dès le rendu
-  }, []);
+  const handleToggleDrawer = () => {
+    setAnimate(true);        // activer l'animation
+    setDrawerOpen(!drawerOpen);
+  };
 
   const handleClose = () => {
-    setAnimateDrawer(false);
+    setAnimate(true);        // animation lors de la fermeture
+    setDrawerOpen(false);
     setTimeout(() => router.push("/", { shallow: true }), 600);
   };
+
+  const drawerClass = drawerOpen ? "show" : "";
+  const transitionClass = animate ? "" : "no-transition";
 
   return (
     <main className="main-container">
       <Topbar />
       <section className="section-map">
-        <Sidebar map={null} onFilterChange={() => { }} />
+        <Sidebar map={null} onFilterChange={() => {}} />
 
         <div className="map-wrapper">
           <div className="map-inner">
-            <Map mapFilter={null} onMapReady={() => { }} />
+            <Map mapFilter={null} onMapReady={() => {}} />
           </div>
         </div>
 
-        <section className={`section-annuaire ${animateDrawer ? "show" : ""}`}>
+        <section className={`section-annuaire ${drawerClass} ${transitionClass}`}>
           <Annuaire mapFilter={null} />
         </section>
 
         <button
-          className={`toggle-btn ${animateDrawer ? "closed" : "open"}`}
-          onClick={handleClose}
+          className={`toggle-btn ${drawerOpen ? "closed" : "open"}`}
+          onClick={handleToggleDrawer}
         >
-          {animateDrawer ? "Revenir à la carte ↑" : "Aller à l’annuaire ↓"}
+          {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’annuaire ↓"}
         </button>
-
       </section>
     </main>
   );
