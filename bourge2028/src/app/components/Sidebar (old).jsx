@@ -1,16 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
+import { OpenStreetMapProvider } from "leaflet-geosearch";
+import * as turf from "@turf/turf";
 import "../styles/Sidebar.css";
-
-// Import dynamique des bibliothèques lourdes
-const loadHeavyDeps = async () => {
-  const [{ OpenStreetMapProvider }, turf] = await Promise.all([
-    import("leaflet-geosearch"),
-    import("@turf/turf")
-  ]);
-  return { OpenStreetMapProvider, turf };
-};
 
 export default function Sidebar({ map, onFilterChange }) {
   const [open, setOpen] = useState(true);
@@ -19,38 +11,22 @@ export default function Sidebar({ map, onFilterChange }) {
   const [results, setResults] = useState([]);
   const [provider, setProvider] = useState(null);
   const [regionGeoJSON, setRegionGeoJSON] = useState(null);
-  const [isReady, setIsReady] = useState(false);
-  const [turf, setTurf] = useState(null);
-  
   const resultsRef = useRef(null);
   const searchRef = useRef(null);
-  const searchTimeout = useRef(null);
 
-  // Chargement des dépendances lourdes en différé
-  useEffect(() => {
-    let mounted = true;
 
-    loadHeavyDeps().then(({ turf: turfLib }) => {
-      if (mounted) {
-        setTurf(turfLib);
-        setIsReady(true);
-      }
-    });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  // Gestion Enter
   useEffect(() => {
     function handleEnterSelect(e) {
       if (e.key === "Enter" && results.length > 0) {
         e.preventDefault();
+
+        // affiche sur la map
         const firstResult = results[0];
         if (map && firstResult?.y && firstResult?.x) {
           map.setView([firstResult.y, firstResult.x], 13);
         }
+
+        // update input et resultats de prediction
         setQuery(firstResult.label);
         setResults([]);
       }
@@ -62,57 +38,45 @@ export default function Sidebar({ map, onFilterChange }) {
     return () => {
       if (findbox) findbox.removeEventListener("keydown", handleEnterSelect);
     };
-  }, [results, map]);
+  }, [results, map, setQuery, setResults]);
 
-  // Gestion clic extérieur
+
+  // Gestion du clic en dehors de la recherche
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        resultsRef.current &&
-        !resultsRef.current.contains(event.target) &&
-        searchRef.current &&
-        !searchRef.current.contains(event.target)
-      ) {
+      if ( (resultsRef.current && !resultsRef.current.contains(event.target)) && (searchRef.current && !searchRef.current.contains(event.target)) ) {
         if (results.length > 0) {
           setResults([]);
         }
-      } else if (
-        ((resultsRef.current && resultsRef.current.contains(event.target)) ||
-          (searchRef.current && searchRef.current.contains(event.target))) &&
-        results.length === 0
-      ) {
-        if (provider) {
-          recherche(provider, query);
+      } else if((resultsRef.current && resultsRef.current.contains(event.target)) || (searchRef.current && searchRef.current.contains(event.target)) && results.length == 0) {
+          if(provider){recherche(provider, query)}
         }
-      }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [results, provider, query]);
 
-  // Init filtres et GeoJSON (léger, se charge tout de suite)
+
+  }, [results]);
+
+  // Init
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Chargement des filtres
+    // filtre
     fetch("/data/filtres/filtre-carte.json")
       .then((res) => res.json())
       .then((data) => setFilters(Object.keys(data.carte)))
       .catch((err) => console.error("Erreur chargement filtres :", err));
 
-    // Chargement du GeoJSON
+    // geojson pour photon
     fetch("/data/cartes/(initial)region-centre-val-de-loire.geojson")
       .then((res) => res.json())
       .then((geo) => setRegionGeoJSON(geo))
       .catch((err) => console.error("Erreur chargement région :", err));
-  }, []);
 
-  // Init provider (uniquement quand les dépendances sont chargées)
-  useEffect(() => {
-    if (!isReady) return;
 
     class PhotonProvider {
       async search({ query }) {
@@ -123,6 +87,7 @@ export default function Sidebar({ map, onFilterChange }) {
 
         if (!data.features) return [];
 
+        // Transformation des résultats
         const results = data.features.map((f) => ({
           x: f.geometry.coordinates[0],
           y: f.geometry.coordinates[1],
@@ -131,55 +96,130 @@ export default function Sidebar({ map, onFilterChange }) {
           city: f.properties.city || f.properties.name,
         }));
 
+        // Suppression des doublons par nom et ville
         const uniqueResults = results.filter(
           (r, index, self) =>
             index === self.findIndex((t) => t.label === r.label && t.city === r.city)
         );
 
+        // Priorisation des types de lieux
         const sortedResults = uniqueResults.sort((a, b) => {
           const priority = { city: 1, town: 2, village: 3, suburb: 4, locality: 100 };
           return (priority[a.type] || 99) - (priority[b.type] || 99);
         });
 
+        console.log(uniqueResults)
         return sortedResults;
       }
     }
 
+    // const provider = new OpenStreetMapProvider();
     const provider = new PhotonProvider();
     setProvider(provider);
-  }, [isReady]);
+  }, []);
+
+  const searchTimeout = useRef(null);
 
   const handleSearch = async (e) => {
     const value = e.target.value;
     setQuery(value);
 
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
-
+    
     if (!value || !provider) {
       setResults([]);
       return;
     }
 
+    // delai de 300ms pour limiter les requêtes
     searchTimeout.current = setTimeout(async () => {
+      // try {
+      //   let searchResults = await provider.search({ query: value });
+
+      //   // restriction sur la region centre
+      //   if (regionGeoJSON) {
+      //     searchResults = searchResults.filter((r) => {
+      //       const point = turf.point([r.x, r.y]);
+      //       return turf.booleanPointInPolygon(point, regionGeoJSON);
+      //     });
+      //   }
+
+      //   setResults(searchResults);
+      // } catch (err) {
+      //   console.error("Erreur de recherche :", err);
+      // }
       return recherche(provider, value);
     }, 300);
   };
 
+
+
+
+  // selection d'un resultat
   const handleResultClick = (result) => {
     if (!map || !result) return;
-
+    
     const { x, y, label } = result;
+
+    // ajoute un marqueur (je l'ai commenté mais laissé si jamais)
+    // L.marker([y, x]).addTo(map).bindPopup(label).openPopup();
+    
     map.setView([y, x], 14);
     setResults([]);
     setQuery(label);
   };
 
-  async function recherche(provider, value) {
-    if (!turf) return; // Attendre que turf soit chargé
+  return (
+    <div className={`sidebar ${open ? "" : "collapsed"}`}>
+      {/* Zone de recherche */}
+      <div className="sidebar-search" ref={searchRef}>
+        <input
+          type="text"
+          id="findbox"
+          placeholder="Rechercher un lieu..."
+          value={query}
+          onChange={handleSearch}
+        />
+      </div>
 
+      {/* Résultats de recherche */}
+      {results.length > 0 && (
+        <ul className="search-results" ref={resultsRef}>
+          {results.slice(0, 5).map((r, i) => (
+            <li key={i} onClick={() => handleResultClick(r)}>
+              {r.label}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Header avec bouton collapse */}
+      <div className="sidebar-header">
+        {open && <span>Menu</span>}
+        <button onClick={() => setOpen(!open)}>
+          {open ? "<" : ">"}
+        </button>
+      </div>
+
+      {/* Liste des filtres */}
+      <ul className="filter-list">
+        {filters.map((filter, i) => (
+          <li key={i} onClick={() => onFilterChange && onFilterChange(filter)}>
+            {open ? filter : `T${i + 1}`}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
+
+
+
+  async function recherche(provider, value){
     try {
       let searchResults = await provider.search({ query: value });
 
+      // restriction sur la region centre
       if (regionGeoJSON) {
         searchResults = searchResults.filter((r) => {
           const point = turf.point([r.x, r.y]);
@@ -191,43 +231,10 @@ export default function Sidebar({ map, onFilterChange }) {
     } catch (err) {
       console.error("Erreur de recherche :", err);
     }
-  }
+  };
 
-  return (
-    <div className={`sidebar ${open ? "" : "collapsed"}`}>
-      <div className="sidebar-search" ref={searchRef}>
-        <input
-          type="text"
-          id="findbox"
-          placeholder={isReady ? "Rechercher un lieu..." : "Chargement..."}
-          value={query}
-          onChange={handleSearch}
-          disabled={!isReady}
-        />
-      </div>
 
-      {results.length > 0 && (
-        <ul className="search-results" ref={resultsRef}>
-          {results.slice(0, 5).map((r, i) => (
-            <li key={i} onClick={() => handleResultClick(r)}>
-              {r.label}
-            </li>
-          ))}
-        </ul>
-      )}
 
-      <div className="sidebar-header">
-        {open && <span>Menu</span>}
-        <button onClick={() => setOpen(!open)}>{open ? "<" : ">"}</button>
-      </div>
 
-      <ul className="filter-list">
-        {filters.map((filter, i) => (
-          <li key={i} onClick={() => onFilterChange && onFilterChange(filter)}>
-            {open ? filter : `T${i + 1}`}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
+

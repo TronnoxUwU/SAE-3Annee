@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import "./styles/home.css";
 
 const Map = dynamic(() => import("./components/Map"), { ssr: false });
-const Sidebar = dynamic(() => import("./components/Sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("./components/Sidebar (old)"), { ssr: false });
 import Topbar from "@/components/Topbar.jsx";
 
 
