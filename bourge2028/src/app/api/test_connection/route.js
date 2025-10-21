@@ -6,5 +6,5 @@ export async function GET() {
   if (!session) {
     return new Response(JSON.stringify({ status: "non connecté ❌" }), { status: 401 });
   }
-  return new Response(JSON.stringify({ status: "connecté ✅", user: session.user }), { status: 200 });
+  return new Response(JSON.stringify({ status: "connecté ✅", personne: session.personne }), { status: 200 });
 }

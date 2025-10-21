@@ -84,7 +84,7 @@ export default function LoginModal() {
           </>
         ) : (
           <div className="login-session">
-            <p>Connecté en tant que {session.user.email}</p>
+            <p>Connecté en tant que {session.personne.email}</p>
           </div>
         )}
       </Modal>

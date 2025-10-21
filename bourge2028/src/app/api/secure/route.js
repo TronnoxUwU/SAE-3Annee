@@ -10,6 +10,6 @@ export async function GET(req) {
 
   return new Response(JSON.stringify({
     message: "Données sécurisées 🔒",
-    user: session.user
+    personne: session.personne
   }), { status: 200 })
 }

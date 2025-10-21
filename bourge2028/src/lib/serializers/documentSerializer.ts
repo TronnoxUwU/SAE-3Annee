@@ -1,10 +1,6 @@
-import type { Document, Contenir } from "@prisma/client";
-import { serializeContenir } from "./contenirSerializer";
+import type { Document } from "@prisma/client";
 
-export const serializeDocument = (
-  doc: Document & { contenirs?: (Contenir & { document: Document })[] }
-) => ({
+export const serializeDocument = (doc: Document) => ({
   id: doc.id,
   lien: doc.lien,
-  contenirs: doc.contenirs?.map(serializeContenir) || [],
 });

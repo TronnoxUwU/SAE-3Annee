@@ -13,11 +13,11 @@ export const authOptions = {
       },
       async authorize(credentials) {
         const { email, password } = credentials;
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
-        const isValid = await bcrypt.compare(password, user.password);
+        const personne = await prisma.personne.findUnique({ where: { email } });
+        if (!personne) return null;
+        const isValid = await bcrypt.compare(password, personne.password);
         if (!isValid) return null;
-        return { email: user.email, name: user.name };
+        return { email: personne.email, name: personne.name };
       },
     }),
   ],
