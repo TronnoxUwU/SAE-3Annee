@@ -6,5 +6,4 @@ export const serializeDocument = (
 ) => ({
   id: doc.id,
   lien: doc.lien,
-  contenirs: doc.contenirs?.map(serializeContenir) || [],
 });
