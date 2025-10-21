@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Topbar from "../components/Topbar.jsx";
+import Topbar from "@/components/Topbar.jsx";
 import "../styles/home.css";
 
 const Map = dynamic(() => import("../components/Map"), { ssr: false });

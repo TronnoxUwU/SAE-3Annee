@@ -1,108 +1,41 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import "../../styles/article.css";
-import Topbar from "@/app/components/Topbar";
+import Topbar from "@/components/Topbar.jsx";
 
 export default function ArticlePage() {
-  const router = useRouter();
+  const { id } = useParams(); // ✅ récupère automatiquement l'id depuis /article/[id]
   const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Données fictives
-    const data = {
-      "id": 15,
-      "composants": [
-        {
-          "id": 66,
-          "positionComposant": 1,
-          "type": "titre",
-          "articleId": 15,
-          "titre": {
-            "id": 15,
-            "niveauTitre": 1,
-            "texteTitre": "Hello world",
-            "composantId": 66
-          }
-        },
-        {
-          "id": 67,
-          "positionComposant": 2,
-          "type": "image",
-          "articleId": 15,
-          "image": {
-            "id": 17,
-            "lienImage": "/images/tete.png",
-            "titreImage": "illustration de tête",
-            "copyright": "",
-            "composantId": 67,
-            "carousselId": null
-          }
-        },
-        {
-          "id": 68,
-          "positionComposant": 3,
-          "type": "paragraphe",
-          "articleId": 15,
-          "paragraphe": {
-            "id": 29,
-            "texteParagraphe": "blabla",
-            "composantId": 68
-          }
-        },
-        {
-          "id": 69,
-          "positionComposant": 4,
-          "type": "paragraphe",
-          "articleId": 15,
-          "paragraphe": {
-            "id": 30,
-            "texteParagraphe": "blabla",
-            "composantId": 69
-          }
-        },
-        {
-          "id": 70,
-          "positionComposant": 5,
-          "type": "caroussel",
-          "articleId": 15,
-          "caroussels": [
-            {
-              "id": 8,
-              "titreCaroussel": "Galerie d’images",
-              "composantId": 70,
-              "images": [
-                {
-                  "id": 18,
-                  "lienImage": "/images/tete.png",
-                  "titreImage": "illustration de tête",
-                  "copyright": "",
-                  "composantId": 71,
-                  "carousselId": 8
-                }, {
-                  "id": 19,
-                  "lienImage": "/images/map-remplacement.png",
-                  "titreImage": "illustration de carte",
-                  "copyright": "",
-                  "composantId": 72,
-                  "carousselId": 8
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "documents": [
-        { "lien": "https://example.com/document1.pdf" },
-        { "lien": "https://example.com/document2.pdf" }
-      ]
-    };
+    if (!id) return;
 
-    setArticle(data);
-  }, []);
+    async function fetchArticle() {
+      try {
+        const res = await fetch(`/api/articles/${id}`);
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
 
-  if (!article) return <p>Chargement...</p>;
+        const data = await res.json();
+        console.log(data);
+        setArticle(data);
+      } catch (err) {
+        console.error(err);
+        setError("Impossible de charger l’article.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchArticle();
+  }, [id]);
+
+  if (loading) return <p>Chargement...</p>;
+  if (error) return <p>{error}</p>;
+  if (!article) return <p>Aucun article trouvé.</p>;
 
   return (
     <>
@@ -126,6 +59,7 @@ export default function ArticlePage() {
                   className="article-image"
                 />
               );
+
             case "caroussel":
               return (
                 <div key={i} className="article-caroussel">
@@ -144,6 +78,20 @@ export default function ArticlePage() {
               return null;
           }
         })}
+        {article.documents.length > 0 && (
+          <section className="article-documents">
+            <h3>Documents associés :</h3>
+            <ul>
+              {article.documents.map((doc, i) => (
+                <li key={i}>
+                  <a href={doc.lien} target="_blank">
+                    {doc.lien || "Document sans nom"}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </>
   );
