@@ -7,6 +7,7 @@ import RegisterModal from "../register/RegisterModal";
 import Modal from "../components/Modal";
 import '../styles/login.css';
 import '../styles/modal.css';
+import TopStyle from "@/components/Topbar.module.css"
 
 export default function LoginModal() {
   const { data: session } = useSession();
@@ -44,7 +45,7 @@ export default function LoginModal() {
   return (
     <>
       {/* --- Bouton principal --- */}
-      <button className="connect" onClick={() => setShowLogin(true)}>
+      <button className={TopStyle.connect} onClick={() => setShowLogin(true)}>
         <p>Se connecter</p>
       </button>
 
