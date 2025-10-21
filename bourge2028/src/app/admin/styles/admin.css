@@ -1,3 +1,9 @@
+body {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
 .admin-container {
   display: flex;
   flex-direction: column;
@@ -23,25 +29,3 @@
   color: black;
 }
 
-.admin-menu {
-  display: flex;
-  justify-content: space-between;
-}
-.content-bloc {
-  /* background-color: #111827;* */
-  background-color: white;
-  box-shadow: #111827 0px 0px 10px;
-  padding: 2em 4em;
-  border-radius: 20px;
-}
-.content-bloc p {
-  font-weight: bold;
-  color: black;
-  font-size: 2em;
-  text-transform: uppercase;
-  text-align: center;
-  margin-bottom: 1em;
-}
-.content-bloc img {
-  max-height: 16em;
-}

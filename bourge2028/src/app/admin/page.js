@@ -17,7 +17,7 @@ export default function AdminPage() {
         <main className="admin-main">
           <div className="admin-top-content">
             <h2>Bienvenue sur le panneau d’administration</h2>
-            <p>Sélectionnez une section dans le menu de gauche pour commencer.</p>
+            <p>Sélectionnez une section dans le menu.</p>
           </div>
           
           <AdminMenu />
