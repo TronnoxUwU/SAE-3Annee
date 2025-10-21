@@ -1,0 +1,43 @@
+.mySwiper {
+  width: 90%;
+  max-width: 900px;
+  margin: 2rem auto;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+}
+
+/* Forcer le slide à ne pas avoir de hauteur fixe */
+.mySwiper .slide {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  height: auto !important;
+  min-height: 300px; /* optionnel, pour le responsive */
+  background: #f0f0f0; /* couleur de fond si l'image est plus petite */
+}
+
+/* Image entièrement visible */
+.article-image {
+  max-width: 100%;
+  max-height: 500px; /* ou 100% si tu veux que ça remplisse le conteneur */
+  height: auto;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Flèches */
+.mySwiper .control-arrow {
+  background: rgba(0, 0, 0, 0.4);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  top: 45%;
+}
+
+/* Points */
+.mySwiper .control-dots {
+  bottom: 15px;
+}
+

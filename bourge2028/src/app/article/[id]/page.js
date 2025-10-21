@@ -2,7 +2,11 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+
 import "../../styles/article.css";
+import styles from "../../styles/carousel-article.module.css";
 import Topbar from "@/components/Topbar.jsx";
 
 export default function ArticlePage() {
@@ -54,7 +58,7 @@ export default function ArticlePage() {
               return (
                 <img
                   key={i}
-                  src={elt.image.lienImage}
+                  src={"/images/tete.png"}
                   alt={elt.image.titreImage || ""}
                   className="article-image"
                 />
@@ -62,16 +66,24 @@ export default function ArticlePage() {
 
             case "caroussel":
               return (
-                <div key={i} className="article-caroussel">
-                  {elt.caroussels[0].images.map((img, j) => (
+                <Carousel
+                  showArrows={true}
+                  showIndicators={true}
+                  infiniteLoop={true}
+                  dynamicHeight={false} // garde false pour ne pas que react calcule la hauteur
+                  className={styles.mySwiper}
+                  renderThumbs={() => null} // supprime les miniatures
+                >
+                  {elt.caroussels[0].images.map((img) => (
                     <img
-                      key={j}
-                      src={img.lienImage}
+                      key={img.id}
+                      src={"/images/tete.png"}
                       alt={img.titreImage || ""}
-                      className="article-image"
+                      className={styles["article-image"]}
                     />
                   ))}
-                </div>
+                </Carousel>
+
               );
 
             default:
