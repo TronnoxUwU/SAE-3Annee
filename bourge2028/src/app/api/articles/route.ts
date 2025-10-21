@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    // Récupérer tous les articles avec composants et documents liés
+    // Récupérer tous les articles avec leurs composants et documents liés
     const articles = await prisma.article.findMany({
       include: {
         composants: {
@@ -49,11 +49,7 @@ export async function GET() {
             },
           },
         },
-        contenir: {
-          include: {
-            document: true,
-          },
-        },
+        documents: true, // ✅ relation directe, plus de "contenir"
       },
       orderBy: {
         id: "asc",

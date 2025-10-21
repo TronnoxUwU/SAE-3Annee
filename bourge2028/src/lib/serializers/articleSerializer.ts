@@ -1,6 +1,6 @@
-import type { Article, Composant, Contenir, Document } from "@prisma/client";
+import type { Article, Composant, Document } from "@prisma/client";
 import { serializeComposant } from "./composantSerializer";
-import { serializeContenir } from "./contenirSerializer";
+import { serializeDocument } from "./documentSerializer";
 
 export const serializeArticle = (
   article: Article & {
@@ -10,10 +10,10 @@ export const serializeArticle = (
       image?: any;
       caroussels?: any[];
     })[];
-    contenir?: (Contenir & { document: Document })[];
+    documents?: Document[];
   }
 ) => ({
   id: article.id,
   composants: article.composants?.map(serializeComposant) || [],
-  contenir: article.contenir?.map(serializeContenir) || [],
+  documents: article.documents?.map(serializeDocument) || [],
 });

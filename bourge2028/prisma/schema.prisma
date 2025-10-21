@@ -140,9 +140,9 @@ model Categorie {
 
 model Article {
   id         Int         @id @default(autoincrement())
-  redactions Rediger[]
-  composants Composant[]
-  contenir   Contenir[]
+  redactions Rediger[]   
+  composants Composant[] 
+  documents   Document[]
 }
 
 model Rediger {
@@ -164,17 +164,9 @@ model Rediger {
 model Document {
   id        Int        @id @default(autoincrement())
   lien      String
-  contenirs Contenir[]
-}
 
-model Contenir {
-  id         Int      @id @default(autoincrement())
-  article    Article  @relation(fields: [articleId], references: [id])
+  article    Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
   articleId  Int
-  document   Document @relation(fields: [documentId], references: [id])
-  documentId Int
-
-  @@unique([articleId, documentId])
 }
 
 /**
@@ -185,7 +177,7 @@ model Composant {
   id                Int      @id @default(autoincrement())
   positionComposant Int
   type              String
-  article           Article? @relation(fields: [articleId], references: [id])
+  article           Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
   articleId         Int?
 
   // Relations ISA (1:1)
@@ -202,7 +194,7 @@ model Composant {
 model Paragraphe {
   id              Int       @id @default(autoincrement())
   texteParagraphe String?
-  composant       Composant @relation(fields: [composantId], references: [id])
+  composant       Composant @relation(fields: [composantId], references: [id], onDelete: Cascade)
   composantId     Int       @unique
 }
 
@@ -210,7 +202,7 @@ model Titre {
   id          Int       @id @default(autoincrement())
   niveauTitre Int?
   texteTitre  String?
-  composant   Composant @relation(fields: [composantId], references: [id])
+  composant   Composant @relation(fields: [composantId], references: [id], onDelete: Cascade)
   composantId Int       @unique
 }
 
@@ -219,10 +211,10 @@ model Image {
   lienImage   String?
   titreImage  String?
   copyright   String?
-  composant   Composant @relation(fields: [composantId], references: [id])
+  composant   Composant @relation(fields: [composantId], references: [id], onDelete: Cascade)
   composantId Int       @unique
 
-  caroussel   Caroussel? @relation(fields: [carousselId], references: [id])
+  caroussel   Caroussel? @relation(fields: [carousselId], references: [id], onDelete: Cascade)
   carousselId Int?
 }
 
@@ -233,7 +225,7 @@ model Image {
 model Caroussel {
   id             Int       @id @default(autoincrement())
   titreCaroussel String?
-  composant      Composant @relation(fields: [composantId], references: [id])
+  composant      Composant @relation(fields: [composantId], references: [id], onDelete: Cascade)
   composantId    Int
 
   images Image[] // 2..N relation
