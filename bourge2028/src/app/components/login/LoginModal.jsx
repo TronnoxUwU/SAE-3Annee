@@ -4,9 +4,9 @@ import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import RegisterModal from "../register/RegisterModal";
-import Modal from "../components/Modal";
-import '../styles/login.css';
-import '../styles/modal.css';
+import Modal from "../Modal";
+import './login.css';
+import '../../styles/modal.css';
 import TopStyle from "@/components/Topbar.module.css"
 
 export default function LoginModal() {
