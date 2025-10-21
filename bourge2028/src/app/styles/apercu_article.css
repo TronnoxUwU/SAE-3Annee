@@ -1,0 +1,38 @@
+.apercu-article-link {
+  text-decoration: none; /* supprime le soulignement du lien */
+  color: inherit;        /* garde la couleur du texte */
+}
+
+.apercu-article-link:hover .apercu-article {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.apercu-article {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  max-width: 350px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.apercu-article img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.apercu-article h2 {
+  font-size: 1.5rem;
+  text-align: center;
+  color: black;
+}

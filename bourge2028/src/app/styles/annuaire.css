@@ -1,0 +1,21 @@
+.annuaire {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  justify-items: center;
+  align-items: start;
+  padding: 16px;
+}
+
+/* Responsive design : 2 par ligne sur tablette, 1 sur mobile */
+@media (max-width: 900px) {
+  .annuaire {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .annuaire {
+    grid-template-columns: 1fr;
+  }
+}
