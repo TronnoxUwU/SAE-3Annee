@@ -58,7 +58,7 @@ export default function ArticlePage() {
               return (
                 <img
                   key={i}
-                  src={"/images/tete.png"}
+                  src={elt.image.lienImage}
                   alt={elt.image.titreImage || ""}
                   className="article-image"
                 />
@@ -77,7 +77,7 @@ export default function ArticlePage() {
                   {elt.caroussels[0].images.map((img) => (
                     <img
                       key={img.id}
-                      src={"/images/tete.png"}
+                      src={img.lienImage}
                       alt={img.titreImage || ""}
                       className={styles["article-image"]}
                     />
