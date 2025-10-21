@@ -4,9 +4,9 @@ import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import RegisterModal from "../register/RegisterModal";
-import Modal from "../components/Modal";
-import '../styles/login.css';
-import '../styles/modal.css';
+import Modal from "../Modal";
+import './login.css';
+import '../../styles/modal.css';
 
 export default function LoginModal() {
   const { data: session } = useSession();
@@ -83,7 +83,7 @@ export default function LoginModal() {
           </>
         ) : (
           <div className="login-session">
-            <p>Connecté en tant que {session.user.email}</p>
+            <p>Connecté en tant que {session.personne.email}</p>
           </div>
         )}
       </Modal>
