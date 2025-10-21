@@ -230,3 +230,12 @@ model Caroussel {
 
   images Image[] // 2..N relation
 }
+
+
+model Analytics {
+  id          Int      @id @default(autoincrement())
+  page        String
+  ipAddress   String?     // need to be hashed
+  userAgent   String?     // type d’appareil
+  dateVisite   DateTime @default(now())
+}

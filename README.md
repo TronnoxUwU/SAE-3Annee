@@ -12,18 +12,17 @@ Sujet 14 > Annuaire Culture et Ecologie en Région Centre Val de Loir
 ## Fonctionnalités à faire
 
     Technologies : 
-        Back-end  -> Node.js (+ nestJS ?)
-        Front-end -> React (+ next.js ?)
+        -> Next.JS
         BD        -> ?
-        Carte     -> OSM ?
+        Carte     -> OSM leaflet
         
 
 
 ### Page d'acceuil
-- Carte (local ou API)
+- ✅Carte
 - Pins sur la cartes
 - Carte de preview quand on hover sur un pin (style popup victoria ? + accès à la page complète de la structre/projet)
-- Barre de filtres
+- ℹ️Barre de filtres
 - Accès à "l'écothèque"
 
 ### Ecothèque
