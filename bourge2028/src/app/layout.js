@@ -1,5 +1,7 @@
 // app/layout.js (serveur)
-import "../app/styles/globals.css";
+// import { Geist, Geist_Mono } from "next/font/google";
+import "@/styles/globals.css";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { Geist, Geist_Mono } from "next/font/google";
 import ClientProvider from "./ClientProvider";
 
@@ -22,6 +24,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <AnalyticsTracker />
         <ClientProvider>
           {children}
         </ClientProvider>

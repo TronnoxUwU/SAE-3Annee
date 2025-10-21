@@ -1,0 +1,37 @@
+.admin_sidebar {
+    min-height: 100%;
+    overflow-y: hidden;
+  min-width: 220px;
+  background: #1f2937;
+  color: white;
+  padding: 1.5rem 0;
+  border-top: solid 1px #374151;
+}
+
+.admin_sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin_sidebar li {
+  margin: 0.5rem 0;
+}
+
+.admin_sidebar a {
+  color: #d1d5db;
+  text-decoration: none;
+  display: block;
+  padding: 0.75rem 1.25rem;
+  transition: background 0.2s;
+}
+
+.admin_sidebar a:hover {
+  background: #374151;
+  color: white;
+}
+
+.admin_sidebar .active a {
+  background: #2563eb;
+  color: white;
+}

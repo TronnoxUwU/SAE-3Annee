@@ -3,7 +3,6 @@ export const deserializeComposant = (c: any) => {
     positionComposant: c.positionComposant,
     type: c.type,
   };
-
   switch (c.type) {
     case "titre":
       return {
@@ -47,7 +46,13 @@ export const deserializeComposant = (c: any) => {
               titreCaroussel: c.caroussel?.titreCaroussel ?? "",
               images: {
                 create:
-                  c.caroussel?.images?.map((img: any) => ({
+                  c.caroussel?.images?.map((img: any, i: number) => ({
+                    composant: {
+                      create: {
+                        positionComposant: i + 1,
+                        type: "image",
+                      }
+                    },
                     lienImage: img.lienImage ?? "",
                     titreImage: img.titreImage ?? "",
                     copyright: img.copyright ?? "",

@@ -1,0 +1,31 @@
+body {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: sans-serif;
+  background-color: #f9f9f9;
+}
+
+
+.admin-content {
+  display: flex;
+  flex: 1;
+}
+
+
+.admin-main {
+  flex: 1;
+  padding: 2rem;
+}
+
+.admin-top-content {
+  margin-bottom: 4em;
+  color: black;
+}
+

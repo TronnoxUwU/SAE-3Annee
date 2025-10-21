@@ -3,22 +3,26 @@ import bcrypt from "bcrypt";
 
 export async function POST(req) {
   try {
-    const { email, password, name, role } = await req.json();
-    
+    const { identifiant, nom, prenom, email, password, role } = await req.json();
 
-    if (!email || !password) {
+    // Validation simple des champs obligatoires
+    if (!identifiant || !nom || !prenom || !email || !password) {
       return new Response(
-        JSON.stringify({ error: "Email et mot de passe requis" }),
+        JSON.stringify({ error: "Tous les champs identifiant, nom, prénom, email et mot de passe sont requis" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    // Vérifie si l'utilisateur existe déjà
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    console.log(existingUser);
+    // Vérifie si l'email ou identifiant existe déjà
+    const existingUser = await prisma.personne.findFirst({
+      where: {
+        OR: [{ email }, { identifiant }]
+      }
+    });
+
     if (existingUser) {
       return new Response(
-        JSON.stringify({ error: "Utilisateur déjà existant" }),
+        JSON.stringify({ error: "Identifiant ou email déjà utilisé" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
@@ -27,12 +31,28 @@ export async function POST(req) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Création utilisateur
-    const user = await prisma.user.create({
-      data: { email, password: hashedPassword, name, role },
+    const personne = await prisma.personne.create({
+      data: {
+        identifiant,
+        nom,
+        prenom,
+        email,
+        password: hashedPassword,
+        role,
+      },
     });
 
     return new Response(
-      JSON.stringify({ message: "Compte créé", user: { email: user.email, name: user.name, role: user.role } }),
+      JSON.stringify({
+        message: "Compte créé",
+        personne: {
+          identifiant: personne.identifiant,
+          nom: personne.nom,
+          prenom: personne.prenom,
+          email: personne.email,
+          role: personne.role,
+        }
+      }),
       { status: 201, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
