@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap } from "react-lea
 import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import "leaflet-geosearch/dist/geosearch.css";
-import "../styles/MapDefault.css";
+import "./MapDefault.css";
 
 function ChangeView({ center, zoom }) {
   const map = useMap();

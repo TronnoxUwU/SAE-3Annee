@@ -34,10 +34,13 @@
   
   max-height: 3.4em;
   min-width: 15%;
-  padding: 0.2em;
+  padding: 0.2em 1em;
   border-radius: 20px;
 
   background-color:goldenrod;
+}
+.connect:hover {
+  cursor: pointer;
 }
 .connect img {
   max-height: 3em;

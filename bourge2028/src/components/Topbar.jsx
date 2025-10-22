@@ -3,8 +3,8 @@
 import React from "react";
 import { useSession, signOut } from "next-auth/react";
 import Styles from "./Topbar.module.css";
-import RegisterModal from '../app/components/register/RegisterModal';
-import LoginModal from '../app/components/login/LoginModal';
+import RegisterModal from '../app/components/connect/RegisterModal';
+import LoginModal from '../app/components/connect/LoginModal';
 
 export default function Topbar({ title = "Bourges 2028", fixed = false }) {
   const { data: session } = useSession();
