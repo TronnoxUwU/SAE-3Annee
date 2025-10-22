@@ -62,7 +62,7 @@ export default function ArticlePage() {
               return (
                 <img
                   key={i}
-                  src={elt.image.lienImage}
+                  src={elt.image.lienImage || "/images/image-defaut.png"}
                   alt={elt.image.titreImage || ""}
                   className="article-image"
                 />
@@ -73,7 +73,7 @@ export default function ArticlePage() {
                 [...(elt.caroussels[0]?.images || [])]
                   .reverse()
                   .map((img) => ({
-                    src: img.lienImage || "/images/tete.png",
+                    src: img.lienImage || "/images/image-defaut.png",
                     alt: img.titreImage || "",
                     caption: img.titreImage || "",
                   }));

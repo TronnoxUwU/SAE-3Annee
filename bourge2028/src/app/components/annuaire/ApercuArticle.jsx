@@ -17,7 +17,7 @@ export default function ApercuArticle({ article }) {
 
   // 🔹 Si trouvé, récupère son lien, sinon image par défaut
   const imageSrc =
-    firstImageComponent?.image?.lienImage || "/images/default-article.png";
+    firstImageComponent?.image?.lienImage || "/images/default-article.jpg";
 
   // 🔹 Utilise aussi le titre de l’article ou un fallback
   const title = article.titre || "Article sans titre";
