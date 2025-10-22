@@ -46,7 +46,6 @@ export default function AnnuairePage() {
   return (
     <main className="main-container">
       <Topbar fixed/>
-      <section className="section-map">
         <Sidebar map={null} onFilterChange={() => { }} />
 
         <div className="map-wrapper">
@@ -67,7 +66,6 @@ export default function AnnuairePage() {
         >
           {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’annuaire ↓"}
         </button>
-      </section>
     </main>
   );
 }
