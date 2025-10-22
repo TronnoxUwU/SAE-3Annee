@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import * as turf from "@turf/turf";
-import "../styles/Sidebar.css";
+import Style from "./Sidebar.module.css";
 
 export default function Sidebar({ map, onFilterChange }) {
   const [open, setOpen] = useState(true);
@@ -170,12 +170,12 @@ export default function Sidebar({ map, onFilterChange }) {
   };
 
   return (
-    <div className={`sidebar ${open ? "" : "collapsed"}`}>
+    <div className={`${Style.sidebar} ${open ? "" : "collapsed"}`}>
       {/* Zone de recherche */}
-      <div className="sidebar-search" ref={searchRef}>
+      <div className={Style.sidebar_search} ref={searchRef}>
         <input
           type="text"
-          id="findbox"
+          id={Style.findbox}
           placeholder="Rechercher un lieu..."
           value={query}
           onChange={handleSearch}
@@ -184,7 +184,7 @@ export default function Sidebar({ map, onFilterChange }) {
 
       {/* Résultats de recherche */}
       {results.length > 0 && (
-        <ul className="search-results" ref={resultsRef}>
+        <ul className={Style.search_results} ref={resultsRef}>
           {results.slice(0, 5).map((r, i) => (
             <li key={i} onClick={() => handleResultClick(r)}>
               {r.label}
@@ -194,7 +194,7 @@ export default function Sidebar({ map, onFilterChange }) {
       )}
 
       {/* Header avec bouton collapse */}
-      <div className="sidebar-header">
+      <div className={Style.sidebar_header}>
         {open && <span>Menu</span>}
         <button onClick={() => setOpen(!open)}>
           {open ? "<" : ">"}
@@ -202,7 +202,7 @@ export default function Sidebar({ map, onFilterChange }) {
       </div>
 
       {/* Liste des filtres */}
-      <ul className="filter-list">
+      <ul className={Style.filter_list}>
         {filters.map((filter, i) => (
           <li key={i} onClick={() => onFilterChange && onFilterChange(filter)}>
             {open ? filter : `T${i + 1}`}

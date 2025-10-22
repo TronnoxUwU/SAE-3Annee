@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import Topbar from "@/components/Topbar.jsx";
 import "../styles/home.css";
 
-const Map = dynamic(() => import("../components/Map"), { ssr: false });
-const Sidebar = dynamic(() => import("../components/Sidebar"), { ssr: false });
+const Map = dynamic(() => import("../components/Map/Map"), { ssr: false });
+const Sidebar = dynamic(() => import("../components/Sidebar/Sidebar"), { ssr: false });
 const Annuaire = dynamic(() => import("../components/annuaire/Annuaire"), { ssr: false });
 
 export default function AnnuairePage() {

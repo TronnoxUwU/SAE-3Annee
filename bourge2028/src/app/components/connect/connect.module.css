@@ -1,20 +1,19 @@
-/* register.css */
-
-.register-form {
+.connect_form {
     display: flex;
     flex-direction: column;
+    min-width: 100%;
     max-width: 400px;
     margin: 0 auto;
 }
 
-.register-form input {
+.connect_form input {
     padding: 0.5rem;
     margin-bottom: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.register-form button {
+.connect_form button {
     padding: 0.5rem;
     background-color: goldenrod;
     color: white;
@@ -22,34 +21,17 @@
     border-radius: 4px;
     cursor: pointer;
 }
+.login_switch {
+  margin-top: 1em;
+}
 
-.register-form button:hover {
+
+.connect_form button:hover {
     background-color: rgb(204, 155, 30);
 }
 
-.register-error {
+.connect_error {
     color: red;
     font-size: 0.9rem;
     margin-bottom: 1rem;
-}
-
-.connect {
-  display: flex;
-  justify-content: space-evenly;
-  border: none;
-  
-  max-height: 3.4em;
-  min-width: 15%;
-  padding: 0.2em;
-  border-radius: 20px;
-
-  background-color:goldenrod;
-}
-.connect img {
-  max-height: 3em;
-}
-.connect p {
-  align-self: center;
-  font-weight: bold;
-  font-size: large;
 }

@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Modal from "../Modal";
-import "./register.css";
-import "../../styles/modal.css";
+import Modal from "./Modal";
+import Style from "./connect.module.css";
 
 export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
   const router = useRouter();
@@ -45,7 +44,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h2>Créer un compte</h2>
-      <form onSubmit={handleSubmit} className="register-form">
+      <form onSubmit={handleSubmit} className={Style.connect_form}>
         <input
           type="text"
           placeholder="Identifiant"
@@ -82,13 +81,13 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
           required
         />
         <button type="submit">Créer un compte</button>
-      </form>
 
-      <button className="login-switch" onClick={onSwitchToLogin}>
+      <button className={Style.login_switch} onClick={onSwitchToLogin}>
         Retourner à la connexion
       </button>
+      </form>
 
-      {message && <p className="register-message">{message}</p>}
+      {message && <p className={Style.connect_message}>{message}</p>}
     </Modal>
   );
 }
