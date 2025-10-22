@@ -134,6 +134,10 @@ model StructureTag {
 model Categorie {
   id  Int    @id @default(autoincrement())
   nom String
+  
+  parentId Int?
+  parent   Categorie?  @relation("CategorieToSouscategories", fields: [parentId], references: [id], onDelete: Cascade)
+  children Categorie[] @relation("CategorieToSouscategories")
 
   tags Tag[]
 }

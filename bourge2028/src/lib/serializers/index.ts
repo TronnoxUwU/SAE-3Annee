@@ -5,3 +5,4 @@ export * from "./carousselSerializer";
 export * from "./composantSerializer";
 export * from "./documentSerializer";
 export * from "./articleSerializer";
+export * from "./categorieSerializer";
