@@ -4,6 +4,7 @@ import { serializeDocument } from "./documentSerializer";
 
 export const serializeArticle = (
   article: Article & {
+    titre?: any;
     composants?: (Composant & {
       paragraphe?: any;
       titre?: any;
@@ -14,6 +15,7 @@ export const serializeArticle = (
   }
 ) => ({
   id: article.id,
+  titre: article.titre,
   composants: article.composants?.map(serializeComposant) || [],
   documents: article.documents?.map(serializeDocument) || [],
 });

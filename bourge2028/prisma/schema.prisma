@@ -140,6 +140,7 @@ model Categorie {
 
 model Article {
   id         Int         @id @default(autoincrement())
+  titre      String
   redactions Rediger[]   
   composants Composant[] 
   documents   Document[]

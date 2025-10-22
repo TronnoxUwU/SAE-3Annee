@@ -1,6 +1,7 @@
 import { deserializeComposant } from "./composantDeserializer";
 
 export const deserializeArticle = (data: any) => ({
+  titre: data.titre,
   composants: {
     create: data.composants.map(deserializeComposant),
   },

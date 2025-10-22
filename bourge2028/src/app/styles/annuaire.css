@@ -1,0 +1,18 @@
+.annuaire {
+  position: absolute;
+  top: 17vh !important;
+  left: 18vw !important;
+  height: 80vh !important;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+  justify-items: center; /* centre horizontalement chaque item */
+  align-items: start;   /* aligne en haut chaque item */
+  padding: 16px;
+  overflow-y: auto;     /* scroll vertical si nécessaire */
+  scrollbar-width: none; /* Firefox */
+}
+
+.annuaire::-webkit-scrollbar {
+  display: none; /* Chrome, Edge, Safari */
+}
