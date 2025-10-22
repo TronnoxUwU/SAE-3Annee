@@ -83,21 +83,21 @@ model Realisation {
 
 model Projet {
   id             Int         @id @default(autoincrement())
-  titre          String?
+  nomProjet      String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
 
 model Materiau {
   id             Int         @id @default(autoincrement())
-  nom            String?
+  nomMateriau    String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
 
 model Technique {
   id             Int         @id @default(autoincrement())
-  nom            String?
+  nomTechnique   String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
