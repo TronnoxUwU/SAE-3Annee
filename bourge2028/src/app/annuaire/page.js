@@ -45,7 +45,7 @@ export default function AnnuairePage() {
 
   return (
     <main className="main-container">
-      <Topbar />
+      <Topbar fixed/>
       <section className="section-map">
         <Sidebar map={null} onFilterChange={() => { }} />
 
