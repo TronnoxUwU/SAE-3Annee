@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import RegisterModal from "../register/RegisterModal";
-import Modal from "../Modal";
-import './login.css';
-import '../../styles/modal.css';
+import RegisterModal from "./RegisterModal";
+import Modal from "./Modal";
+import Style from './connect.module.css';
 import TopStyle from "@/components/Topbar.module.css"
 
 export default function LoginModal() {
@@ -54,7 +53,7 @@ export default function LoginModal() {
         {!session ? (
           <>
             <h2>Connexion</h2>
-            <form onSubmit={handleSubmit} className="login-form">
+            <form onSubmit={handleSubmit} className={Style.connect_form}>
               <input
                 type="email"
                 placeholder="Email"
@@ -68,22 +67,23 @@ export default function LoginModal() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button type="submit">Se connecter</button>
+
+              <button
+                className={Style.login_switch}
+                onClick={() => {
+                  setShowLogin(false);  // ferme login
+                  setShowRegister(true); // ouvre register
+                }}
+              >
+                Créer un compte
+              </button>
+
             </form>
 
-            <button
-              className="login-switch"
-              onClick={() => {
-                setShowLogin(false);  // ferme login
-                setShowRegister(true); // ouvre register
-              }}
-            >
-              Créer un compte
-            </button>
-
-            {message && <p className="login-message">{message}</p>}
+            {message && <p className="login_message">{message}</p>}
           </>
         ) : (
-          <div className="login-session">
+          <div className="login_session">
             <p>Connecté en tant que {session.personne.email}</p>
           </div>
         )}

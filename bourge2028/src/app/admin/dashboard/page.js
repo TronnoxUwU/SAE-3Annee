@@ -1,6 +1,6 @@
 import DashboardServer from "./components/dashboard";
 import Topbar from "@/components/Topbar.jsx";
-import AdminSidebar from "../components/admin-sidebar";
+import AdminSidebar from "../components/Sidebar/admin-sidebar";
 
 // import "../styles/admin.css";
 import Style from "./styles/dashboard.module.css";

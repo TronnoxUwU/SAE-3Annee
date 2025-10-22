@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import "../styles/Sidebar.css";
+import Style from "./Sidebar.module.css";
 
 interface SidebarSkeletonProps {
   onFilterChange?: (filter: string) => void;
@@ -10,12 +10,12 @@ export default function SidebarSkeleton({ onFilterChange }: SidebarSkeletonProps
   const [open, setOpen] = useState(true);
 
   return (
-    <div className={`sidebar ${open ? "" : "collapsed"}`}>
+    <div className={`${Style.sidebar} ${open ? "" : "collapsed"}`}>
       {/* Zone de recherche - désactivée pendant le chargement */}
-      <div className="sidebar-search">
+      <div className={Style.sidebar_search}>
         <input
           type="text"
-          id="findbox"
+          id={Style.findbox}
           placeholder="Chargement..."
           disabled
           style={{ opacity: 0.6, cursor: "not-allowed" }}
@@ -23,7 +23,7 @@ export default function SidebarSkeleton({ onFilterChange }: SidebarSkeletonProps
       </div>
 
       {/* Header avec bouton collapse */}
-      <div className="sidebar-header">
+      <div className={Style.sidebar_header}>
         {open && <span>Menu</span>}
         <button onClick={() => setOpen(!open)}>
           {open ? "<" : ">"}
@@ -31,7 +31,7 @@ export default function SidebarSkeleton({ onFilterChange }: SidebarSkeletonProps
       </div>
 
       {/* Skeleton des filtres */}
-      <ul className="filter-list">
+      <ul className={Style.filter_list}>
         {[1, 2, 3, 4, 5].map((i) => (
           <li 
             key={i} 

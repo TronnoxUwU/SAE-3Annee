@@ -32,7 +32,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/admin/dashboard/page.js", "src/app/components/Sidebar.tsx", "src/app/components/SidebarWrapper.tsx", "src/app/components/SidebarSkeleton.tsx"  ],
+, "src/app/admin/dashboard/page.js", "src/app/components/Sidebar.tsx", "src/app/components/Sidebar/SidebarWrapper.tsx", "src/app/components/Sidebar/SidebarSkeleton.tsx"  ],
   "exclude": [
     "node_modules"
   ]

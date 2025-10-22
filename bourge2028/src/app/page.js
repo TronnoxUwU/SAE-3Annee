@@ -5,9 +5,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "./styles/home.css";
 
-const Map = dynamic(() => import("./components/Map"), { ssr: false });
+const Map = dynamic(() => import("./components/Map/Map"), { ssr: false });
 // const Sidebar = dynamic(() => import("./components/SidebarWrapper"), { ssr: false });
-import Sidebar from './components/SidebarWrapper'
+import Sidebar from './components/Sidebar/SidebarWrapper'
 import Topbar from "@/components/Topbar.jsx";
 
 
