@@ -2,15 +2,12 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-
 import "../../styles/article.css";
-import styles from "../../styles/carousel-article.module.css";
 import Topbar from "@/components/Topbar.jsx";
+import CenteredCarousel from "../../components/CenteredCarousel.jsx";
 
 export default function ArticlePage() {
-  const { id } = useParams(); // ✅ récupère automatiquement l'id depuis /article/[id]
+  const { id } = useParams();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,6 +43,7 @@ export default function ArticlePage() {
       <Topbar />
       <div className="article-page">
         <h1>{article.titre}</h1>
+
         {article.composants.map((elt, i) => {
           switch (elt.type) {
             case "titre":
@@ -64,33 +62,30 @@ export default function ArticlePage() {
                 />
               );
 
-            case "caroussel":
-              return (
-                <Carousel
-                  showArrows={true}
-                  showIndicators={true}
-                  infiniteLoop={true}
-                  dynamicHeight={false} // garde false pour ne pas que react calcule la hauteur
-                  className={styles.mySwiper}
-                  renderThumbs={() => null} // supprime les miniatures
-                >
-                  {elt.caroussels[0].images.map((img) => (
-                    <img
-                      key={img.id}
-                      src={img.lienImage}
-                      alt={img.titreImage || ""}
-                      className={styles["article-image"]}
-                    />
-                  ))}
-                </Carousel>
+            case "caroussel": {
+              const images =
+                [...(elt.caroussels[0]?.images || [])]
+                  .reverse()
+                  .map((img) => ({
+                    src: img.lienImage || "/images/tete.png",
+                    alt: img.titreImage || "",
+                    caption: img.titreImage || "",
+                  }));
 
+              return (
+                <div key={i}>
+                  <CenteredCarousel images={images} />
+                </div>
               );
+            }
+
 
             default:
               return null;
           }
         })}
-        {article.documents.length > 0 && (
+
+        {article.documents?.length > 0 && (
           <section className="article-documents">
             <h3>Documents associés :</h3>
             <ul>
