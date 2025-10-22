@@ -1,5 +1,7 @@
 "use client";
 
+import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import "../../styles/article.css";
@@ -50,7 +52,11 @@ export default function ArticlePage() {
               return <h2 key={i}>{elt.titre.texteTitre}</h2>;
 
             case "paragraphe":
-              return <p key={i}>{elt.paragraphe.texteParagraphe}</p>;
+              const safeHTML = DOMPurify.sanitize(
+                elt.paragraphe.texteParagraphe,
+                { ALLOWED_TAGS: ["b", "strong", "i", "em", "u", "br"] }
+              );
+              return <p key={i}>{parse(safeHTML)}</p>;
 
             case "image":
               return (
