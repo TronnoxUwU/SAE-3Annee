@@ -1,0 +1,84 @@
+/* ✅ Réinitialisation basique */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* ✅ Conteneur principal en flex */
+.page-container {
+  display: flex;
+  height: 100vh;       /* prend toute la hauteur de la fenêtre */
+  width: 100vw;        /* prend toute la largeur de la fenêtre */
+}
+
+/* ✅ Palette fixe à gauche */
+.palette {
+  width: 250px;                /* largeur fixe */
+  background-color: #f2f2f2;
+  border-right: 1px solid #ccc;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;              /* ne rétrécit pas quand l'écran est petit */
+  overflow-y: auto;            /* si trop de contenu, scroll vertical */
+}
+
+.palette h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.palette-item {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: grab;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.palette-item:hover {
+  background-color: #eaeaea;
+}
+
+/* ✅ Zone d'édition à droite */
+.editor {
+  flex: 1;                      /* prend tout l'espace restant */
+  background-color: white;
+  padding: 2rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.editor-block {
+  border: 1px dashed #aaa;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #fafafa;
+  border-radius: 6px;
+}
+
+.editor-block h1,
+.editor-block h2,
+.editor-block h3 {
+  margin: 0.5rem 0;
+}
+
+.editor-block p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.editor-block img {
+  max-width: 100%;
+  display: block;
+  margin-top: 0.5rem;
+}
