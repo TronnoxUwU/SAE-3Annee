@@ -19,7 +19,7 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
           fixed ? Styles.topbar_fixed : Styles.topbar_bloc
         }`}
     >
-      <h1>{title}</h1>
+      <h1 className={Styles.main_title}>{title}</h1>
 
       {!session ? (
         <div style={{ display: "flex", gap: "10px" }}>

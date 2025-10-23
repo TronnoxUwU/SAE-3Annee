@@ -1,3 +1,9 @@
+.main_title {
+  font-weight: bold;
+  font-size: calc(0.5rem + 1.5vw);
+  margin: 0;
+}
+
 .topbar {
   background-color: #1f2937;
   display: flex;
@@ -16,7 +22,7 @@
 
   border-radius: 20px;
 
-  font-size: larger;
+  font-size: larger !important;
 }
 .topbar_bloc {
 
@@ -25,7 +31,7 @@
 
   /* border-radius: 20px; */
 
-  font-size: larger;
+  font-size: larger !important;
 }
 
 .connect {
@@ -47,7 +53,8 @@
   max-height: 3em;
 }
 .connect p {
-  align-self: center;
-  font-weight: bold;
-  font-size: large;
+  align-self: center !important;
+  font-weight: bold !important;
+  font-size: larger !important;
+  margin: 0;
 }
