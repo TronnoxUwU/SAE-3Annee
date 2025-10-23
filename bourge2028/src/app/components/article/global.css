@@ -82,3 +82,195 @@ html, body {
   display: block;
   margin-top: 0.5rem;
 }
+
+
+.editor-container {
+  display: flex;
+}
+
+.editor {
+  flex: 1;
+  padding: 1rem;
+  min-height: 100vh;
+  background-color: #fafafa;
+}
+
+.editor-block {
+  position: relative;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  cursor: grab;
+}
+
+.editor-block:active {
+  cursor: grabbing;
+}
+
+/* 🗑️ Bouton en haut à droite */
+.delete-button {
+  position: absolute;
+  top: 6px;
+  right: 6px; /* 👈 ici au lieu de left */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.delete-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.drop-zone {
+  height: 12px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.drop-zone:hover {
+  background: rgba(0, 123, 255, 0.2);
+  outline: 2px dashed #007bff;
+}
+
+.editor-block {
+  position: relative;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  cursor: grab;
+}
+
+.delete-button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.delete-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.editor-block {
+  position: relative;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  cursor: grab;
+  transition: box-shadow 0.2s, opacity 0.2s;
+}
+
+.editor-block:active {
+  cursor: grabbing;
+}
+
+/* ✨ Effet visuel lors du drag */
+.editor-block.dragging {
+  opacity: 0.6;
+  box-shadow: 0 0 10px 2px rgba(0, 123, 255, 0.5);
+  border-color: #007bff;
+}
+
+/* Zone de drop */
+.drop-zone {
+  height: 12px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.drop-zone:hover {
+  background: rgba(0, 123, 255, 0.2);
+  outline: 2px dashed #007bff;
+}
+
+.delete-button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.delete-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.editor-block {
+  position: relative;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  cursor: grab;
+  transition: box-shadow 0.2s, opacity 0.2s;
+}
+
+.editor-block.dragging {
+  opacity: 0.6;
+  box-shadow: 0 0 10px 2px rgba(0, 123, 255, 0.5);
+  border-color: #007bff;
+}
+
+/* Zone de contrôle en haut à droite */
+.block-controls {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.delete-button,
+.move-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.delete-button:hover,
+.move-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Drop zones */
+.drop-zone {
+  height: 12px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.drop-zone:hover {
+  background: rgba(0, 123, 255, 0.2);
+  outline: 2px dashed #007bff;
+}
+
+.block-controls>div {
+  display: flex;
+}
