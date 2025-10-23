@@ -1,5 +1,7 @@
 "use client";
 
+import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import "../../styles/article.css";
@@ -50,13 +52,17 @@ export default function ArticlePage() {
               return <h2 key={i}>{elt.titre.texteTitre}</h2>;
 
             case "paragraphe":
-              return <p key={i}>{elt.paragraphe.texteParagraphe}</p>;
+              const safeHTML = DOMPurify.sanitize(
+                elt.paragraphe.texteParagraphe,
+                { ALLOWED_TAGS: ["b", "strong", "i", "em", "u", "br"] }
+              );
+              return <p key={i}>{parse(safeHTML)}</p>;
 
             case "image":
               return (
                 <img
                   key={i}
-                  src={elt.image.lienImage}
+                  src={elt.image.lienImage || "/images/image-defaut.png"}
                   alt={elt.image.titreImage || ""}
                   className="article-image"
                 />
@@ -67,7 +73,7 @@ export default function ArticlePage() {
                 [...(elt.caroussels[0]?.images || [])]
                   .reverse()
                   .map((img) => ({
-                    src: img.lienImage || "/images/tete.png",
+                    src: img.lienImage || "/images/image-defaut.png",
                     alt: img.titreImage || "",
                     caption: img.titreImage || "",
                   }));

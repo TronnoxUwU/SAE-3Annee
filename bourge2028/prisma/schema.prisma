@@ -73,29 +73,31 @@ model Realisation {
 
   // Relations communes
   tags      RealisationTag[]
+  Rediger   Rediger[]
   // relations ISA 1:1
   projet    Projet?
   materiau  Materiau?
   technique Technique?
+
 }
 
 model Projet {
   id             Int         @id @default(autoincrement())
-  titreCaroussel String?
+  nomProjet      String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
 
 model Materiau {
   id             Int         @id @default(autoincrement())
-  titreCaroussel String?
+  nomMateriau    String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
 
 model Technique {
   id             Int         @id @default(autoincrement())
-  titreCaroussel String?
+  nomTechnique   String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
@@ -152,6 +154,8 @@ model Rediger {
   articleId  Int
   personne   Personne @relation(fields: [personneId], references: [id])
   personneId Int
+  realisation Realisation @relation(fields: [realisationId], references: [id])
+  realisationId Int 
 
   dateRedaction DateTime?
   dateModif     DateTime?
