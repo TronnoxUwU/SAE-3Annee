@@ -69,7 +69,7 @@
 /* === MENU DÉROULANT SOUS L’IMAGE === */
 .dropdown {
   position: absolute;
-  top: 40px; /* espace sous l’image */
+  top: 50px; /* espace sous l’image */
   left: 0;
   background-color: #111827;
   border-radius: 8px;
