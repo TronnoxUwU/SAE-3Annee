@@ -1,276 +1,105 @@
-/* ✅ Réinitialisation basique */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-}
-
-/* ✅ Conteneur principal en flex */
 .page-container {
   display: flex;
-  height: 100vh;       /* prend toute la hauteur de la fenêtre */
-  width: 100vw;        /* prend toute la largeur de la fenêtre */
+  height: 100vh;
+  width: 100vw;
 }
 
-/* ✅ Palette fixe à gauche */
 .palette {
-  width: 250px;                /* largeur fixe */
-  background-color: #f2f2f2;
-  border-right: 1px solid #ccc;
-  padding: 1rem;
+  width: 220px;
+  background: #f5f5f5;
+  border-right: 1px solid #ddd;
+  padding: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;              /* ne rétrécit pas quand l'écran est petit */
-  overflow-y: auto;            /* si trop de contenu, scroll vertical */
-}
-
-.palette h3 {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  color: #333;
 }
 
 .palette-item {
-  background-color: white;
+  background: white;
   border: 1px solid #ddd;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  cursor: grab;
   border-radius: 4px;
-  transition: background-color 0.2s ease;
+  padding: 10px;
+  margin: 10px 0;
+  cursor: grab;
+  transition: background 0.2s;
 }
 
 .palette-item:hover {
-  background-color: #eaeaea;
+  background: #eee;
 }
 
-/* ✅ Zone d'édition à droite */
-.editor {
-  flex: 1;                      /* prend tout l'espace restant */
-  background-color: white;
-  padding: 2rem;
-  overflow-y: auto;
-  box-sizing: border-box;
-  min-height: 100vh;
-}
-
-.editor-block {
-  border: 1px dashed #aaa;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: #fafafa;
-  border-radius: 6px;
-}
-
-.editor-block h1,
-.editor-block h2,
-.editor-block h3 {
-  margin: 0.5rem 0;
-}
-
-.editor-block p {
-  margin: 0.5rem 0;
-  line-height: 1.5;
-}
-
-.editor-block img {
-  max-width: 100%;
-  display: block;
-  margin-top: 0.5rem;
-}
-
-
-.editor-container {
-  display: flex;
+.trash-zone {
+  margin-top: 30px;
+  padding: 20px;
+  border: 2px dashed #999;
+  border-radius: 4px;
+  text-align: center;
+  color: #666;
 }
 
 .editor {
   flex: 1;
-  padding: 1rem;
-  min-height: 100vh;
-  background-color: #fafafa;
+  padding: 40px;
+  overflow-y: auto;
+  background: #fff;
 }
 
 .editor-block {
   position: relative;
   background: white;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  border: 2px solid #ddd;
   border-radius: 8px;
-  cursor: grab;
-}
-
-.editor-block:active {
-  cursor: grabbing;
-}
-
-/* 🗑️ Bouton en haut à droite */
-.delete-button {
-  position: absolute;
-  top: 6px;
-  right: 6px; /* 👈 ici au lieu de left */
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  opacity: 0.7;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.delete-button:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.drop-zone {
-  height: 12px;
-  background: transparent;
-  transition: background 0.2s;
-}
-
-.drop-zone:hover {
-  background: rgba(0, 123, 255, 0.2);
-  outline: 2px dashed #007bff;
-}
-
-.editor-block {
-  position: relative;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-  cursor: grab;
-}
-
-.delete-button {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  opacity: 0.7;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.delete-button:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.editor-block {
-  position: relative;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-  cursor: grab;
-  transition: box-shadow 0.2s, opacity 0.2s;
-}
-
-.editor-block:active {
-  cursor: grabbing;
-}
-
-/* ✨ Effet visuel lors du drag */
-.editor-block.dragging {
-  opacity: 0.6;
-  box-shadow: 0 0 10px 2px rgba(0, 123, 255, 0.5);
-  border-color: #007bff;
-}
-
-/* Zone de drop */
-.drop-zone {
-  height: 12px;
-  background: transparent;
-  transition: background 0.2s;
-}
-
-.drop-zone:hover {
-  background: rgba(0, 123, 255, 0.2);
-  outline: 2px dashed #007bff;
-}
-
-.delete-button {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  opacity: 0.7;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.delete-button:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.editor-block {
-  position: relative;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-  cursor: grab;
-  transition: box-shadow 0.2s, opacity 0.2s;
+  padding: 20px;
+  margin: 10px 0;
+  transition: all 0.2s;
 }
 
 .editor-block.dragging {
-  opacity: 0.6;
-  box-shadow: 0 0 10px 2px rgba(0, 123, 255, 0.5);
-  border-color: #007bff;
+  opacity: 0.5;
 }
 
-/* Zone de contrôle en haut à droite */
 .block-controls {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  flex-direction: column;
-  gap: 4px;
-  align-items: center;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
 }
 
-.delete-button,
-.move-button {
-  background: transparent;
+.block-controls button {
+  background: #fff;
   border: none;
   cursor: pointer;
-  font-size: 18px;
-  opacity: 0.7;
-  transition: opacity 0.2s, transform 0.2s;
+  border-radius: 4px;
+  opacity: 0.8;
+  transition: all 0.2s;
 }
 
-.delete-button:hover,
-.move-button:hover {
+.block-controls button:hover {
   opacity: 1;
   transform: scale(1.1);
 }
 
-/* Drop zones */
 .drop-zone {
-  height: 12px;
-  background: transparent;
-  transition: background 0.2s;
+  height: 8px;
+  background: #e0e0e0;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  margin: 8px 0;
+  transition: all 0.2s;
 }
 
-.drop-zone:hover {
-  background: rgba(0, 123, 255, 0.2);
-  outline: 2px dashed #007bff;
+.drop-zone.active {
+  height: 40px;
+  background: #e3f2fd;
+  border-color: #2196f3;
 }
 
-.block-controls>div {
-  display: flex;
+.empty-editor {
+  padding: 60px;
+  text-align: center;
+  color: #999;
+  font-size: 18px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
 }

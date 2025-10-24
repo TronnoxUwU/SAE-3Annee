@@ -1,166 +1,175 @@
 "use client";
 
 import React, { useState } from "react";
-import { HeadingBlock } from "./blocks/titre";
-import { ParagraphBlock } from "./blocks/paragraphe";
-import { ImageBlock } from "./blocks/image";
 import { Palette } from "./palette";
+
+// Blocs simplifiés (tu peux les remplacer plus tard par tes vrais composants)
+const HeadingBlock = () => <h2>Votre titre ici</h2>;
+const ParagraphBlock = () => <p>Votre paragraphe ici</p>;
+const ImageBlock = () => (
+  <div style={{ padding: "20px", background: "#f0f0f0", textAlign: "center" }}>
+    📷 Image
+  </div>
+);
 
 interface Block {
   id: string;
   type: string;
-  content?: string;
 }
 
 export const Editor: React.FC = () => {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [draggedBlockId, setDraggedBlockId] = useState<string | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const addBlockAt = (type: string, index: number) => {
     const newBlock = { id: Date.now().toString(), type };
-    setBlocks(prev => {
+    setBlocks((prev) => {
       const updated = [...prev];
       updated.splice(index, 0, newBlock);
       return updated;
     });
   };
 
-  const moveBlock = (id: string, index: number) => {
-    setBlocks(prev => {
-      const currentIndex = prev.findIndex(b => b.id === id);
-      if (currentIndex === -1) return prev;
+  const moveBlock = (fromId: string, toIndex: number) => {
+    setBlocks((prev) => {
+      const fromIndex = prev.findIndex((b) => b.id === fromId);
+      if (fromIndex === -1) return prev;
       const updated = [...prev];
-      const [moved] = updated.splice(currentIndex, 1);
-      updated.splice(index, 0, moved);
+      const [moved] = updated.splice(fromIndex, 1);
+      const adjustedIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
+      updated.splice(adjustedIndex, 0, moved);
       return updated;
     });
   };
 
   const removeBlock = (id: string) => {
-    setBlocks(prev => prev.filter(b => b.id !== id));
+    setBlocks((prev) => prev.filter((b) => b.id !== id));
+    setDragOverIndex(null);
+    setIsDragging(false);
+    setDraggedBlockId(null);
   };
 
-  const handleDropAt = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-    e.preventDefault();
-    const type = e.dataTransfer.getData("component");
-    const blockId = e.dataTransfer.getData("blockId");
+  const moveBlockUp = (id: string) => {
+    setBlocks((prev) => {
+      const index = prev.findIndex((b) => b.id === id);
+      if (index > 0) {
+        const updated = [...prev];
+        [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+        return updated;
+      }
+      return prev;
+    });
+  };
 
-    if (type) {
-      addBlockAt(type, index);
-    } else if (blockId) {
-      moveBlock(blockId, index);
-    }
+  const moveBlockDown = (id: string) => {
+    setBlocks((prev) => {
+      const index = prev.findIndex((b) => b.id === id);
+      if (index !== -1 && index < prev.length - 1) {
+        const updated = [...prev];
+        [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
+        return updated;
+      }
+      return prev;
+    });
+  };
 
+  const handleBlockDragStart = (e: React.DragEvent, blockId: string) => {
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("blockId", blockId);
+    setDraggedBlockId(blockId);
+    setIsDragging(true);
+    console.log(isDragging);
+    console.log(draggedBlockId);
+  };
+
+  const handleBlockDragEnd = () => {
     setDraggedBlockId(null);
+    setDragOverIndex(null);
     setIsDragging(false);
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDropZoneDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
+    setDragOverIndex(index);
   };
 
-  // 🔼 Déplacer un bloc vers le haut
-  const moveBlockUp = (id: string) => {
-    setBlocks(prev => {
-      const index = prev.findIndex(b => b.id === id);
-      if (index > 0) {
-        const updated = [...prev];
-        const temp = updated[index - 1];
-        updated[index - 1] = updated[index];
-        updated[index] = temp;
-        return updated;
-      }
-      return prev;
-    });
-  };
-
-  // 🔽 Déplacer un bloc vers le bas
-  const moveBlockDown = (id: string) => {
-    setBlocks(prev => {
-      const index = prev.findIndex(b => b.id === id);
-      if (index !== -1 && index < prev.length - 1) {
-        const updated = [...prev];
-        const temp = updated[index + 1];
-        updated[index + 1] = updated[index];
-        updated[index] = temp;
-        return updated;
-      }
-      return prev;
-    });
+  const handleDropZoneDrop = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    const type = e.dataTransfer.getData("component");
+    const blockId = e.dataTransfer.getData("blockId");
+    if (type) addBlockAt(type, index);
+    else if (blockId) moveBlock(blockId, index);
+    setDraggedBlockId(null);
+    setDragOverIndex(null);
+    setIsDragging(false);
   };
 
   return (
-    <div className="editor-container">
+    <div className="page-container">
       <Palette
         onAddBlock={(type) => addBlockAt(type, blocks.length)}
         onRemoveBlock={removeBlock}
+        isDragging={isDragging}
+        setIsDragging={setIsDragging}
       />
 
-      <div className="editor" onDragOver={handleDragOver}>
+      <div className="editor">
+        {isDragging && (
+          <div
+            className={`drop-zone ${dragOverIndex === 0 ? "active" : ""}`}
+            onDragOver={(e) => handleDropZoneDragOver(e, 0)}
+            onDrop={(e) => handleDropZoneDrop(e, 0)}
+          />
+        )}
+
         {blocks.map((block, index) => (
           <React.Fragment key={block.id}>
-            {isDragging && (
-              <div
-                className="drop-zone"
-                onDrop={(e) => handleDropAt(e, index)}
-                onDragOver={handleDragOver}
-              ></div>
-            )}
-
             <div
               className={`editor-block ${
                 draggedBlockId === block.id ? "dragging" : ""
               }`}
               draggable
-              onDragStart={(e) => {
-                e.dataTransfer.setData("blockId", block.id);
-                setDraggedBlockId(block.id);
-                setIsDragging(true);
-              }}
-              onDragEnd={() => {
-                setDraggedBlockId(null);
-                setIsDragging(false);
-              }}
+              onDragStart={(e) => handleBlockDragStart(e, block.id)}
+              onDragEnd={handleBlockDragEnd}
             >
               <div className="block-controls">
-                <button
-                  className="move-button"
-                  onClick={() => removeBlock(block.id)}
-                >
-                  🗑️
+                <button onClick={() => removeBlock(block.id)}>🗑️</button>
+                <button onClick={() => moveBlockUp(block.id)} disabled={index === 0}>
+                  ⬆️
                 </button>
-                <div>
-                  <button
-                    className="move-button up"
-                    onClick={() => moveBlockUp(block.id)}
-                    title="Monter"
-                  >
-                    ⬆️
-                  </button>
-                  <button
-                    className="move-button down"
-                    onClick={() => moveBlockDown(block.id)}
-                    title="Descendre"
-                  >
-                    ⬇️
-                  </button>
-                </div>
+                <button
+                  onClick={() => moveBlockDown(block.id)}
+                  disabled={index === blocks.length - 1}
+                >
+                  ⬇️
+                </button>
               </div>
 
-              {block.type === "heading" && <HeadingBlock />}
-              {block.type === "paragraph" && <ParagraphBlock />}
-              {block.type === "image" && <ImageBlock />}
+              <div style={{ marginTop: "20px" }}>
+                {block.type === "heading" && <HeadingBlock />}
+                {block.type === "paragraph" && <ParagraphBlock />}
+                {block.type === "image" && <ImageBlock />}
+              </div>
             </div>
+
+            {isDragging && (
+              <div
+                className={`drop-zone ${
+                  dragOverIndex === index + 1 ? "active" : ""
+                }`}
+                onDragOver={(e) => handleDropZoneDragOver(e, index + 1)}
+                onDrop={(e) => handleDropZoneDrop(e, index + 1)}
+              />
+            )}
           </React.Fragment>
         ))}
 
-        {isDragging && (
-          <div
-            className="drop-zone"
-            onDrop={(e) => handleDropAt(e, blocks.length)}
-            onDragOver={handleDragOver}
-          ></div>
+        {blocks.length === 0 && (
+          <div className="empty-editor">
+            Glissez des composants ici ou cliquez sur la palette pour commencer
+          </div>
         )}
       </div>
     </div>
