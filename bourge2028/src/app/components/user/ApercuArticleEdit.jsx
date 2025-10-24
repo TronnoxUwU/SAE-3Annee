@@ -7,7 +7,7 @@ export default function ApercuArticle({ article }) {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/article/${article.id}`); // user/article/${article.id}/edit
+    router.push(`/user/article/${article.id}/edit`); // user/article/${article.id}/edit
   };
 
   // 🔹 Cherche le premier composant de type "image"
