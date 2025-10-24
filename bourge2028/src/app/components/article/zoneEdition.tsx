@@ -76,15 +76,15 @@ export const Editor: React.FC = () => {
   };
 
   const handleBlockDragStart = (e: React.DragEvent, blockId: string) => {
+    console.log("🟢 DRAG START:", blockId, "Time:", Date.now());
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("blockId", blockId);
     setDraggedBlockId(blockId);
     setIsDragging(true);
-    console.log(isDragging);
-    console.log(draggedBlockId);
   };
 
   const handleBlockDragEnd = () => {
+    console.log("🔴 DRAG END:", draggedBlockId, "Time:", Date.now());
     setDraggedBlockId(null);
     setDragOverIndex(null);
     setIsDragging(false);
@@ -96,6 +96,7 @@ export const Editor: React.FC = () => {
   };
 
   const handleDropZoneDrop = (e: React.DragEvent, index: number) => {
+    console.log("💧 DROP sur zone:", index, "Time:", Date.now());
     e.preventDefault();
     const type = e.dataTransfer.getData("component");
     const blockId = e.dataTransfer.getData("blockId");
@@ -116,7 +117,7 @@ export const Editor: React.FC = () => {
       />
 
       <div className="editor">
-        {isDragging && (
+        {isDragging && blocks.length > 0 && (
           <div
             className={`drop-zone ${dragOverIndex === 0 ? "active" : ""}`}
             onDragOver={(e) => handleDropZoneDragOver(e, 0)}
@@ -154,7 +155,7 @@ export const Editor: React.FC = () => {
               </div>
             </div>
 
-            {isDragging && (
+            {isDragging  && (
               <div
                 className={`drop-zone ${
                   dragOverIndex === index + 1 ? "active" : ""
@@ -167,7 +168,23 @@ export const Editor: React.FC = () => {
         ))}
 
         {blocks.length === 0 && (
-          <div className="empty-editor">
+          <div
+            className={`empty-editor ${isDragging ? "active" : ""}`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOverIndex(0);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              const type = e.dataTransfer.getData("component");
+              const blockId = e.dataTransfer.getData("blockId");
+              if (type) addBlockAt(type, 0);
+              else if (blockId) moveBlock(blockId, 0);
+              setDraggedBlockId(null);
+              setDragOverIndex(null);
+              setIsDragging(false);
+            }}
+          >
             Glissez des composants ici ou cliquez sur la palette pour commencer
           </div>
         )}

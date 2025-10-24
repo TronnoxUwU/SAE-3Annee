@@ -40,7 +40,7 @@
 .editor {
   flex: 1;
   padding: 40px;
-  overflow-y: auto;
+  overflow-y: visible;
   background: #fff;
 }
 
@@ -102,4 +102,10 @@
   font-size: 18px;
   border: 2px dashed #ddd;
   border-radius: 8px;
+}
+
+.empty-editor.active {
+  border-color: #2196f3;
+  background: #e3f2fd;
+  color: #1976d2;
 }
