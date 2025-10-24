@@ -8,9 +8,12 @@ interface ListItemProps {
   nom: string;
   parent: number | null;
   childrens: any[];
+  onAdd: Function;
+  onUpdate: Function;
+  onDelete: Function;
 }
 
-const ListItem = ({ id, nom, parent, childrens }: ListItemProps) => {
+const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: ListItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [typeCrud, setTypeCrud] = useState("");
@@ -40,25 +43,25 @@ const ListItem = ({ id, nom, parent, childrens }: ListItemProps) => {
         <div className="btn-group btn-group-sm" role="group">
 
           <button
-                    className="btn btn-outline-success btn-sm"
-                    title="Ajouter"
-                    onClick={() => {setOpenAddModal(true), setTypeCrud("ADD")}}
+              className="btn btn-outline-success btn-sm"
+              title="Ajouter"
+              onClick={() => {setOpenAddModal(true), setTypeCrud("ADD")}}
           >
             <i className="bi bi-plus"></i>
           </button>
 
           <button 
-                    className="btn btn-outline-primary btn-sm"
-                    title="Modifier"
-                    onClick={() => {setOpenAddModal(true), setTypeCrud("UPDATE")}}
+              className="btn btn-outline-primary btn-sm"
+              title="Modifier"
+              onClick={() => {setOpenAddModal(true), setTypeCrud("UPDATE")}}
           >
             <i className="bi bi-pencil"></i>
           </button>
 
           <button 
-                    className="btn btn-outline-danger btn-sm"
-                    title="Supprimer"
-                    onClick={() => {setOpenAddModal(true), setTypeCrud("DELETE")}}
+              className="btn btn-outline-danger btn-sm"
+              title="Supprimer"
+              onClick={() => {setOpenAddModal(true), setTypeCrud("DELETE")}}
           >
             <i className="bi bi-trash"></i>
           </button>
@@ -68,6 +71,9 @@ const ListItem = ({ id, nom, parent, childrens }: ListItemProps) => {
             isOpen={openAddModal}
             onClose={() => setOpenAddModal(false)}
             selfId={id}
+            onAdd={onAdd}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
           />
       </div>
 
@@ -82,6 +88,9 @@ const ListItem = ({ id, nom, parent, childrens }: ListItemProps) => {
                 nom={item.nom}
                 parent={item.parentId}
                 childrens={item.children}
+                onAdd={onAdd}
+                onUpdate={onUpdate}
+                onDelete={onDelete}
               />
             ))}
           </ul>

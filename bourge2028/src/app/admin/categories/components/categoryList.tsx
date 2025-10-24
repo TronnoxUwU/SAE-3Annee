@@ -6,21 +6,31 @@ import ListItem from "./listItem"
 export default function AdminCategory() {
   const [items, setItems] = useState([]);
 
-  useEffect(() => {
-    async function loadCategories() {
+  async function loadCategories() {
       const res = await fetch("/api/categories");
-
-      if (!res.ok) {
-        console.error("Erreur fetch categories :", res.status);
-        return;
-      }
-
       const data = await res.json();
       setItems(data);
     }
 
-    loadCategories();
-  }, []);
+    useEffect(() => { loadCategories(); }, []);
+
+  // Add
+  function handleAdd(newCat) {
+    setItems(prev => [...prev, newCat]);
+  }
+
+  // Update
+  function handleUpdate(updatedCat) {
+    setItems(prev =>
+      prev.map(item => item.id === updatedCat.id ? updatedCat : item)
+    );
+  }
+
+  // Delete
+  function handleDelete(id) {
+    setItems(prev => prev.filter(item => item.id !== id));
+  }
+
 
   return (
     <ul className="list-group">
@@ -35,6 +45,9 @@ export default function AdminCategory() {
             nom={item.nom}
             parent={item.parentId}
             childrens={item.children}
+            onAdd={handleAdd}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
           />
         );
       })}

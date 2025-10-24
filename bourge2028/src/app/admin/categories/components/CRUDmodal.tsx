@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Modal from "@/components/Modal";
 import Style from "./crudModal.module.css"
+import { revalidateTag } from "next/cache";
 
-export default function CatCrudModal({ CRUD, isOpen, onClose, selfId }) {
+export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, onAdd, onUpdate, onDelete }) {
 
   const [nom, setNom] = useState("");
 
@@ -21,8 +22,14 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId }) {
         parentId: selfId
       })
     });
+    const newCat = await res.json();
+    console.log(newCat)
+    if(res.status.toString().startsWith("20")){
+      onAdd(newCat);
+    }
+    else{/* Faire une popup fail */}
 
-    onClose(); // ferme le modal
+    onClose();
   };
 
   const handleSubmitUpdate = async (e) => {
@@ -37,8 +44,14 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId }) {
         nom
       })
     });
+    const newCat = await res.json();
+    console.log(newCat)
+    if(res.status.toString().startsWith("20")){
+      onUpdate(newCat);
+    }
+    else{/* Faire une popup fail */}
 
-    onClose(); // ferme le modal
+    onClose();
   };
 
   const handleSubmitDelete = async (e) => {
@@ -51,8 +64,14 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId }) {
         "Content-Type": "application/json"
       }
     });
+    const newCat = await res.json();
+    console.log(newCat)
+    if(res.status.toString().startsWith("20")){
+      onDelete(newCat.id);
+    }
+    else{/* Faire une popup fail */}
 
-    onClose(); // ferme le modal
+    onClose();
   };
 
   
