@@ -6,6 +6,6 @@ interface ParagraphBlockProps {
   content?: string;
 }
 
-export const ParagraphBlock: React.FC<ParagraphBlockProps> = ({ content }) => {
+export const Paragraphe: React.FC<ParagraphBlockProps> = ({ content }) => {
   return <p>{content || "Votre paragraphe ici…"}</p>;
 };

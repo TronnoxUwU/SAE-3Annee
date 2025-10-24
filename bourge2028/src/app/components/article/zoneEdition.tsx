@@ -2,15 +2,9 @@
 
 import React, { useState } from "react";
 import { Palette } from "./palette";
-
-// Blocs simplifiés (tu peux les remplacer plus tard par tes vrais composants)
-const HeadingBlock = () => <h2>Votre titre ici</h2>;
-const ParagraphBlock = () => <p>Votre paragraphe ici</p>;
-const ImageBlock = () => (
-  <div style={{ padding: "20px", background: "#f0f0f0", textAlign: "center" }}>
-    📷 Image
-  </div>
-);
+import { Titre } from "./blocks/titre";
+import { Paragraphe } from "./blocks/paragraphe";
+import { Image } from "./blocks/image";
 
 interface Block {
   id: string;
@@ -149,9 +143,9 @@ export const Editor: React.FC = () => {
               </div>
 
               <div style={{ marginTop: "20px" }}>
-                {block.type === "heading" && <HeadingBlock />}
-                {block.type === "paragraph" && <ParagraphBlock />}
-                {block.type === "image" && <ImageBlock />}
+                {block.type === "heading" && <Titre />}
+                {block.type === "paragraph" && <Paragraphe />}
+                {block.type === "image" && <Image />}
               </div>
             </div>
 

@@ -6,7 +6,7 @@ interface HeadingBlockProps {
   content?: string;
 }
 
-export const HeadingBlock: React.FC<HeadingBlockProps> = ({ content }) => {
-  return <h2>{content || "Votre titre ici"}</h2>;
+export const Titre: React.FC<HeadingBlockProps> = ({ content }) => {
+  return <h2>{content || "Votre titre ici !!!!"}</h2>;
 };
 

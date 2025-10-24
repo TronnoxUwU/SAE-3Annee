@@ -6,7 +6,7 @@ interface ImageBlockProps {
   src?: string;
 }
 
-export const ImageBlock: React.FC<ImageBlockProps> = ({ src }) => {
+export const Image: React.FC<ImageBlockProps> = ({ src }) => {
   return (
     <img
       src={src || "https://via.placeholder.com/300"}
