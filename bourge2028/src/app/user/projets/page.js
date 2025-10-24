@@ -62,9 +62,9 @@ export default function ProjetsPage() {
             {/* 🔸 Sidebar gère le filtre de la carte */}
             <Sidebar map={null} onFilterChange={setMapFilter} />
 
-            {/* 🔸 Annuaire latéral */}
+            {/* 🔸 Articles latéral */}
             <section
-                className="section-annuaire"
+                className="section-articles"
             >
                 <GestionnaireArticle articles={articles} />
             </section>
