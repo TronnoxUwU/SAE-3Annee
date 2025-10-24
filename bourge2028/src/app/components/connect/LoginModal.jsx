@@ -33,7 +33,6 @@ export default function LoginModal() {
       password,
       callbackUrl,
     });
-    console.log(callbackUrl);
     if (res.error) {
       setMessage("❌ Email ou mot de passe incorrect");
       return;
