@@ -61,11 +61,11 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
             <ul>
               <li onClick={() => handleNavigation("/")}>Accueil</li>
               <li onClick={() => handleNavigation("/annuaire")}>Annuaire</li>
+              {session && session.user.role === "Admin" && ( // à adapter
+                <li onClick={() => handleNavigation("/admin")}>Administration</li>
+              )}
               {session && (
                 <li onClick={() => handleNavigation("/user")}>Ma structure</li>
-              )}
-              {session && session.user.role === "admin" && ( // à adapter
-                <li onClick={() => handleNavigation("/admin")}>Admin</li>
               )}
             </ul>
           </div>

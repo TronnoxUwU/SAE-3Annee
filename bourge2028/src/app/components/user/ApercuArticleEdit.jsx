@@ -7,7 +7,7 @@ export default function ApercuArticle({ article }) {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/user/article/${article.id}/edit`); // user/article/${article.id}/edit
+    router.push(`/user/article/${article.id}/edit`);
   };
 
   // Cherche le premier composant de type "image"
@@ -15,16 +15,26 @@ export default function ApercuArticle({ article }) {
     (elt) => elt.type === "image"
   );
 
-  // Si trouvé, récupère son lien, sinon image par défaut
+  // Source de l’image principale
   const imageSrc =
-    firstImageComponent?.image?.lienImage || "/images/default-article.jpg";
+    firstImageComponent?.image?.lienImage || "/images/default-article.png";
 
-  // Utilise aussi le titre de l’article ou un fallback
+  // Titre de secours
   const title = article.titre || "Article sans titre";
+
+  // Fonction appelée quand l’image échoue à charger
+  const handleImageError = (e) => {
+    e.target.src = "/images/default-article.png";
+  };
 
   return (
     <div className="apercu-article" onClick={handleClick}>
-      <img src={imageSrc} alt={title} className="apercu-article-image" />
+      <img
+        src={imageSrc}
+        alt={title}
+        className="apercu-article-image"
+        onError={handleImageError}
+      />
       <h2>{title}</h2>
     </div>
   );

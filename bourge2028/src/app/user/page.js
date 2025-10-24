@@ -20,11 +20,11 @@ export default function ProjetsPage() {
                 <h1>Ma Structure</h1>
                 <div className={Style.conteneur}>
                     <div className={Style.card} onClick={redirectProjet()}>
-                        <img src="article-image.jpg" alt="Article" />
+                        <img src="/images/default-article.png" alt="Article" />
                         <h2>Mes Articles</h2>
                     </div>
                     <div className={Style.card}>
-                        <img src="project-image.jpg" alt="Project" />
+                        <img src="/images/localisation.png" alt="Project" />
                         <h2>Mes Localisations</h2>
                     </div>
 

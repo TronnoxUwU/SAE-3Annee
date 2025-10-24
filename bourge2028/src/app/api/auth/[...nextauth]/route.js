@@ -17,12 +17,28 @@ export const authOptions = {
         if (!personne) return null;
         const isValid = await bcrypt.compare(password, personne.password);
         if (!isValid) return null;
-        return { email: personne.email, name: personne.name };
+        return { email: personne.email, name: personne.name, role: personne.role };
       },
     }),
   ],
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.role = token.role;
+      }
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);
