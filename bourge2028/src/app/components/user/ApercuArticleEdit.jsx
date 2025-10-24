@@ -10,16 +10,16 @@ export default function ApercuArticle({ article }) {
     router.push(`/user/article/${article.id}/edit`); // user/article/${article.id}/edit
   };
 
-  // 🔹 Cherche le premier composant de type "image"
+  // Cherche le premier composant de type "image"
   const firstImageComponent = article.composants?.find(
     (elt) => elt.type === "image"
   );
 
-  // 🔹 Si trouvé, récupère son lien, sinon image par défaut
+  // Si trouvé, récupère son lien, sinon image par défaut
   const imageSrc =
     firstImageComponent?.image?.lienImage || "/images/default-article.jpg";
 
-  // 🔹 Utilise aussi le titre de l’article ou un fallback
+  // Utilise aussi le titre de l’article ou un fallback
   const title = article.titre || "Article sans titre";
 
   return (
