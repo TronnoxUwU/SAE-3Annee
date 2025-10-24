@@ -6,6 +6,10 @@
   color: white;
 }
 
+.topbar h1{
+  font-size: 1.5em;
+}
+
 .topbar_fixed {
   position: fixed;
   z-index: 999;
