@@ -23,7 +23,6 @@ export default function ArticlePage() {
         if (!res.ok) throw new Error(`Erreur ${res.status}`);
 
         const data = await res.json();
-        console.log(data);
         setArticle(data);
       } catch (err) {
         console.error(err);
