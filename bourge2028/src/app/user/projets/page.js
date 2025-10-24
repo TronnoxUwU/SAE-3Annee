@@ -6,7 +6,7 @@ import Topbar from "@/components/Topbar.jsx";
 import Sidebar from "../../components/Sidebar/SidebarWrapper";
 import "../../styles/projets.css";
 
-const Annuaire = dynamic(() => import("../../components/annuaire/Annuaire"), { ssr: false });
+const GestionnaireArticle = dynamic(() => import("../../components/user/GestionnaireArticle"), { ssr: false });
 
 export default function ProjetsPage() {
 
@@ -66,7 +66,7 @@ export default function ProjetsPage() {
             <section
                 className="section-annuaire"
             >
-                <Annuaire articles={articles} />
+                <GestionnaireArticle articles={articles} />
             </section>
         </main>
     );
