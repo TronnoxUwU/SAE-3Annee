@@ -23,17 +23,21 @@ export default function AdminCategory() {
   }, []);
 
   return (
-    <div>
+    <ul className="list-group">
       {items.map(item => {
+        if (item.parentId) {
+          return null;
+        };
         return (
           <ListItem
             key={item.id}
             id={item.id}
             nom={item.nom}
             parent={item.parentId}
+            childrens={item.children}
           />
         );
       })}
-    </div>
+    </ul>
   );
 }

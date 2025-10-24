@@ -1,0 +1,11 @@
+.item_bloc:not(:first-child) {
+    margin-top: 1em;
+}
+.item_bloc:last-child {
+    margin-bottom: 1em;
+}
+
+.item_title {
+    font-size: larger;
+    font-weight: bold;
+}
