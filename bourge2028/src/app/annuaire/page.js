@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Topbar from "@/components/Topbar.jsx";
-import Sidebar from '../components/Sidebar/SidebarWrapper'
+import Sidebar from "../components/Sidebar/SidebarWrapper";
 import "../styles/home.css";
 
 const Map = dynamic(() => import("../components/Map/Map"), { ssr: false });
@@ -13,29 +13,64 @@ const Annuaire = dynamic(() => import("../components/annuaire/Annuaire"), { ssr:
 export default function AnnuairePage() {
   const router = useRouter();
 
+  // États UI
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [animate, setAnimate] = useState(false);
-  const [mounted, setMounted] = useState(false); // état pour forcer rendu initial
+  const [mounted, setMounted] = useState(false);
 
+  // États data
+  const [mapFilter, setMapFilter] = useState(null);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Animation du panneau latéral (drawer)
   useEffect(() => {
     const fromHome = sessionStorage.getItem("fromHome");
     if (fromHome === "true") {
-      setAnimate(true);      // activer transition
-      setDrawerOpen(false);  // commence fermé
-      setMounted(true);      // monter le drawer dans le DOM
+      setAnimate(true);
+      setDrawerOpen(false);
+      setMounted(true);
 
-      // déclencher l'ouverture dans le tick suivant
       requestAnimationFrame(() => {
         sessionStorage.removeItem("fromHome");
-        setDrawerOpen(true); // déclenche la transition
+        setDrawerOpen(true);
       });
     } else {
-      // rechargement direct → ouverture immédiate sans transition
       setAnimate(false);
       setDrawerOpen(true);
       setMounted(true);
     }
   }, []);
+
+  // 🔹 Récupération des articles (c’est ici que la requête est faite)
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        let url = "/api/articles";
+        if (mapFilter) {
+          const params = new URLSearchParams(mapFilter).toString();
+          url += `?${params}`;
+        }
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
+
+        const data = await res.json();
+        setArticles(data);
+      } catch (err) {
+        console.error(err);
+        setError("Impossible de charger les articles.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchArticles();
+  }, [mapFilter]);
 
   const handleClose = () => {
     setAnimate(true);
@@ -45,27 +80,44 @@ export default function AnnuairePage() {
 
   return (
     <main className="main-container">
-      <Topbar fixed/>
-        <Sidebar map={null} onFilterChange={() => { }} />
+      <Topbar fixed />
 
-        <div className="map-wrapper">
-          <div className="map-inner">
-            <Map mapFilter={null} onMapReady={() => { }} />
-          </div>
+      {/* 🔸 Sidebar gère le filtre de la carte */}
+      <Sidebar map={null} onFilterChange={setMapFilter} />
+
+      {/* 🔸 Carte principale */}
+      <div className="map-wrapper">
+        <div className="map-inner">
+          <Map mapFilter={mapFilter} onMapReady={() => {}} />
         </div>
+      </div>
 
-        {mounted && (
-          <section className={`section-annuaire ${drawerOpen ? "show" : ""} ${animate ? "" : "no-transition"}`}>
-            <Annuaire mapFilter={null} />
-          </section>
-        )}
-
-        <button
-          className={`toggle-btn ${drawerOpen ? "closed" : "open"} ${animate ? "" : "no-transition"}`}
-          onClick={handleClose}
+      {/* 🔸 Annuaire latéral */}
+      {mounted && (
+        <section
+          className={`section-annuaire ${drawerOpen ? "show" : ""} ${
+            animate ? "" : "no-transition"
+          }`}
         >
-          {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’annuaire ↓"}
-        </button>
+          {loading ? (
+            <p>Chargement...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
+            <Annuaire articles={articles} />
+          )}
+        </section>
+      )}
+
+      {/* 🔸 Bouton de bascule carte/annuaire */}
+      <button
+        className={`toggle-btn ${drawerOpen ? "closed" : "open"} ${
+          animate ? "" : "no-transition"
+        }`}
+        onClick={handleClose}
+      >
+        {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’annuaire ↓"}
+      </button>
     </main>
   );
 }
