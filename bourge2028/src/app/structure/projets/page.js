@@ -4,71 +4,66 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar.jsx";
 import Sidebar from "../../components/Sidebar/SidebarWrapper";
-import "../../styles/projets.css";
+import styles from "../../styles/projets.module.css";
 
-const GestionnaireArticle = dynamic(() => import("../../components/user/GestionnaireArticle"), { ssr: false });
+const GestionnaireArticle = dynamic(
+  () => import("../../components/user/GestionnaireArticle"),
+  { ssr: false }
+);
 
 export default function ProjetsPage() {
+  const [mapFilter, setMapFilter] = useState(null);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    // États data
-    const [mapFilter, setMapFilter] = useState(null);
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        setLoading(true);
+        setError(null);
 
-
-    // Récupération des articles (c’est ici que la requête est faite)
-    useEffect(() => {
-        async function fetchArticles() {
-            try {
-                setLoading(true);
-                setError(null);
-
-                let url = "/api/articles"; // api/structure/articles
-                if (mapFilter) {
-                    const params = new URLSearchParams(mapFilter).toString();
-                    url += `?${params}`;
-                }
-
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`Erreur ${res.status}`);
-
-                const data = await res.json();
-                setArticles(data);
-            } catch (err) {
-                console.error(err);
-                setError("Impossible de charger les articles.");
-            } finally {
-                setLoading(false);
-            }
+        let url = "/api/articles";
+        if (mapFilter) {
+          const params = new URLSearchParams(mapFilter).toString();
+          url += `?${params}`;
         }
 
-        fetchArticles();
-    }, [mapFilter]);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
 
-    const handleCreate = () => {
-        return () => {
-            window.location.href = `/structure/projets/${article.id}/edit`;
-        };
-    };
+        const data = await res.json();
+        setArticles(data);
+      } catch (err) {
+        console.error(err);
+        setError("Impossible de charger les articles.");
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    return (
-        <main className="main-container">
-            <Topbar fixed />
+    fetchArticles();
+  }, [mapFilter]);
 
-            {/* Bouton d'ajout de projet/article */}
-            <button className="btn-add" onClick={handleCreate()}>+</button>
+  const handleCreate = () => {
+    // le bouton doit rediriger vers la création, pas vers un article inexistant
+    window.location.href = `/structure/projets/new`;
+  };
 
-            {/* Sidebar gère le filtre de la carte */}
-            <Sidebar map={null} onFilterChange={setMapFilter} />
+  return (
+    <main className="main-container">
+      <Topbar fixed />
 
-            {/* Articles latéral */}
-            <section
-                className="section-articles"
-            >
-                <GestionnaireArticle articles={articles} />
-            </section>
-        </main>
-    );
+      {/* Bouton d'ajout de projet/article */}
+      <button className={styles.btnAdd} onClick={handleCreate}>
+        +
+      </button>
+
+      <Sidebar map={null} onFilterChange={setMapFilter} />
+
+      <section className="section-articles">
+        <GestionnaireArticle articles={articles} />
+      </section>
+    </main>
+  );
 }
-

@@ -4,20 +4,15 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import "../../styles/article.css";
+import styles from "../../styles/article.module.css";
 import Topbar from "@/components/Topbar.jsx";
 import CenteredCarousel from "../../components/CenteredCarousel.jsx";
 
-/**
- * Sous-composant responsable du préchargement + fallback.
- * Utilise des hooks correctement (au niveau du composant).
- */
 function ArticleImage({ src, alt, className, timeout = 4000 }) {
   const [imgSrc, setImgSrc] = useState("/images/default-article.png");
 
   useEffect(() => {
     let canceled = false;
-    // si pas de src, on reste sur placeholder
     if (!src) {
       setImgSrc("/images/default-article.png");
       return;
@@ -25,7 +20,6 @@ function ArticleImage({ src, alt, className, timeout = 4000 }) {
 
     const img = new Image();
     let timer = setTimeout(() => {
-      // timeout : on bascule sur le placeholder
       if (!canceled) setImgSrc("/images/default-article.png");
     }, timeout);
 
@@ -38,9 +32,7 @@ function ArticleImage({ src, alt, className, timeout = 4000 }) {
       if (!canceled) setImgSrc("/images/default-article.png");
     };
 
-    // démarre le préchargement
     img.src = src;
-
     return () => {
       canceled = true;
       clearTimeout(timer);
@@ -63,7 +55,6 @@ export default function ArticlePage() {
       try {
         const res = await fetch(`/api/articles/${id}`);
         if (!res.ok) throw new Error(`Erreur ${res.status}`);
-
         const data = await res.json();
         setArticle(data);
       } catch (err) {
@@ -84,15 +75,14 @@ export default function ArticlePage() {
   return (
     <>
       <Topbar />
-      <div className="article-page">
+      <div className={styles.articlePage}>
         <h1>{article.titre}</h1>
 
         {article.composants.map((elt, i) => {
           switch (elt.type) {
             case "titre": {
-              // par défaut niveau 2 si non défini ou hors limites
               const niveau = Math.min(Math.max(elt.titre.niveauTitre || 2, 2), 6);
-              const TitreTag = `h${niveau}`; // 'h2', 'h3', ... 'h6'
+              const TitreTag = `h${niveau}`;
               return <TitreTag key={i}>{elt.titre.texteTitre}</TitreTag>;
             }
 
@@ -112,21 +102,20 @@ export default function ArticlePage() {
                   key={i}
                   src={src}
                   alt={alt}
-                  className="article-image"
+                  className={styles.articleImage}
                   timeout={4000}
                 />
               );
             }
 
             case "caroussel": {
-              const images =
-                [...(elt.caroussels?.[0]?.images || [])]
-                  .reverse()
-                  .map((img) => ({
-                    src: img.lienImage || "/images/default-article.png",
-                    alt: img.titreImage || "",
-                    caption: img.titreImage || "",
-                  }));
+              const images = [...(elt.caroussels?.[0]?.images || [])]
+                .reverse()
+                .map((img) => ({
+                  src: img.lienImage || "/images/default-article.png",
+                  alt: img.titreImage || "",
+                  caption: img.titreImage || "",
+                }));
 
               return (
                 <div key={i}>
@@ -141,7 +130,7 @@ export default function ArticlePage() {
         })}
 
         {article.documents?.length > 0 && (
-          <section className="article-documents">
+          <section className={styles.articleDocuments}>
             <h3>Documents associés :</h3>
             <ul>
               {article.documents.map((doc, i) => (
