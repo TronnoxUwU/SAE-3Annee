@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import ListItem from "./listItem"
+import CatCrudModal from "./CRUDmodal";
 
 export default function AdminCategory() {
   const [items, setItems] = useState([]);
+  const [openAddModal, setOpenAddModal] = useState(false);
 
   async function loadCategories() {
       const res = await fetch("/api/categories");
@@ -17,15 +19,19 @@ export default function AdminCategory() {
   // add
   function handleAdd(newCat) {
 
-    setItems(prev => addRecursive(prev, newCat));
+    if(newCat.parentId === null) {setItems(prev => [...prev, newCat]);}
+    else {
+      setItems(prev => addRecursive(prev, newCat));
 
-    function addRecursive(categories, addCat) {
-      return categories.map(cat =>
-        cat.id === addCat.parentId
-          ? { ...cat, children: [...(cat.children || []), addCat] }
-          : { ...cat, children: addRecursive(cat.children || [], addCat) }
-      );
+      function addRecursive(categories, addCat) {
+        return categories.map(cat =>
+          cat.id === addCat.parentId
+            ? { ...cat, children: [...(cat.children || []), addCat] }
+            : { ...cat, children: addRecursive(cat.children || [], addCat) }
+        );
+      }
     }
+    
 
   }
 
@@ -62,6 +68,27 @@ export default function AdminCategory() {
 
 
   return (
+      <>
+
+      <button
+        className="btn btn-outline-success btn-sm mb-4 fs-5"
+        title="Ajouter"
+        onClick={() => setOpenAddModal(true) }
+      >
+        <i className="bi bi-plus fs-5"></i>
+        Ajouter une catégorie
+      </button>
+
+    <CatCrudModal
+        CRUD={"ADD"}
+        isOpen={openAddModal}
+        onClose={() => setOpenAddModal(false)}
+        selfId={null}
+        onAdd={handleAdd}
+        onUpdate={null}
+        onDelete={null} 
+    />
+    
     <ul className="list-group">
       {items.map(item => {
         if (item.parentId) {
@@ -81,5 +108,6 @@ export default function AdminCategory() {
         );
       })}
     </ul>
+    </>
   );
 }

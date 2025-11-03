@@ -9,13 +9,14 @@ interface SerializedCategorie {
 }
 
 export const deserializeCategorie = (
-  data: SerializedCategorie
+  data: SerializedCategorie,
+  isNested: boolean = false
 ): Prisma.CategorieCreateInput | Prisma.CategorieUpdateInput => {
   const { nom, parentId, tags, children } = data;
 
   const deserialized: Prisma.CategorieCreateInput = {
     nom,
-    parent: parentId ? { connect: { id: parentId } } : undefined,
+    parent: !isNested && parentId != null ? { connect: { id: parentId } } : undefined,
     tags: tags?.length
       ? {
           connect: tags.map(tag => ({ id: tag.id })),
@@ -28,5 +29,6 @@ export const deserializeCategorie = (
       : undefined,
   };
 
+  console.log(deserialized)
   return deserialized;
 };

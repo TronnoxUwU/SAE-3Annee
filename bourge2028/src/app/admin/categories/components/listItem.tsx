@@ -43,27 +43,27 @@ const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: Lis
         <div className="btn-group btn-group-sm" role="group">
 
           <button
-              className="btn btn-outline-success btn-sm"
+              className="btn btn-outline-success btn-sm px-3"
               title="Ajouter"
               onClick={() => {setOpenAddModal(true), setTypeCrud("ADD")}}
           >
-            <i className="bi bi-plus"></i>
+            <i className="bi bi-plus fs-4"></i>
           </button>
 
           <button 
-              className="btn btn-outline-primary btn-sm"
+              className="btn btn-outline-primary btn-sm px-3"
               title="Modifier"
               onClick={() => {setOpenAddModal(true), setTypeCrud("UPDATE")}}
           >
-            <i className="bi bi-pencil"></i>
+            <i className="bi bi-pencil fs-5"></i>
           </button>
 
           <button 
-              className="btn btn-outline-danger btn-sm"
+              className="btn btn-outline-danger btn-sm px-3"
               title="Supprimer"
               onClick={() => {setOpenAddModal(true), setTypeCrud("DELETE")}}
           >
-            <i className="bi bi-trash"></i>
+            <i className="bi bi-trash fs-5"></i>
           </button>
         </div>
           <CatCrudModal
