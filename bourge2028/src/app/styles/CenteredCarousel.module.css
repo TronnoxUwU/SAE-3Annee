@@ -36,16 +36,6 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
-/* Image cliquable pour ouvrir la popup */
-.clickableImage {
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.clickableImage:hover {
-  transform: scale(1.05);
-}
-
 /* Image centrale (active) */
 .active {
   opacity: 1;

@@ -45,7 +45,7 @@ export default function CenteredCarousel({ images = [] }) {
     const startInterval = () => {
       intervalRef.current = setInterval(() => {
         setCurrent((prev) => (prev + 1) % loadedImages.length);
-      }, 6500);
+      }, 6500000);
     };
 
     startInterval();
@@ -58,7 +58,7 @@ export default function CenteredCarousel({ images = [] }) {
       clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
         setCurrent((prev) => (prev + 1) % loadedImages.length);
-      }, 6500);
+      }, 6500000);
     }
   };
 
@@ -72,7 +72,6 @@ export default function CenteredCarousel({ images = [] }) {
     resetTimerAndSetCurrent(newIndex);
   };
 
-
   if (!loadedImages.length) return null;
 
   return (
@@ -83,13 +82,21 @@ export default function CenteredCarousel({ images = [] }) {
 
       <div className={styles.carouselTrack}>
         {loadedImages.map((img, i) => {
-          const indexDiff = (i - current + loadedImages.length) % loadedImages.length;
+          const indexDiff =
+            (i - current + loadedImages.length) % loadedImages.length;
           let className = styles.slide;
 
           if (indexDiff === 0) className += ` ${styles.active}`;
           else if (indexDiff === 1) className += ` ${styles.next}`;
-          else if (indexDiff === loadedImages.length - 1) className += ` ${styles.prev}`;
+          else if (indexDiff === loadedImages.length - 1)
+            className += ` ${styles.prev}`;
           else className += ` ${styles.hidden}`;
+
+          // clics selon la position
+          let handleClick = null;
+          if (indexDiff === 1) handleClick = nextSlide;
+          else if (indexDiff === loadedImages.length - 1)
+            handleClick = prevSlide;
 
           return (
             <div key={i} className={className}>
@@ -97,6 +104,7 @@ export default function CenteredCarousel({ images = [] }) {
                 src={img.src}
                 alt={img.alt || `Image ${i}`}
                 className={styles.clickableImage}
+                onClick={handleClick}
               />
               {img.caption && <p className={styles.caption}>{img.caption}</p>}
             </div>
@@ -112,7 +120,9 @@ export default function CenteredCarousel({ images = [] }) {
         {loadedImages.map((_, i) => (
           <span
             key={i}
-            className={`${styles.dot} ${i === current ? styles.activeDot : ""}`}
+            className={`${styles.dot} ${
+              i === current ? styles.activeDot : ""
+            }`}
             onClick={() => resetTimerAndSetCurrent(i)}
           />
         ))}
