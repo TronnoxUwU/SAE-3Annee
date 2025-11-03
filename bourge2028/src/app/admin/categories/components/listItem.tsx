@@ -23,7 +23,7 @@ const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: Lis
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
       <div className="d-flex align-items-center p-2">
-        {/* Bouton collapse */}
+        {/* collapse */}
         {hasChildren ? (
           <button
             className="btn btn-link btn-sm p-0 me-2 text-decoration-none"
@@ -36,10 +36,10 @@ const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: Lis
           <span className="me-2" style={{ width: '20px', display: 'inline-block' }}></span>
         )}
 
-        {/* Nom de la catégorie */}
+        {/* Nom categorie */}
         <span className={`flex-grow-1 ${Style.item_title}`}>{nom}</span>
 
-        {/* Boutons d'action */}
+        {/* btn crud */}
         <div className="btn-group btn-group-sm" role="group">
 
           <button
@@ -77,7 +77,7 @@ const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: Lis
           />
       </div>
 
-      {/* Liste des enfants (collapse) */}
+      {/* collapse enfants */}
       {hasChildren && (
         <div className={`collapse ${isOpen ? 'show' : ''}`}>
           <ul className="list-group list-group-flush ms-4">

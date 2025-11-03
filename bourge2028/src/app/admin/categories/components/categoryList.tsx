@@ -14,21 +14,50 @@ export default function AdminCategory() {
 
     useEffect(() => { loadCategories(); }, []);
 
-  // Add
+  // add
   function handleAdd(newCat) {
-    setItems(prev => [...prev, newCat]);
+
+    setItems(prev => addRecursive(prev, newCat));
+
+    function addRecursive(categories, addCat) {
+      return categories.map(cat =>
+        cat.id === addCat.parentId
+          ? { ...cat, children: [...(cat.children || []), addCat] }
+          : { ...cat, children: addRecursive(cat.children || [], addCat) }
+      );
+    }
+
   }
 
-  // Update
+  // update
   function handleUpdate(updatedCat) {
-    setItems(prev =>
-      prev.map(item => item.id === updatedCat.id ? updatedCat : item)
-    );
+
+    setItems(prev => updtRecursive(prev, updatedCat));
+
+    function updtRecursive(categories, updatedCat) {
+      return categories.map(cat =>
+        cat.id === updatedCat.id
+          ? { ...cat, ...updatedCat }
+          : { ...cat, children: updtRecursive(cat.children || [], updatedCat) }
+      );
+    }
+
   }
 
-  // Delete
+  // delete
   function handleDelete(id) {
-    setItems(prev => prev.filter(item => item.id !== id));
+
+    setItems(prev => rmvRecursive(prev, id));
+
+    function rmvRecursive(categories, idRmv) {
+      return categories
+        .filter(cat => cat.id !== idRmv)
+        .map(cat => ({
+          ...cat,
+          children: rmvRecursive(cat.children || [], idRmv),
+        }));
+    }
+
   }
 
 
