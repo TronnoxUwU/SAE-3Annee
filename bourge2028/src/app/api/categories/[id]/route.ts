@@ -226,10 +226,7 @@ export async function PUT(
   }
 }
 
-/**
- * Vérifie si potentialDescendantId est un descendant de ancestorId
- * (pour éviter les boucles circulaires)
- */
+
 async function checkIfDescendant(
   ancestorId: number, 
   potentialDescendantId: number
@@ -238,7 +235,7 @@ async function checkIfDescendant(
   
   while (currentId !== null) {
     if (currentId === ancestorId) {
-      return true; // Boucle détectée !
+      return true;
     }
     
     const category = await prisma.categorie.findUnique({

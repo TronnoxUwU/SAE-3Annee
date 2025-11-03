@@ -9,12 +9,12 @@ export default function AdminCategory() {
   const [openAddModal, setOpenAddModal] = useState(false);
 
   async function loadCategories() {
-      const res = await fetch("/api/categories");
-      const data = await res.json();
-      setItems(data);
-    }
+    const res = await fetch("/api/categories");
+    const data = await res.json();
+    setItems(data);
+  }
 
-    useEffect(() => { loadCategories(); }, []);
+  useEffect(() => { loadCategories(); }, []);
 
   // add
   function handleAdd(newCat) {

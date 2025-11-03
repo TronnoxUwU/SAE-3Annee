@@ -5,7 +5,6 @@ import { deserializeCategorie } from "@/lib/deserializers";
 
 /**
  * POST /api/categories
- * Crée une nouvelle catégorie (optionnellement avec parent, children et tags existants)
  */
 export async function POST(req: Request) {
   try {
@@ -36,7 +35,6 @@ export async function POST(req: Request) {
 
 /**
  * GET /api/categories
- * Récupère toutes les catégories, avec leurs relations hiérarchiques et tags
  */
 export async function GET() {
   try {
