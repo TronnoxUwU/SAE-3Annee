@@ -8,6 +8,55 @@ import "../../styles/article.css";
 import Topbar from "@/components/Topbar.jsx";
 import CenteredCarousel from "../../components/CenteredCarousel.jsx";
 
+/**
+ * Sous-composant responsable du préchargement + fallback.
+ * Utilise des hooks correctement (au niveau du composant).
+ */
+function ArticleImage({ src, alt, className, timeout = 4000 }) {
+  const [imgSrc, setImgSrc] = useState("/images/default-article.png");
+
+  useEffect(() => {
+    let canceled = false;
+    // si pas de src, on reste sur placeholder
+    if (!src) {
+      setImgSrc("/images/default-article.png");
+      return;
+    }
+
+    const img = new Image();
+    let timer = setTimeout(() => {
+      // timeout : on bascule sur le placeholder
+      if (!canceled) setImgSrc("/images/default-article.png");
+    }, timeout);
+
+    img.onload = () => {
+      clearTimeout(timer);
+      if (!canceled) setImgSrc(src);
+    };
+    img.onerror = () => {
+      clearTimeout(timer);
+      if (!canceled) setImgSrc("/images/default-article.png");
+    };
+
+    // démarre le préchargement
+    img.src = src;
+
+    return () => {
+      canceled = true;
+      clearTimeout(timer);
+    };
+  }, [src, timeout]);
+
+  // onError final au cas (évite boucle infinie)
+  const handleError = (e) => {
+    if (!e.target.src.endsWith("default-article.png")) {
+      e.target.src = "/images/default-article.png";
+    }
+  };
+
+  return <img src={imgSrc} alt={alt || ""} className={className} onError={handleError} />;
+}
+
 export default function ArticlePage() {
   const { id } = useParams();
   const [article, setArticle] = useState(null);
@@ -39,13 +88,6 @@ export default function ArticlePage() {
   if (error) return <p>{error}</p>;
   if (!article) return <p>Aucun article trouvé.</p>;
 
-  // 🔹 Fonction pour gérer les erreurs d’images
-  const handleImageError = (e) => {
-    if (!e.target.src.endsWith("default-article.png")) {
-      e.target.src = "/images/default-article.png";
-    }
-  };
-
   return (
     <>
       <Topbar />
@@ -65,20 +107,23 @@ export default function ArticlePage() {
               return <p key={i}>{parse(safeHTML)}</p>;
             }
 
-            case "image":
+            case "image": {
+              const src = elt.image?.lienImage || "/images/default-article.png";
+              const alt = elt.image?.titreImage || "";
               return (
-                <img
+                <ArticleImage
                   key={i}
-                  src={elt.image.lienImage || "/images/default-article.png"}
-                  alt={elt.image.titreImage || ""}
+                  src={src}
+                  alt={alt}
                   className="article-image"
-                  onError={handleImageError}
+                  timeout={4000}
                 />
               );
+            }
 
             case "caroussel": {
               const images =
-                [...(elt.caroussels[0]?.images || [])]
+                [...(elt.caroussels?.[0]?.images || [])]
                   .reverse()
                   .map((img) => ({
                     src: img.lienImage || "/images/default-article.png",
@@ -86,7 +131,6 @@ export default function ArticlePage() {
                     caption: img.titreImage || "",
                   }));
 
-              // Si ton composant CenteredCarousel affiche <img>, fais la même gestion dans ce composant
               return (
                 <div key={i}>
                   <CenteredCarousel images={images} />
@@ -105,7 +149,7 @@ export default function ArticlePage() {
             <ul>
               {article.documents.map((doc, i) => (
                 <li key={i}>
-                  <a href={doc.lien} target="_blank">
+                  <a href={doc.lien} target="_blank" rel="noreferrer">
                     {doc.lien || "Document sans nom"}
                   </a>
                 </li>

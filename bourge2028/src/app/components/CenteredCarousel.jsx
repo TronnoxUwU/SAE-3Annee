@@ -1,24 +1,54 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/CenteredCarousel.module.css";
 
 export default function CenteredCarousel({ images = [] }) {
   const [current, setCurrent] = useState(0);
+  const [loadedImages, setLoadedImages] = useState([]);
+
+  useEffect(() => {
+    // Précharge les images et remplace celles qui ne répondent pas rapidement
+    const preload = async () => {
+      const promises = images.map(
+        (img) =>
+          new Promise((resolve) => {
+            const image = new Image();
+            let timer = setTimeout(() => {
+              resolve({ ...img, src: "/images/default-article.png" });
+            }, 4000); // délai max avant fallback
+            image.onload = () => {
+              clearTimeout(timer);
+              resolve(img);
+            };
+            image.onerror = () => {
+              clearTimeout(timer);
+              resolve({ ...img, src: "/images/default-article.png" });
+            };
+            image.src = img.src;
+          })
+      );
+      const results = await Promise.all(promises);
+      setLoadedImages(results);
+    };
+
+    preload();
+  }, [images]);
 
   const prevSlide = () => {
-    setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    setCurrent((prev) => (prev === 0 ? loadedImages.length - 1 : prev - 1));
   };
 
   const nextSlide = () => {
-    setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    setCurrent((prev) => (prev === loadedImages.length - 1 ? 0 : prev + 1));
   };
 
-  // 🔹 Fonction pour gérer les erreurs de chargement d’image
   const handleImageError = (e) => {
     if (!e.target.src.endsWith("default-article.png")) {
       e.target.src = "/images/default-article.png";
     }
   };
+
+  if (!loadedImages.length) return null;
 
   return (
     <div className={styles.carouselContainer}>
@@ -27,14 +57,13 @@ export default function CenteredCarousel({ images = [] }) {
       </button>
 
       <div className={styles.carouselTrack}>
-        {images.map((img, i) => {
-          const indexDiff = (i - current + images.length) % images.length;
-
+        {loadedImages.map((img, i) => {
+          const indexDiff = (i - current + loadedImages.length) % loadedImages.length;
           let className = styles.slide;
+
           if (indexDiff === 0) className += ` ${styles.active}`;
           else if (indexDiff === 1) className += ` ${styles.next}`;
-          else if (indexDiff === images.length - 1)
-            className += ` ${styles.prev}`;
+          else if (indexDiff === loadedImages.length - 1) className += ` ${styles.prev}`;
           else className += ` ${styles.hidden}`;
 
           return (
@@ -55,7 +84,7 @@ export default function CenteredCarousel({ images = [] }) {
       </button>
 
       <div className={styles.dots}>
-        {images.map((_, i) => (
+        {loadedImages.map((_, i) => (
           <span
             key={i}
             className={`${styles.dot} ${i === current ? styles.activeDot : ""}`}
