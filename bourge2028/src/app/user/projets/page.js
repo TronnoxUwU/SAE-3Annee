@@ -17,7 +17,7 @@ export default function ProjetsPage() {
     const [error, setError] = useState(null);
 
 
-    // 🔹 Récupération des articles (c’est ici que la requête est faite)
+    // Récupération des articles (c’est ici que la requête est faite)
     useEffect(() => {
         async function fetchArticles() {
             try {
@@ -56,13 +56,13 @@ export default function ProjetsPage() {
         <main className="main-container">
             <Topbar fixed />
 
-            {/* 🔸 Bouton d'ajout de projet/article */}
+            {/* Bouton d'ajout de projet/article */}
             <button className="btn-add" onClick={handleCreate()}>+</button>
 
-            {/* 🔸 Sidebar gère le filtre de la carte */}
+            {/* Sidebar gère le filtre de la carte */}
             <Sidebar map={null} onFilterChange={setMapFilter} />
 
-            {/* 🔸 Articles latéral */}
+            {/* Articles latéral */}
             <section
                 className="section-articles"
             >

@@ -12,7 +12,7 @@ export default function ApercuArticle({ article }) {
     router.push(`/article/${article.id}`);
   };
 
-  // 🔹 Cherche le premier composant de type "image"
+  // Cherche le premier composant de type "image"
   const firstImageComponent = article.composants?.find(
     (elt) => elt.type === "image"
   );
@@ -22,7 +22,7 @@ export default function ApercuArticle({ article }) {
 
   const title = article.titre || "Article sans titre";
 
-  // 🔹 Prétéléchargement de l’image
+  // Prétéléchargement de l’image
   useEffect(() => {
     let canceled = false;
 

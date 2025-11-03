@@ -12,7 +12,7 @@ export default function ApercuArticle({ article }) {
     router.push(`/user/projets/${article.id}/edit`);
   };
 
-  // 🔹 Trouve le premier composant image
+  // Trouve le premier composant image
   const firstImageComponent = article.composants?.find(
     (elt) => elt.type === "image"
   );
@@ -22,7 +22,7 @@ export default function ApercuArticle({ article }) {
 
   const title = article.titre || "Article sans titre";
 
-  // 🔹 Prétéléchargement rapide avec timeout
+  // Préchargement rapide avec timeout
   useEffect(() => {
     let canceled = false;
 
