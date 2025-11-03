@@ -24,15 +24,18 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     }
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/app/admin/dashboard/page.js"  ],
+    "**/*.tsx",
+    "src/app/admin/dashboard/page.js"
+  ],
   "exclude": [
     "node_modules"
   ]

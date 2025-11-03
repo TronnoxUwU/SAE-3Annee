@@ -47,12 +47,16 @@ export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
       </div>
 
       {selectedBlock.type === "paragraph" && (
-        <div>
+        <div className="paragraph-option">
           <div className="paragraph-content">
             <h4>Contenu</h4>
-            <div className="content-preview">
-              {selectedBlock.content || <em style={{ color: "#999" }}>Aucun contenu</em>}
-            </div>
+            <textarea
+              value={selectedBlock.content || ""}
+              onChange={(e) => onUpdateBlock(selectedBlock.id, e.target.value)}
+              placeholder="Paragraphe..."
+              className="heading-textarea-sidebar"
+              rows={5}
+            />
           </div>
           
           <div className="formatting-toolbar">
@@ -111,13 +115,32 @@ export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
 
       {selectedBlock.type === "heading" && (
         <div className="heading-options">
+          <div>
+            <h4>Niveau de titre :</h4>
+            <select
+              value={selectedBlock.options?.headingLevel || 'h2'}
+              onChange={(e) => {
+                const newLevel = e.target.value as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+                onUpdateBlock(selectedBlock.id, selectedBlock.content, { headingLevel: newLevel });
+              }}
+              className="heading-level-select"
+            >
+              <option value="h1">Titre 1</option>
+              <option value="h2">Titre 2</option>
+              <option value="h3">Titre 3</option>
+              <option value="h4">Titre 4</option>
+              <option value="h5">Titre 5</option>
+              <option value="h6">Titre 6</option>
+            </select>
+          </div>
+          
           <h4>Contenu</h4>
-          <input
-            type="text"
+          <textarea
             value={selectedBlock.content || ""}
             onChange={(e) => onUpdateBlock(selectedBlock.id, e.target.value)}
             placeholder="Titre..."
-            className="heading-input"
+            className="heading-textarea-sidebar"
+            rows={5}
           />
         </div>
       )}

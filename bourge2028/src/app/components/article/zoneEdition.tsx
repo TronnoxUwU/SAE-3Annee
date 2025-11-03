@@ -12,6 +12,9 @@ interface Block {
   id: string;
   type: string;
   content?: any;
+  options?: {
+    headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  };
 }
 
 export const Editor: React.FC = () => {
@@ -19,6 +22,7 @@ export const Editor: React.FC = () => {
   const [draggedBlockId, setDraggedBlockId] = useState<string | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
 
   const addBlockAt = (type: string, index: number) => {
     const defaultContent =
@@ -27,7 +31,12 @@ export const Editor: React.FC = () => {
       type === "image" ? "" :
       "";
 
-    const newBlock = { id: Date.now().toString(), type, content: defaultContent };
+    const newBlock = { 
+      id: Date.now().toString(), 
+      type, 
+      content: defaultContent,
+      options: type === "heading" ? { headingLevel: 'h1' as 'h1'} : {} 
+    };
     setBlocks((prev) => {
       const updated = [...prev];
       updated.splice(index, 0, newBlock);
@@ -106,6 +115,7 @@ export const Editor: React.FC = () => {
     setDragOverIndex(null);
     setIsDragging(false);
   };
+
   return (
     <div className="page-container">
       <Palette
@@ -128,10 +138,11 @@ export const Editor: React.FC = () => {
             <div
               className={`editor-block ${
                 draggedBlockId === block.id ? "dragging" : ""
-              }`}
+              } ${selectedBlock === block.id ? "selected" : ""}`}
               draggable
               onDragStart={(e) => handleBlockDragStart(e, block.id)}
               onDragEnd={handleBlockDragEnd}
+              onClick={() => setSelectedBlock(block.id)}
             >
               <div className="block-controls">
                 <button onClick={() => removeBlock(block.id)}>🗑️</button>
@@ -150,6 +161,7 @@ export const Editor: React.FC = () => {
                 {block.type === "heading" && (
                   <Titre
                     value={block.content}
+                    level={block.options?.headingLevel || 'h1'} 
                     onChange={(v) =>
                       setBlocks((prev) =>
                         prev.map((b) => (b.id === block.id ? { ...b, content: v } : b))
@@ -216,6 +228,18 @@ export const Editor: React.FC = () => {
           </div>
         )}
       </div>
+      <Sidebar
+        selectedBlock={blocks.find(b => b.id === selectedBlock) || null}
+        onUpdateBlock={(id, content, options) => {  // ⬅️ AJOUTE options
+          setBlocks(prev => prev.map(b => 
+            b.id === id ? { 
+              ...b, 
+              content,
+              ...(options && { options: { ...b.options, ...options } })  // ⬅️ AJOUTE ÇA
+            } : b
+          ));
+        }}
+      />
     </div>
   );
 };

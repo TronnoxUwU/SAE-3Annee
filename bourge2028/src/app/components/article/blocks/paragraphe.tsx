@@ -44,8 +44,8 @@ export const Paragraphe: React.FC<ParagrapheProps> = ({
         width: "100%",
         outline: "none",
         cursor: "text",
-        resize: "none", // empêche l'utilisateur de redimensionner manuellement
-        overflow: "hidden", // cache la scrollbar
+        resize: "none",
+        overflow: "hidden",
         color: isPlaceholder ? "#888" : "#000",
         fontStyle: isPlaceholder ? "italic" : "normal",
       }}

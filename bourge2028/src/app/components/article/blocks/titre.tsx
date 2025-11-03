@@ -1,39 +1,57 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useRef, useEffect } from "react";
 
 interface TitreProps {
   value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
+  onChange: (value: string) => void;
+  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
-export const Titre: React.FC<TitreProps> = ({
-  value,
-  onChange,
-  placeholder = "Saisissez un titre...",
-}) => {
-  const [isFocused, setIsFocused] = useState(false);
+export const Titre: React.FC<TitreProps> = ({ value, onChange, level = 'h1' }) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  const getFontSize = () => {
+    switch(level) {
+      case 'h1': return '2.5em';
+      case 'h2': return '2em';
+      case 'h3': return '1.75em';
+      case 'h4': return '1.5em';
+      case 'h5': return '1.25em';
+      case 'h6': return '1em';
+      default: return '2em';
+    }
+  };
 
-  const displayText = !isFocused && !value ? placeholder : value;
-  const isPlaceholder = !isFocused && !value;
+  // Auto-resize du textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [value]);
 
   return (
-    <h2
-      contentEditable
-      suppressContentEditableWarning
-      onFocus={() => setIsFocused(true)}
-      onBlur={(e) => {
-        setIsFocused(false);
-        onChange(e.currentTarget.textContent || "");
-      }}
+    <textarea
+      ref={textareaRef}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder='Entrez votre titre...'
+      className="heading-textarea"
       style={{
-        outline: "none",
-        cursor: "text",
-        color: isPlaceholder ? "#888" : "#000", // gris → noir
-        fontStyle: isPlaceholder ? "italic" : "normal",
+        fontSize: getFontSize(),
+        fontWeight: 'bold',
+        border: 'none',
+        outline: 'none',
+        width: '100%',
+        background: 'transparent',
+        padding: '8px 0',
+        fontFamily: 'inherit',
+        resize: 'none',
+        overflow: 'hidden',
+        minHeight: getFontSize(),
+        lineHeight: '1.2',
       }}
-    >
-      {displayText}
-    </h2>
+    />
   );
 };
