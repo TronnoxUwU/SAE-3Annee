@@ -40,7 +40,7 @@
 .editor {
   flex: 1;
   padding: 40px;
-  overflow-y: visible;
+  overflow-y: auto;
   background: #fff;
 }
 
@@ -108,4 +108,29 @@
   border-color: #2196f3;
   background: #e3f2fd;
   color: #1976d2;
+}
+
+.editor-block .heading-input,
+.editor-block .image-url-input,
+.editor-block .paragraph-content {
+  max-width: 100%;
+  overflow-x: auto;   /* active scroll horizontal si le texte est trop long */
+  word-break: break-word; /* coupe les mots trop longs */
+}
+
+.heading-input,
+.image-url-input {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.paragraph-textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: none; /* facultatif, permet à l’utilisateur de redimensionner */
+  overflow-wrap: break-word;
+  background: #fff;
+  border: 0cap;
 }

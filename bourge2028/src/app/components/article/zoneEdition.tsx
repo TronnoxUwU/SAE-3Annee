@@ -5,10 +5,13 @@ import { Palette } from "./palette";
 import { Titre } from "./blocks/titre";
 import { Paragraphe } from "./blocks/paragraphe";
 import { Image } from "./blocks/image";
+import { Sidebar } from "./sideEdition";
+
 
 interface Block {
   id: string;
   type: string;
+  content?: any;
 }
 
 export const Editor: React.FC = () => {
@@ -18,7 +21,13 @@ export const Editor: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   const addBlockAt = (type: string, index: number) => {
-    const newBlock = { id: Date.now().toString(), type };
+    const defaultContent =
+      type === "heading" ? "" :
+      type === "paragraph" ? "" :
+      type === "image" ? "" :
+      "";
+
+    const newBlock = { id: Date.now().toString(), type, content: defaultContent };
     setBlocks((prev) => {
       const updated = [...prev];
       updated.splice(index, 0, newBlock);
@@ -70,7 +79,6 @@ export const Editor: React.FC = () => {
   };
 
   const handleBlockDragStart = (e: React.DragEvent, blockId: string) => {
-    console.log("🟢 DRAG START:", blockId, "Time:", Date.now());
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("blockId", blockId);
     setDraggedBlockId(blockId);
@@ -78,7 +86,6 @@ export const Editor: React.FC = () => {
   };
 
   const handleBlockDragEnd = () => {
-    console.log("🔴 DRAG END:", draggedBlockId, "Time:", Date.now());
     setDraggedBlockId(null);
     setDragOverIndex(null);
     setIsDragging(false);
@@ -90,7 +97,6 @@ export const Editor: React.FC = () => {
   };
 
   const handleDropZoneDrop = (e: React.DragEvent, index: number) => {
-    console.log("💧 DROP sur zone:", index, "Time:", Date.now());
     e.preventDefault();
     const type = e.dataTransfer.getData("component");
     const blockId = e.dataTransfer.getData("blockId");
@@ -100,7 +106,6 @@ export const Editor: React.FC = () => {
     setDragOverIndex(null);
     setIsDragging(false);
   };
-
   return (
     <div className="page-container">
       <Palette
@@ -109,7 +114,6 @@ export const Editor: React.FC = () => {
         isDragging={isDragging}
         setIsDragging={setIsDragging}
       />
-
       <div className="editor">
         {isDragging && blocks.length > 0 && (
           <div
@@ -143,9 +147,38 @@ export const Editor: React.FC = () => {
               </div>
 
               <div style={{ marginTop: "20px" }}>
-                {block.type === "heading" && <Titre />}
-                {block.type === "paragraph" && <Paragraphe />}
-                {block.type === "image" && <Image />}
+                {block.type === "heading" && (
+                  <Titre
+                    value={block.content}
+                    onChange={(v) =>
+                      setBlocks((prev) =>
+                        prev.map((b) => (b.id === block.id ? { ...b, content: v } : b))
+                      )
+                    }
+                  />
+                )}
+
+                {block.type === "paragraph" && (
+                  <Paragraphe
+                    value={block.content}
+                    onChange={(v) =>
+                      setBlocks((prev) =>
+                        prev.map((b) => (b.id === block.id ? { ...b, content: v } : b))
+                      )
+                    }
+                  />
+                )}
+
+                {block.type === "image" && (
+                  <Image
+                    src={block.content}
+                    onChange={(v) =>
+                      setBlocks((prev) =>
+                        prev.map((b) => (b.id === block.id ? { ...b, content: v } : b))
+                      )
+                    }
+                  />
+                )}
               </div>
             </div>
 
