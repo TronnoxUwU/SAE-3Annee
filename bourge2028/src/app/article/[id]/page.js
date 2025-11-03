@@ -89,8 +89,12 @@ export default function ArticlePage() {
 
         {article.composants.map((elt, i) => {
           switch (elt.type) {
-            case "titre":
-              return <h2 key={i}>{elt.titre.texteTitre}</h2>;
+            case "titre": {
+              // par défaut niveau 2 si non défini ou hors limites
+              const niveau = Math.min(Math.max(elt.titre.niveauTitre || 2, 2), 6);
+              const TitreTag = `h${niveau}`; // 'h2', 'h3', ... 'h6'
+              return <TitreTag key={i}>{elt.titre.texteTitre}</TitreTag>;
+            }
 
             case "paragraphe": {
               const safeHTML = DOMPurify.sanitize(
