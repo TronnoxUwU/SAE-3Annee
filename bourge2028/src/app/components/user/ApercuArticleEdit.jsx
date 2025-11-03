@@ -7,27 +7,24 @@ export default function ApercuArticle({ article }) {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/article/${article.id}`);
+    router.push(`/user/projets/${article.id}/edit`);
   };
 
-  // 🔹 Cherche le premier composant de type "image"
+  // Cherche le premier composant de type "image"
   const firstImageComponent = article.composants?.find(
     (elt) => elt.type === "image"
   );
 
-  // 🔹 Si trouvé, récupère son lien, sinon image par défaut
+  // Source de l’image principale
   const imageSrc =
     firstImageComponent?.image?.lienImage || "/images/default-article.png";
 
-  // 🔹 Utilise aussi le titre de l’article ou un fallback
+  // Titre de secours
   const title = article.titre || "Article sans titre";
 
-  // 🔹 Gestion d'erreur d'image
+  // Fonction appelée quand l’image échoue à charger
   const handleImageError = (e) => {
-    // Évite de boucler si le placeholder ne charge pas non plus
-    if (!e.target.src.endsWith("default-article.png")) {
-      e.target.src = "/images/default-article.png";
-    }
+    e.target.src = "/images/default-article.png";
   };
 
   return (

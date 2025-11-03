@@ -13,6 +13,13 @@ export default function CenteredCarousel({ images = [] }) {
     setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  // 🔹 Fonction pour gérer les erreurs de chargement d’image
+  const handleImageError = (e) => {
+    if (!e.target.src.endsWith("default-article.png")) {
+      e.target.src = "/images/default-article.png";
+    }
+  };
+
   return (
     <div className={styles.carouselContainer}>
       <button className={`${styles.arrow} ${styles.left}`} onClick={prevSlide}>
@@ -26,12 +33,17 @@ export default function CenteredCarousel({ images = [] }) {
           let className = styles.slide;
           if (indexDiff === 0) className += ` ${styles.active}`;
           else if (indexDiff === 1) className += ` ${styles.next}`;
-          else if (indexDiff === images.length - 1) className += ` ${styles.prev}`;
+          else if (indexDiff === images.length - 1)
+            className += ` ${styles.prev}`;
           else className += ` ${styles.hidden}`;
 
           return (
             <div key={i} className={className}>
-              <img src={img.src} alt={img.alt || `Image ${i}`} />
+              <img
+                src={img.src}
+                alt={img.alt || `Image ${i}`}
+                onError={handleImageError}
+              />
               {img.caption && <p className={styles.caption}>{img.caption}</p>}
             </div>
           );

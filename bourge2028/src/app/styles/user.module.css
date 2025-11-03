@@ -1,15 +1,22 @@
-.apercu-article-link {
-  text-decoration: none; /* supprime le soulignement du lien */
-  color: inherit;        /* garde la couleur du texte */
+.userPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
-.apercu-article-link:hover .apercu-article {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
+.userPage h1 {
+    font-size: 80px;
+    margin-bottom: 20px;
 }
 
-.apercu-article {
+.conteneur{
+    display: flex;
+    width:  60%;
+    justify-content: space-between;
+}
+
+.card {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 16px;
@@ -23,7 +30,7 @@
   transition: all 0.2s ease;
 }
 
-.apercu-article img {
+.card img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -31,15 +38,15 @@
   margin-bottom: 12px;
 }
 
-.apercu-article h2 {
+.card h2 {
   font-size: 1.5rem;
   text-align: center;
   color: black;
 }
 
-.apercu-article:hover{
+.card:hover{
   cursor: pointer;
   transform: translateY(-8px);
   box-shadow: 0 8px 8px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
+  transition: all 0.2
 }
