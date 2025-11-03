@@ -24,7 +24,7 @@ export default function ProjetsPage() {
                 setLoading(true);
                 setError(null);
 
-                let url = "/api/articles"; // api/user/articles
+                let url = "/api/articles"; // api/structure/articles
                 if (mapFilter) {
                     const params = new URLSearchParams(mapFilter).toString();
                     url += `?${params}`;
@@ -48,7 +48,7 @@ export default function ProjetsPage() {
 
     const handleCreate = () => {
         return () => {
-            window.location.href = `/user/projets/${article.id}/edit`;
+            window.location.href = `/structure/projets/${article.id}/edit`;
         };
     };
 

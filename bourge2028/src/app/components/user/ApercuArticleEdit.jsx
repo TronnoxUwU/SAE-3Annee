@@ -9,7 +9,7 @@ export default function ApercuArticle({ article }) {
   const [imageSrc, setImageSrc] = useState("/images/default-article.png");
 
   const handleClick = () => {
-    router.push(`/user/projets/${article.id}/edit`);
+    router.push(`/structure/projets/${article.id}/edit`);
   };
 
   // Trouve le premier composant image

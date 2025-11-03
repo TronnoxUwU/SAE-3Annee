@@ -65,7 +65,7 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
                 <li onClick={() => handleNavigation("/admin")}>Administration</li>
               )}
               {session && (
-                <li onClick={() => handleNavigation("/user")}>Ma structure</li>
+                <li onClick={() => handleNavigation("/structure")}>Ma structure</li>
               )}
             </ul>
           </div>

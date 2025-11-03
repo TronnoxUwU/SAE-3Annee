@@ -13,7 +13,7 @@ export default function ProjetsPage() {
   });
 
   const handleRedirectProjet = () => {
-    router.push("/user/projets");
+    router.push("/structure/projets");
   };
 
   const handleImageError = (key) => {
