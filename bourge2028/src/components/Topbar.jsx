@@ -59,11 +59,11 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
         {menuOpen && (
           <div className={Styles.dropdown}>
             <ul>
-              <li onClick={() => handleNavigation("/")}>Accueil</li>
               {session && session.user.role === "Admin" && ( // à adapter
                 <li onClick={() => handleNavigation("/admin")}>Administration</li>
               )}
               <li onClick={() => handleNavigation("/annuaire")}>Annuaire</li>
+              <li onClick={() => handleNavigation("/")}>Carte</li>
               <li onClick={() => handleNavigation("/contact")}>Contact</li>
               <li onClick={() => handleNavigation("/credit")}>Crédits</li>
               <li onClick={() => handleNavigation("/information")}>Informations</li>
