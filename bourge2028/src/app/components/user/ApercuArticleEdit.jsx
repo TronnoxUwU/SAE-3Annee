@@ -69,11 +69,6 @@ export default function ApercuArticle({ article }) {
         src={imageSrc}
         alt={title}
         className="apercu-article-image"
-        onError={(e) => {
-          if (!e.target.src.endsWith("default-article.png")) {
-            e.target.src = "/images/default-article.png";
-          }
-        }}
       />
       <h2>{title}</h2>
     </div>

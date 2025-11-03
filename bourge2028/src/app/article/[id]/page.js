@@ -47,14 +47,7 @@ function ArticleImage({ src, alt, className, timeout = 4000 }) {
     };
   }, [src, timeout]);
 
-  // onError final au cas (évite boucle infinie)
-  const handleError = (e) => {
-    if (!e.target.src.endsWith("default-article.png")) {
-      e.target.src = "/images/default-article.png";
-    }
-  };
-
-  return <img src={imgSrc} alt={alt || ""} className={className} onError={handleError} />;
+  return <img src={imgSrc} alt={alt || ""} className={className} />;
 }
 
 export default function ArticlePage() {
