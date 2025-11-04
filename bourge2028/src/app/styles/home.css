@@ -76,3 +76,7 @@
 .toggle-btn.no-transition {
   transition: none !important;
 }
+
+::-webkit-scrollbar{
+  display: none;
+}
