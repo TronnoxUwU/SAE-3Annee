@@ -9,7 +9,6 @@ export async function POST(req: Request) {
 
     const data = deserializeArticle(body);
 
-    console.log(data)
 
     const article = await prisma.article.create({
       data,

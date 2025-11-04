@@ -1,0 +1,67 @@
+.articlePage {
+  background-color: white;
+  max-width: 50%;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: black;
+}
+
+/* Titres */
+.articlePage h1 {
+  font-size: 3.5rem;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.articlePage h2 {
+  font-size: 2.5rem;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.articlePage h3 {
+  font-size: 2.2rem;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.articlePage h4 {
+  font-size: 1.9rem;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.articlePage h5 {
+  font-size: 1.6rem;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.articlePage h6 {
+  font-size: 1.3rem;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+/* Paragraphes */
+.articlePage p {
+  font-size: 1rem;
+  margin-bottom: 16px;
+  text-align: justify;
+}
+
+/* Images carrées centrées */
+.articlePage img {
+  display: block;
+  margin: 16px auto;
+  max-height: 40vh;
+  width: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Documents */
+.articleDocuments ul {
+  margin-left: 20px;
+}

@@ -1,0 +1,45 @@
+.apercuArticleLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.apercuArticleLink:hover .apercuArticle {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.apercuArticle {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  max-width: 350px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.apercuArticle img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.apercuArticle h2 {
+  font-size: 1.5rem;
+  text-align: center;
+  color: black;
+}
+
+.apercuArticle:hover {
+  cursor: pointer;
+  transform: translateY(-8px);
+  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}

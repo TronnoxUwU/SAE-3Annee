@@ -1,0 +1,27 @@
+.admin_menu {
+  display: flex;
+  justify-content: space-between;
+}
+.content_bloc {
+  /* background-color: #111827;* */
+  background-color: white;
+  box-shadow: #111827 0px 0px 10px;
+  padding: 1vw 2vw;
+  border-radius: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.content_bloc p {
+  font-weight: bold;
+  color: black;
+  font-size: 2em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1em;
+}
+.content_bloc img {
+  max-height: 12vw;
+  max-width: 12vw;
+}

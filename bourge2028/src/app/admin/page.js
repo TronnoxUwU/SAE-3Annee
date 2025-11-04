@@ -1,8 +1,8 @@
 
 // import "./styles/admin.css";
 
-import AdminSidebar from "./components/admin-sidebar";
-import AdminMenu from "./components/admin-carousel";
+import AdminSidebar from "./components/Sidebar/admin-sidebar";
+import AdminMenu from "./components/Main-menu/admin-carousel";
 import Topbar from "@/components/Topbar.jsx";
 
 export default function AdminPage() {

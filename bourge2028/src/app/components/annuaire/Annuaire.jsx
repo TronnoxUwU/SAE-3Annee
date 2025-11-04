@@ -1,10 +1,18 @@
-export default function Annuaire() {
+"use client";
+
+import ApercuArticle from "./ApercuArticle";
+import styles from "../../styles/annuaire.module.css";
+
+export default function Annuaire({ articles }) {
+  if (!articles?.length) {
+    return <p>Aucun article trouvé.</p>;
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center py-20">
-      <h2 className="text-3xl font-bold mb-6">Annuaire</h2>
-      <p className="text-gray-600 max-w-2xl text-center">
-        Liste des membres, entreprises, ou tout autre contenu que tu veux afficher ici.
-      </p>
+    <div className={styles.annuaire}>
+      {articles.map((article) => (
+        <ApercuArticle key={article.id} article={article} />
+      ))}
     </div>
   );
 }

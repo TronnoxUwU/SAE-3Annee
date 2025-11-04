@@ -1,0 +1,164 @@
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  max-width: 60vw;
+  margin: 2rem auto;
+  overflow: visible;
+  perspective: 1000px;
+}
+
+.carouselTrack {
+  position: relative;
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slide {
+  position: absolute;
+  width: 75%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0.8) translateX(0);
+  transition: transform 0.6s ease, opacity 0.6s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slide img {
+  width: inherit;
+  height: inherit;
+  object-fit: contain;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Image centrale (active) */
+.active {
+  opacity: 1;
+  transform: scale(1) translateX(0);
+  z-index: 3;
+}
+
+/* Image à gauche (précédente) */
+.prev {
+  opacity: 0.6;
+  transform: scale(0.9) translateX(-35%) rotateY(15deg);
+  z-index: 2;
+}
+
+/* Image à droite (suivante) */
+.next {
+  opacity: 0.6;
+  transform: scale(0.9) translateX(35%) rotateY(-15deg);
+  z-index: 2;
+}
+
+/* Cache les autres */
+.hidden {
+  opacity: 0;
+  z-index: 1;
+  transform: scale(0.8);
+}
+
+/* Flèches */
+.arrow {
+  position: absolute;
+  top: 35%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  z-index: 10;
+  transition: background 0.3s;
+}
+
+.arrow:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.left {
+  left: 25px;
+}
+
+.right {
+  right: 25px;
+}
+
+/* Points de navigation */
+.dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.activeDot {
+  background: #007bff;
+}
+
+/* Animations légères */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slide {
+    width: 80%;
+  }
+
+  .prev {
+    transform: scale(0.9) translateX(-40%) rotateY(10deg);
+  }
+
+  .next {
+    transform: scale(0.9) translateX(40%) rotateY(-10deg);
+  }
+
+  .arrow.left {
+    left: -30px;
+  }
+
+  .arrow.right {
+    right: -30px;
+  }
+
+  .carouselTrack {
+    height: 300px;
+  }
+}

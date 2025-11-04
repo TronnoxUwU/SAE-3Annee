@@ -15,7 +15,8 @@ generator client {
 
 model Structure {
   id            Int          @id @default(autoincrement())
-  nomStructure   String?
+  nomStructure  String?
+  description   String?
   dateCreation  DateTime?
   departement   Departement? @relation(fields: [departementId], references: [id])
   departementId Int?
@@ -73,29 +74,31 @@ model Realisation {
 
   // Relations communes
   tags      RealisationTag[]
+  Rediger   Rediger[]
   // relations ISA 1:1
   projet    Projet?
   materiau  Materiau?
   technique Technique?
+
 }
 
 model Projet {
   id             Int         @id @default(autoincrement())
-  titreCaroussel String?
+  nomProjet      String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
 
 model Materiau {
   id             Int         @id @default(autoincrement())
-  titreCaroussel String?
+  nomMateriau    String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
 
 model Technique {
   id             Int         @id @default(autoincrement())
-  titreCaroussel String?
+  nomTechnique   String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
 }
@@ -104,7 +107,7 @@ model Tag {
   id  Int    @id @default(autoincrement())
   nom String
 
-  category   Categorie? @relation(fields: [categoryId], references: [id])
+  category   Categorie? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId Int?
 
   realisations RealisationTag[]
@@ -134,12 +137,17 @@ model StructureTag {
 model Categorie {
   id  Int    @id @default(autoincrement())
   nom String
+  
+  parentId Int?
+  parent   Categorie?  @relation("CategorieToSouscategories", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  children Categorie[] @relation("CategorieToSouscategories")
 
   tags Tag[]
 }
 
 model Article {
   id         Int         @id @default(autoincrement())
+  titre      String
   redactions Rediger[]   
   composants Composant[] 
   documents   Document[]
@@ -151,6 +159,8 @@ model Rediger {
   articleId  Int
   personne   Personne @relation(fields: [personneId], references: [id])
   personneId Int
+  realisation Realisation @relation(fields: [realisationId], references: [id])
+  realisationId Int 
 
   dateRedaction DateTime?
   dateModif     DateTime?
