@@ -24,14 +24,14 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: bourge28/package-lock.json
+          cache-dependency-path: bourge2028/package-lock.json
 
       - name: Install dependencies
-        working-directory: bourge28
+        working-directory: bourge2028
         run: npm ci
 
       - name: Build project
-        working-directory: bourge28
+        working-directory: bourge2028
         run: npm run build
 
       - name: Log in to Docker Hub
@@ -39,5 +39,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          
+
       
