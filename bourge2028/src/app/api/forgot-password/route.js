@@ -6,9 +6,7 @@ import jwt from "jsonwebtoken";
 export async function POST(req) {
   const { email } = await req.json();
 
-  // Exemple: recherche dans ta base
-  // const user = await prisma.user.findUnique({ where: { email } });
-  const user = { id: 1, email }; // simulate
+  const user = await prisma.Personne.findUnique({ where: { email } });
 
   if (!user) {
     return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
