@@ -116,7 +116,7 @@ export default function AnnuairePage() {
         }`}
         onClick={handleClose}
       >
-        {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’annuaire ↓"}
+        {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’Annuaire ↓"}
       </button>
     </main>
   );
