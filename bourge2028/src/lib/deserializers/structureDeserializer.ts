@@ -6,6 +6,7 @@ export const deserializeStructure = (
   const {
     nomStructure,
     dateCreation,
+    description,
     departementId,
     tags,
     personnes,
@@ -17,6 +18,7 @@ export const deserializeStructure = (
   const deserialized: Prisma.StructureCreateInput = {
     nomStructure,
     dateCreation: dateCreation ? new Date(dateCreation) : undefined,
+    description,
 
     departement: departementId
       ? { connect: { id: departementId } }

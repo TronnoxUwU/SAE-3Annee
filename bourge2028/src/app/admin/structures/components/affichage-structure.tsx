@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import StructureItem from "./structure-Item";
+import tempStyle from "./structure-Item.module.css"
 
 export default function AdminStructure() {
   const [items, setItems] = useState([]);
@@ -16,7 +17,7 @@ export default function AdminStructure() {
   useEffect(() => { loadCategories(); }, []);
 
   return (
-    <ul >
+    <ul className={`${tempStyle.override_list}`}>
       {items.map(item => {
         return (
           <StructureItem
@@ -24,6 +25,7 @@ export default function AdminStructure() {
             id={item.id}
             nom={item.nomStructure}
             date={item.dateCreation}
+            description={item.description}
           />
         );
       })}

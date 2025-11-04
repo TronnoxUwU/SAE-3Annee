@@ -11,6 +11,7 @@ export const serializeStructure = (
   id: structure.id,
   nomStructure: structure.nomStructure ?? null,
   dateCreation: structure.dateCreation ?? null,
+  description: structure.description ?? null,
   departementId: structure.departementId ?? null,
 
   departement: structure.departement // revoir avec departement

@@ -15,7 +15,8 @@ generator client {
 
 model Structure {
   id            Int          @id @default(autoincrement())
-  nomStructure   String?
+  nomStructure  String?
+  description   String?
   dateCreation  DateTime?
   departement   Departement? @relation(fields: [departementId], references: [id])
   departementId Int?
