@@ -1,33 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
-  const [savedSelection, setSavedSelection] = useState(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const saveSelection = () => {
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-      setSavedSelection(selection.getRangeAt(0));
+  const applyFormatToTextarea = (tag: string, textareaElement: HTMLTextAreaElement | null) => {
+    if (!textareaElement) return;
+
+    const start = textareaElement.selectionStart;
+    const end = textareaElement.selectionEnd;
+    const text = textareaElement.value;
+    const selectedText = text.substring(start, end);
+
+    if (!selectedText) {
+      alert("Veuillez sélectionner du texte à formater");
+      return;
     }
-  };
 
-  const restoreSelection = () => {
-    if (savedSelection) {
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(savedSelection);
-    }
-  };
+    const openTag = `<${tag}>`;
+    const closeTag = `</${tag}>`;
+    const newText = 
+      text.substring(0, start) +
+      openTag + selectedText + closeTag +
+      text.substring(end);
 
-  const applyFormat = (command) => {
-    restoreSelection();
-    document.execCommand(command, false, null);
-    // Garder le focus sur l'élément contentEditable
+    onUpdateBlock(selectedBlock.id, newText);
+
+    // Remettre le focus
     setTimeout(() => {
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        setSavedSelection(selection.getRangeAt(0));
-      }
+      textareaElement.focus();
+      const newCursorPos = start + openTag.length + selectedText.length + closeTag.length;
+      textareaElement.setSelectionRange(newCursorPos, newCursorPos);
     }, 0);
+  };
+
+  const applyFormat = (tag: string) => {
+    // Essayer d'abord dans le textarea de la sidebar
+    if (textareaRef.current && document.activeElement === textareaRef.current) {
+      applyFormatToTextarea(tag, textareaRef.current);
+      return;
+    }
+
+    // Sinon chercher le textarea dans l'éditeur
+    const editorTextareas = document.querySelectorAll('.paragraph-textarea');
+    editorTextareas.forEach((textarea) => {
+      const selection = (textarea as HTMLTextAreaElement).selectionStart;
+      if (selection !== undefined && selection >= 0) {
+        applyFormatToTextarea(tag, textarea as HTMLTextAreaElement);
+      }
+    });
   };
 
   if (!selectedBlock) {
@@ -51,6 +71,7 @@ export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
           <div className="paragraph-content">
             <h4>Contenu</h4>
             <textarea
+              ref={textareaRef}
               value={selectedBlock.content || ""}
               onChange={(e) => onUpdateBlock(selectedBlock.id, e.target.value)}
               placeholder="Paragraphe..."
@@ -63,30 +84,21 @@ export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
             <h4>Formatage</h4>
             <div className="toolbar-buttons">
               <button
-                onMouseDown={(e) => {
-                  e.preventDefault(); // Empêche la perte de focus
-                  applyFormat("bold");
-                }}
+                onClick={() => applyFormat("strong")}
                 className="format-btn"
                 title="Gras"
               >
                 <strong>B</strong>
               </button>
               <button
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  applyFormat("italic");
-                }}
+                onClick={() => applyFormat("em")}
                 className="format-btn"
                 title="Italique"
               >
                 <em>I</em>
               </button>
               <button
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  applyFormat("underline");
-                }}
+                onClick={() => applyFormat("u")}
                 className="format-btn"
                 title="Souligné"
               >
@@ -94,7 +106,7 @@ export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
               </button>
             </div>
             <p className="format-help">
-              💡 Sélectionnez du texte dans le paragraphe puis cliquez sur un bouton de formatage
+              💡 Sélectionnez du texte puis cliquez sur un bouton de formatage
             </p>
           </div>
         </div>
