@@ -26,6 +26,71 @@ export const Editor: React.FC = () => {
   // 👉 Nouveau : on garde une référence sur CHAQUE paragraphe
   const paragraphRefs = useRef<Record<string, ParagrapheHandle | null>>({});
 
+  const handleSave = async() => {
+    const json = {
+      composants: blocks.map((b, index) => {
+        const position = index + 1;
+
+        if (b.type === "heading") {
+          return {
+            type: "titre",
+            positionComposant: position,
+            titre: {
+              niveauTitre: Number(b.options?.headingLevel?.replace("h", "")) || 1,
+              texteTitre: b.content,
+            },
+          };
+        }
+
+        if (b.type === "image") {
+          return {
+            type: "image",
+            positionComposant: position,
+            image: {
+              lienImage: b.content || "",
+              titreImage: "", // tu pourras ajouter ce champ dans ton composant Image plus tard
+            },
+          };
+        }
+
+        if (b.type === "paragraph") {
+          return {
+            type: "paragraphe",
+            positionComposant: position,
+            paragraphe: {
+              texteParagraphe: b.content,
+            },
+          };
+        }
+
+        return null;
+      }).filter(Boolean),
+    };
+
+    console.log("📝 Article sauvegardé :", JSON.stringify(json, null, 2));
+    try {
+    const response = await fetch("http://localhost:3000/api/articles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(json),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP : ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("✅ Article sauvegardé avec succès :", result);
+    alert("Article sauvegardé avec succès !");
+  } catch (error) {
+    console.error("❌ Erreur lors de la sauvegarde :", error);
+    alert("Erreur lors de la sauvegarde !");
+  }
+  };
+
+
   const addBlockAt = (type: string, index: number) => {
     const defaultContent =
       type === "heading" ? "" :
@@ -125,6 +190,7 @@ export const Editor: React.FC = () => {
         onRemoveBlock={removeBlock}
         isDragging={isDragging}
         setIsDragging={setIsDragging}
+        onSave={handleSave} // 🆕
       />
 
       <div className="editor">

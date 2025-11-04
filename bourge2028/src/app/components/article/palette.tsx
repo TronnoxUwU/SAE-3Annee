@@ -7,6 +7,7 @@ interface PaletteProps {
   onRemoveBlock: (id: string) => void;
   isDragging: boolean;
   setIsDragging: (v: boolean) => void;
+  onSave: () => void; // 🆕 nouvelle prop
 }
 
 export const Palette: React.FC<PaletteProps> = ({
@@ -14,6 +15,7 @@ export const Palette: React.FC<PaletteProps> = ({
   onRemoveBlock,
   isDragging,
   setIsDragging,
+  onSave, // 🆕
 }) => {
   const components = [
     { type: "heading", label: "Titre" },
@@ -30,23 +32,19 @@ export const Palette: React.FC<PaletteProps> = ({
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const blockId = e.dataTransfer.getData("blockId");
-    if (blockId) {
-      onRemoveBlock(blockId);
-    }
+    if (blockId) onRemoveBlock(blockId);
     setIsDragging(false);
   };
 
-  const handleDragEnd = () => {
-    setIsDragging(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
+  const handleDragEnd = () => setIsDragging(false);
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
 
   return (
     <div className="palette" onDrop={handleDrop} onDragOver={handleDragOver}>
+      <button onClick={onSave} className="save-button">
+        💾 Sauvegarder
+      </button>
+
       <h3>Composants</h3>
       {components.map((c) => (
         <div
@@ -60,6 +58,7 @@ export const Palette: React.FC<PaletteProps> = ({
           {c.label}
         </div>
       ))}
+
       <div className="trash-zone">🗑️ Glissez ici pour supprimer</div>
     </div>
   );
