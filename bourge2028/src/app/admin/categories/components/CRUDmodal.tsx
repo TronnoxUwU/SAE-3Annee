@@ -5,9 +5,14 @@ import Modal from "@/components/Modal";
 import Style from "./crudModal.module.css"
 import { revalidateTag } from "next/cache";
 
-export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, onAdd, onUpdate, onDelete }) {
+export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, name, onAdd, onUpdate, onDelete }) {
 
   const [nom, setNom] = useState("");
+
+  const handleClose = () => {
+    setNom("");
+    onClose();
+  };
 
   const handleSubmitAdd = async (e) => {
     e.preventDefault();
@@ -29,7 +34,7 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, onAdd, onU
     }
     else{/* Faire une popup fail */}
 
-    onClose();
+    handleClose();
   };
 
   const handleSubmitUpdate = async (e) => {
@@ -51,7 +56,7 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, onAdd, onU
     }
     else{/* Faire une popup fail */}
 
-    onClose();
+    handleClose();
   };
 
   const handleSubmitDelete = async (e) => {
@@ -71,7 +76,7 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, onAdd, onU
     }
     else{/* Faire une popup fail */}
 
-    onClose();
+    handleClose();
   };
 
   
@@ -81,9 +86,9 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, onAdd, onU
       <>
         {/* <h2>Ajouter une catégorie</h2> */}
         {CRUD === "UPDATE"
-          ? <h2>Modifiez cette catégorie</h2>
+          ? <h2>Modifiez le nom de cette catégorie</h2>
           : CRUD === "DELETE"
-          ? <h2>Voulez-vous cette catégorie ?</h2>
+          ? <h2>Voulez-vous supprimer cette catégorie ?</h2>
           : <h2>Ajouter une catégorie</h2>
         }
 
@@ -103,7 +108,7 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, onAdd, onU
             ?<input
                 type="text"
                 placeholder="Nom de votre catégorie"
-                value={nom}
+                value={nom!=="" ? nom : name}
                 onChange={(e) => setNom(e.target.value)}
               />
             : <></>

@@ -71,6 +71,7 @@ const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: Lis
             isOpen={openAddModal}
             onClose={() => setOpenAddModal(false)}
             selfId={id}
+            name={nom}
             onAdd={onAdd}
             onUpdate={onUpdate}
             onDelete={onDelete}

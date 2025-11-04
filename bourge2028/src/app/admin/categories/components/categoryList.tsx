@@ -84,6 +84,7 @@ export default function AdminCategory() {
         isOpen={openAddModal}
         onClose={() => setOpenAddModal(false)}
         selfId={null}
+        name={""}
         onAdd={handleAdd}
         onUpdate={null}
         onDelete={null} 
