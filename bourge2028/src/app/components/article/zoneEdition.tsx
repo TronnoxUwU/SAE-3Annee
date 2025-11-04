@@ -70,7 +70,7 @@ export const Editor: React.FC = () => {
 
     console.log("📝 Article sauvegardé :", JSON.stringify(json, null, 2));
     try {
-    const response = await fetch("http://localhost:3000/api/articles", {
+    const response = await fetch("/api/articles", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
