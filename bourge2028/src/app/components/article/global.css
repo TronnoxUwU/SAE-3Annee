@@ -132,15 +132,6 @@
   white-space: nowrap;
 }
 
-.paragraph-textarea {
-  width: 100%;
-  min-height: 100px;
-  resize: none;
-  overflow-wrap: break-word;
-  background: #fff;
-  border: 0;
-}
-
 /* ========== SIDEBAR STYLES ========== */
 
 .sidebar {
@@ -401,3 +392,21 @@
   box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
   color: black;
 }
+
+.paragraph-contenteditable {
+  position: relative;
+  color: #000;
+}
+
+.paragraph-contenteditable:empty:before {
+  content: attr(data-placeholder);
+  color: #888;
+  font-style: italic;
+  pointer-events: none;
+  position: absolute;
+}
+
+.paragraph-contenteditable:focus:before {
+  content: none;
+}
+

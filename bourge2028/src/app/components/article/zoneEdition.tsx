@@ -230,12 +230,12 @@ export const Editor: React.FC = () => {
       </div>
       <Sidebar
         selectedBlock={blocks.find(b => b.id === selectedBlock) || null}
-        onUpdateBlock={(id, content, options) => {  // ⬅️ AJOUTE options
+        onUpdateBlock={(id, content, options) => {
           setBlocks(prev => prev.map(b => 
             b.id === id ? { 
               ...b, 
               content,
-              ...(options && { options: { ...b.options, ...options } })  // ⬅️ AJOUTE ÇA
+              ...(options && { options: { ...b.options, ...options } })
             } : b
           ));
         }}
