@@ -28,6 +28,7 @@ export const Editor: React.FC = () => {
 
   const handleSave = async() => {
     const json = {
+      titre: "",
       composants: blocks.map((b, index) => {
         const position = index + 1;
 
