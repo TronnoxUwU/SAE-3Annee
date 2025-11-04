@@ -15,7 +15,8 @@ generator client {
 
 model Structure {
   id            Int          @id @default(autoincrement())
-  nomStructure   String?
+  nomStructure  String?
+  description   String?
   dateCreation  DateTime?
   departement   Departement? @relation(fields: [departementId], references: [id])
   departementId Int?
@@ -106,7 +107,7 @@ model Tag {
   id  Int    @id @default(autoincrement())
   nom String
 
-  category   Categorie? @relation(fields: [categoryId], references: [id])
+  category   Categorie? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId Int?
 
   realisations RealisationTag[]
@@ -136,6 +137,10 @@ model StructureTag {
 model Categorie {
   id  Int    @id @default(autoincrement())
   nom String
+  
+  parentId Int?
+  parent   Categorie?  @relation("CategorieToSouscategories", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  children Categorie[] @relation("CategorieToSouscategories")
 
   tags Tag[]
 }

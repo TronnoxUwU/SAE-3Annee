@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import RegisterModal from "./RegisterModal";
-import Modal from "./Modal";
+import Modal from "@/components/Modal";
 import Style from './connect.module.css';
 import TopStyle from "@/components/Topbar.module.css"
 

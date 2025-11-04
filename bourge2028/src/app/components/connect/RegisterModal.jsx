@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Modal from "./Modal";
+import Modal from "@/components/Modal";
 import Style from "./connect.module.css";
 
 export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
