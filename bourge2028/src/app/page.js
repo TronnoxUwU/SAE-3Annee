@@ -24,6 +24,8 @@ export default function Page() {
 
   return (
     <main className="main-container">
+      <Topbar fixed title="Carte de la culture à Bourges 2028 !" />
+
       <section className="section-map">
 
 
@@ -31,17 +33,17 @@ export default function Page() {
           <div className="map-inner">
             <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
             <Map mapFilter={mapFilter} onMapReady={setMapInstance} />
-            <Topbar fixed title="Carte de la culture à Bourges 2028 !"/>
           </div>
         </div>
 
-        <button
-          className="toggle-btn open"
-          onClick={goToAnnuaire}
-        >
-          Aller à l’Annuaire ↓
-        </button>
+
       </section>
+      <button
+        className="toggle-btn open"
+        onClick={goToAnnuaire}
+      >
+        Aller à l’Annuaire ↓
+      </button>
     </main>
   );
 }

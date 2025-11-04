@@ -1,7 +1,7 @@
 "use client";
 
 import ApercuArticle from "./ApercuArticle";
-import "../../styles/annuaire.css";
+import styles from "../../styles/annuaire.module.css";
 
 export default function Annuaire({ articles }) {
   if (!articles?.length) {
@@ -9,7 +9,7 @@ export default function Annuaire({ articles }) {
   }
 
   return (
-    <div className="annuaire">
+    <div className={styles.annuaire}>
       {articles.map((article) => (
         <ApercuArticle key={article.id} article={article} />
       ))}

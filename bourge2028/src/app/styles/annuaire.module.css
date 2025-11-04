@@ -6,10 +6,10 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 16px;
-  justify-items: center; /* centre horizontalement chaque item */
-  align-items: start;   /* aligne en haut chaque item */
+  justify-items: center;
+  align-items: start;
   padding: 16px;
-  overflow-y: auto;     /* scroll vertical si nécessaire */
+  overflow-y: auto;
   scrollbar-width: none; /* Firefox */
 }
 

@@ -70,9 +70,13 @@
 
 /* Drawer ouvert → bouton monte avec le drawer */
 .toggle-btn.open {
-  top: calc(100vh - 50px); /* 100vh - hauteur drawer - marge */
+  top: calc(100vh - 70px); /* 100vh - hauteur drawer - marge */
 }
 
 .toggle-btn.no-transition {
   transition: none !important;
+}
+
+::-webkit-scrollbar{
+  display: none;
 }
