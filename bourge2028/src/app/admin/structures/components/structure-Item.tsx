@@ -28,7 +28,7 @@ const StructureItem = ({ id, nom, date, description }: ListItemProps) => {
     <li className={`card p-0 ${Style.item_bloc}`}>
       <div className={`${Style.struct_header} card-header fs-2`}>
         {nom}
-        {/* btn crud */}
+        {/* btn acces structure */}
         <div className="btn-group btn-group-sm" role="group">
 
           <button
