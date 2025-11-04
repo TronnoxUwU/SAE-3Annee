@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Palette } from "./palette";
 import { Titre } from "./blocks/titre";
-import { Paragraphe } from "./blocks/paragraphe";
+import { Paragraphe, ParagrapheHandle } from "./blocks/paragraphe";
 import { Image } from "./blocks/image";
 import { Sidebar } from "./sideEdition";
-
 
 interface Block {
   id: string;
@@ -23,6 +22,9 @@ export const Editor: React.FC = () => {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
+
+  // 👉 Nouveau : on garde une référence sur CHAQUE paragraphe
+  const paragraphRefs = useRef<Record<string, ParagrapheHandle | null>>({});
 
   const addBlockAt = (type: string, index: number) => {
     const defaultContent =
@@ -124,21 +126,12 @@ export const Editor: React.FC = () => {
         isDragging={isDragging}
         setIsDragging={setIsDragging}
       />
-      <div className="editor">
-        {isDragging && blocks.length > 0 && (
-          <div
-            className={`drop-zone ${dragOverIndex === 0 ? "active" : ""}`}
-            onDragOver={(e) => handleDropZoneDragOver(e, 0)}
-            onDrop={(e) => handleDropZoneDrop(e, 0)}
-          />
-        )}
 
+      <div className="editor">
         {blocks.map((block, index) => (
           <React.Fragment key={block.id}>
             <div
-              className={`editor-block ${
-                draggedBlockId === block.id ? "dragging" : ""
-              } ${selectedBlock === block.id ? "selected" : ""}`}
+              className={`editor-block ${draggedBlockId === block.id ? "dragging" : ""} ${selectedBlock === block.id ? "selected" : ""}`}
               draggable
               onDragStart={(e) => handleBlockDragStart(e, block.id)}
               onDragEnd={handleBlockDragEnd}
@@ -146,22 +139,15 @@ export const Editor: React.FC = () => {
             >
               <div className="block-controls">
                 <button onClick={() => removeBlock(block.id)}>🗑️</button>
-                <button onClick={() => moveBlockUp(block.id)} disabled={index === 0}>
-                  ⬆️
-                </button>
-                <button
-                  onClick={() => moveBlockDown(block.id)}
-                  disabled={index === blocks.length - 1}
-                >
-                  ⬇️
-                </button>
+                <button onClick={() => moveBlockUp(block.id)} disabled={index === 0}>⬆️</button>
+                <button onClick={() => moveBlockDown(block.id)} disabled={index === blocks.length - 1}>⬇️</button>
               </div>
 
               <div style={{ marginTop: "20px" }}>
                 {block.type === "heading" && (
                   <Titre
                     value={block.content}
-                    level={block.options?.headingLevel || 'h1'} 
+                    level={block.options?.headingLevel || 'h1'}
                     onChange={(v) =>
                       setBlocks((prev) =>
                         prev.map((b) => (b.id === block.id ? { ...b, content: v } : b))
@@ -172,6 +158,7 @@ export const Editor: React.FC = () => {
 
                 {block.type === "paragraph" && (
                   <Paragraphe
+                    ref={(el) => (paragraphRefs.current[block.id] = el)}
                     value={block.content}
                     onChange={(v) =>
                       setBlocks((prev) =>
@@ -194,11 +181,9 @@ export const Editor: React.FC = () => {
               </div>
             </div>
 
-            {isDragging  && (
+            {isDragging && (
               <div
-                className={`drop-zone ${
-                  dragOverIndex === index + 1 ? "active" : ""
-                }`}
+                className={`drop-zone ${dragOverIndex === index + 1 ? "active" : ""}`}
                 onDragOver={(e) => handleDropZoneDragOver(e, index + 1)}
                 onDrop={(e) => handleDropZoneDrop(e, index + 1)}
               />
@@ -228,17 +213,23 @@ export const Editor: React.FC = () => {
           </div>
         )}
       </div>
+
       <Sidebar
-        selectedBlock={blocks.find(b => b.id === selectedBlock) || null}
+        selectedBlock={blocks.find((b) => b.id === selectedBlock) || null}
         onUpdateBlock={(id, content, options) => {
-          setBlocks(prev => prev.map(b => 
-            b.id === id ? { 
-              ...b, 
-              content,
-              ...(options && { options: { ...b.options, ...options } })
-            } : b
-          ));
+          setBlocks((prev) =>
+            prev.map((b) =>
+              b.id === id
+                ? {
+                    ...b,
+                    content,
+                    ...(options && { options: { ...b.options, ...options } }),
+                  }
+                : b
+            )
+          );
         }}
+        paragraphRefs={paragraphRefs} // ✅ on passe les refs à la sidebar
       />
     </div>
   );

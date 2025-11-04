@@ -1,10 +1,10 @@
 import React, { useRef } from "react";
 
-export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
+export const Sidebar = ({ selectedBlock, onUpdateBlock, paragraphRefs }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const applyFormat = (command: string) => {
-    // Pour le textarea de la sidebar (qui reste un textarea)
+    // 1️⃣ Cas : formatage depuis la Sidebar (textarea)
     if (textareaRef.current && document.activeElement === textareaRef.current) {
       const textarea = textareaRef.current;
       const start = textarea.selectionStart;
@@ -17,18 +17,16 @@ export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
         return;
       }
 
-      const tagMap = {
-        'bold': 'strong',
-        'italic': 'em',
-        'underline': 'u'
-      };
+      const tagMap = { bold: "strong", italic: "em", underline: "u" };
       const tag = tagMap[command] || command;
 
       const openTag = `<${tag}>`;
       const closeTag = `</${tag}>`;
-      const newText = 
+      const newText =
         text.substring(0, start) +
-        openTag + selectedText + closeTag +
+        openTag +
+        selectedText +
+        closeTag +
         text.substring(end);
 
       onUpdateBlock(selectedBlock.id, newText);
@@ -41,10 +39,14 @@ export const Sidebar = ({ selectedBlock, onUpdateBlock }) => {
       return;
     }
 
-    // Pour le contentEditable de l'éditeur principal
-    const editorContentEditable = document.querySelector('.paragraph-contenteditable');
-    if (editorContentEditable && editorContentEditable.contains(document.activeElement)) {
-      document.execCommand(command, false, null);
+    // 2️⃣ Cas : formatage dans le paragraphe contentEditable
+    const paragraphHandle = paragraphRefs.current[selectedBlock.id];
+    if (paragraphHandle?.applyFormat) {
+      paragraphHandle.applyFormat(
+        command === "bold" ? "strong" :
+        command === "italic" ? "em" :
+        command === "underline" ? "u" : command
+      );
     }
   };
 
