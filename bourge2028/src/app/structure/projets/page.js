@@ -55,9 +55,12 @@ export default function ProjetsPage() {
       <Topbar fixed />
 
       {/* Bouton d'ajout de projet/article */}
-      <button className={styles.btnAdd} onClick={handleCreate}>
-        +
-      </button>
+
+      <a className={styles.btnAddWrapper} href="/articles">
+        <button className={styles.btnAdd}>
+          +
+        </button>
+      </a>
 
       <Sidebar map={null} onFilterChange={setMapFilter} />
 
