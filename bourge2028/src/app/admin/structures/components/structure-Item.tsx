@@ -34,7 +34,7 @@ const StructureItem = ({ id, nom, date, description }: ListItemProps) => {
           <button
               className={`${Style.btn_crud} btn btn-outline-success btn-sm px-3`}
               title="Consulter"
-              onClick={() => {}}
+              onClick={() => {window.location.href = `/structure/${id}`;}}
           >
             Consulter
             <i className="bi bi-eye fs-4"></i>
