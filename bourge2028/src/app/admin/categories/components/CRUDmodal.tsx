@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "@/components/Modal";
 import Style from "./crudModal.module.css"
 import { revalidateTag } from "next/cache";
@@ -8,6 +8,13 @@ import { revalidateTag } from "next/cache";
 export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, name, onAdd, onUpdate, onDelete }) {
 
   const [nom, setNom] = useState("");
+
+  useEffect(() => {
+    if (isOpen) {
+      setNom(name || "");
+    }
+  }, [isOpen, name]);
+
 
   const handleClose = () => {
     setNom("");
@@ -108,7 +115,7 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, name, onAd
             ?<input
                 type="text"
                 placeholder="Nom de votre catégorie"
-                value={nom!=="" ? nom : name}
+                value={nom}
                 onChange={(e) => setNom(e.target.value)}
               />
             : <></>
