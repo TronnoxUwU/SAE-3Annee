@@ -7,11 +7,6 @@ import Style from "../styles/user.module.css";
 
 export default function ProjetsPage() {
 
-    const redirectProjet = () => {
-        return () => {
-            window.location.href = "/user/projets";
-        };
-    }
 
     return (
         <>
@@ -19,14 +14,14 @@ export default function ProjetsPage() {
             <div className={Style.userPage}>
                 <h1>Ma Structure</h1>
                 <div className={Style.conteneur}>
-                    <div className={Style.card} onClick={redirectProjet()}>
+                    <a href="structure/projets" className={Style.card}>
                         <img src="/images/default-article.png" alt="Article" />
                         <h2>Mes Articles</h2>
-                    </div>
-                    <div className={Style.card}>
+                    </a>
+                    <a className={Style.card}>
                         <img src="/images/localisation.png" alt="Project" />
                         <h2>Mes Localisations</h2>
-                    </div>
+                    </a>
 
                 </div>
             </div>

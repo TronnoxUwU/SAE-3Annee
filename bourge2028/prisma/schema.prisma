@@ -18,19 +18,29 @@ model Structure {
   nomStructure  String?
   description   String?
   dateCreation  DateTime?
-  departement   Departement? @relation(fields: [departementId], references: [id])
-  departementId Int?
+  // departementId Int?
 
   // relations
+  departements Situer[]
   personnes    Appartenir[] // Appartenir (avec role)
   realisations Realisation[] // Réaliser
   tags         StructureTag[] // Avoir
 }
 
+model Situer {
+  id             Int           @id @default(autoincrement())
+  structure      Structure      @relation(fields: [structureId], references: [id])
+  structureId    Int
+  departement    Departement    @relation(fields: [departementId], references: [id])
+  departementId  Int
+
+  @@unique([structureId, departementId])
+}
+
 model Departement {
   id           Int           @id @default(autoincrement())
   nom          String
-  structures   Structure[]
+  structures   Situer[]
   personnes    Personne[]
   realisations Realisation[]
 }

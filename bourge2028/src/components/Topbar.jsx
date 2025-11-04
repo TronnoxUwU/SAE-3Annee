@@ -18,10 +18,6 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
     await signOut({ callbackUrl: "/" });
   };
 
-  const handleNavigation = (path) => {
-    router.push(path);
-    setMenuOpen(false);
-  };
 
   // Ferme le menu si on clique à l’extérieur
   useEffect(() => {
@@ -59,13 +55,13 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
         {menuOpen && (
           <div className={Styles.dropdown}>
             <ul>
-              <li onClick={() => handleNavigation("/")}>Accueil</li>
-              <li onClick={() => handleNavigation("/annuaire")}>Annuaire</li>
+                <li><a href={`/`}>Acceuil</a></li>
+                <li><a href={`/annuaire`}>Annuaire</a></li>
               {session && session.user.role === "Admin" && ( // à adapter
-                <li onClick={() => handleNavigation("/admin")}>Administration</li>
+                <li><a href={`/admin`}>Administration</a></li>
               )}
-              {session && (
-                <li onClick={() => handleNavigation("/user")}>Ma structure</li>
+              {session && session.user.structure && (
+                <li><a href={`/structure/${session.user.structure}`}>Ma structure</a></li>
               )}
             </ul>
           </div>
