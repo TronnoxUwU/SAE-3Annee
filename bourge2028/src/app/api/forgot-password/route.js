@@ -27,7 +27,12 @@ export async function POST(req) {
     from: `"Support" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Réinitialisation du mot de passe",
-    text: `Voici ton lien : ${resetLink}`,
+    text: `Bonjour,\n\n
+    Voici votre lien de réinitialisation : ${resetLink} \n\n
+    Ce lien expirera dans une heure.\n\n
+    Si vous n'avez pas demandé cette réinitialisation, veuillez ignorer cet email.\n\n
+    Merci. \n\n
+    L'équipe de support.`,
   });
 
   return NextResponse.json({ success: true });
