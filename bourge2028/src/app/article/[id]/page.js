@@ -7,40 +7,8 @@ import { useEffect, useState } from "react";
 import styles from "../../styles/article.module.css";
 import Topbar from "@/components/Topbar.jsx";
 import CenteredCarousel from "../../components/CenteredCarousel.jsx";
+import ArticleImage from "../../components/ArticleImage.jsx";
 
-function ArticleImage({ src, alt, className, timeout = 4000 }) {
-  const [imgSrc, setImgSrc] = useState("/images/default-article.png");
-
-  useEffect(() => {
-    let canceled = false;
-    if (!src) {
-      setImgSrc("/images/default-article.png");
-      return;
-    }
-
-    const img = new Image();
-    let timer = setTimeout(() => {
-      if (!canceled) setImgSrc("/images/default-article.png");
-    }, timeout);
-
-    img.onload = () => {
-      clearTimeout(timer);
-      if (!canceled) setImgSrc(src);
-    };
-    img.onerror = () => {
-      clearTimeout(timer);
-      if (!canceled) setImgSrc("/images/default-article.png");
-    };
-
-    img.src = src;
-    return () => {
-      canceled = true;
-      clearTimeout(timer);
-    };
-  }, [src, timeout]);
-
-  return <img src={imgSrc} alt={alt || ""} className={className} />;
-}
 
 export default function ArticlePage() {
   const { id } = useParams();
