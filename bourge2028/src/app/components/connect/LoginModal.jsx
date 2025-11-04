@@ -7,6 +7,8 @@ import RegisterModal from "./RegisterModal";
 import Modal from "./Modal";
 import Style from './connect.module.css';
 import TopStyle from "@/components/Topbar.module.css"
+// ...
+import ForgotPasswordModal from "./ForgotPasswordModal";
 
 export default function LoginModal() {
   const { data: session } = useSession();
@@ -16,11 +18,10 @@ export default function LoginModal() {
   const currentUrl = `${pathname}?${searchParams.toString()}`;
   const callbackUrl = currentUrl || "/";
 
-  // --- États globaux ---
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
 
-  // --- Formulaire Login ---
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -44,12 +45,10 @@ export default function LoginModal() {
 
   return (
     <>
-      {/* --- Bouton principal --- */}
       <button className={TopStyle.connect} onClick={() => setShowLogin(true)}>
         <p>Se connecter</p>
       </button>
 
-      {/* --- Modal Connexion --- */}
       <Modal isOpen={showLogin} onClose={() => setShowLogin(false)}>
         {!session ? (
           <>
@@ -70,18 +69,29 @@ export default function LoginModal() {
               <button type="submit">Se connecter</button>
 
               <button
+                type="button"
                 className={Style.login_switch}
                 onClick={() => {
-                  setShowLogin(false);  // ferme login
-                  setShowRegister(true); // ouvre register
+                  setShowLogin(false);
+                  setShowRegister(true);
                 }}
               >
                 Créer un compte
               </button>
 
+              <button
+                type="button"
+                className={Style.login_switch}
+                onClick={() => {
+                  setShowLogin(false);
+                  setShowForgot(true);
+                }}
+              >
+                Mot de passe oublié ?
+              </button>
             </form>
 
-            {message && <p className="login_message">{message}</p>}
+            {message && <p className={Style.login_message}>{message}</p>}
           </>
         ) : (
           <div className="login_session">
@@ -90,7 +100,6 @@ export default function LoginModal() {
         )}
       </Modal>
 
-      {/* --- Register Modal --- */}
       <RegisterModal
         isOpen={showRegister}
         onClose={() => setShowRegister(false)}
@@ -98,6 +107,13 @@ export default function LoginModal() {
           setShowRegister(false);
           setShowLogin(true);
         }}
+      />
+
+      {/* 👇 Et ton nouveau modal */}
+      <ForgotPasswordModal
+        isOpen={showForgot}
+        onClose={() => setShowForgot(false)}
+        onSwitchToLogin={() => setShowLogin(true)}
       />
     </>
   );
