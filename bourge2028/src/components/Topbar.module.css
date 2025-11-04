@@ -8,8 +8,14 @@
   background-color: #1f2937;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: white;
 }
+
+.topbar h1{
+  font-size: 1.5em;
+}
+
 .topbar_fixed {
   position: fixed;
   z-index: 999;
@@ -24,9 +30,8 @@
 
   font-size: larger !important;
 }
-.topbar_bloc {
 
-  /* margin: 2vh 4vw 0 20vw; */
+.topbar_bloc {
   padding: 0.6em 2em;
 
   /* border-radius: 20px; */
@@ -34,27 +39,87 @@
   font-size: larger !important;
 }
 
+/* Bouton de déconnexion */
 .connect {
   display: flex;
   justify-content: space-evenly;
   border: none;
-  
   max-height: 3.4em;
-  min-width: 15%;
+  /* min-width: 15%; */
   padding: 0.2em 1em;
   border-radius: 20px;
-
-  background-color:goldenrod;
+  background-color: goldenrod;
 }
+
 .connect:hover {
   cursor: pointer;
 }
+
 .connect img {
   max-height: 3em;
 }
+
 .connect p {
   align-self: center !important;
   font-weight: bold !important;
   font-size: larger !important;
   margin: 0;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative; /* permet de placer le menu sous l’image */
+}
+
+.menuIcon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === MENU DÉROULANT SOUS L’IMAGE === */
+.dropdown {
+  position: absolute;
+  top: 50px; /* espace sous l’image */
+  left: 0;
+  background-color: #111827;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  animation: dropdownFade 0.2s ease-out;
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 150px;
+  border-radius: inherit;
+}
+
+.dropdown li {
+  padding: 10px 16px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.2s;
+  border-radius: inherit;
+}
+
+.dropdown li:hover {
+  background-color: #374151;
+  border-radius: inherit;
 }

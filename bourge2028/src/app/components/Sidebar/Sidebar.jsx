@@ -108,7 +108,6 @@ export default function Sidebar({ map, onFilterChange }) {
           return (priority[a.type] || 99) - (priority[b.type] || 99);
         });
 
-        console.log(uniqueResults)
         return sortedResults;
       }
     }

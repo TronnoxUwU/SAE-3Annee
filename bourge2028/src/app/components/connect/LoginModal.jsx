@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import RegisterModal from "./RegisterModal";
 import Modal from "@/components/Modal";
 import Style from './connect.module.css';
@@ -12,7 +12,9 @@ export default function LoginModal() {
   const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const pathname = usePathname();
+  const currentUrl = `${pathname}?${searchParams.toString()}`;
+  const callbackUrl = currentUrl || "/";
 
   // --- États globaux ---
   const [showLogin, setShowLogin] = useState(false);
@@ -31,7 +33,6 @@ export default function LoginModal() {
       password,
       callbackUrl,
     });
-
     if (res.error) {
       setMessage("❌ Email ou mot de passe incorrect");
       return;

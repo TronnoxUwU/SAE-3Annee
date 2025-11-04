@@ -38,6 +38,6 @@
   border-radius: 8px;
 }
 
-.carousel .slide img {
-  width: auto !important;
+.article-documents ul{
+  margin-left: 20px;
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import ApercuArticle from "./ApercuArticle";
+import ApercuArticleEdit from "./ApercuArticleEdit";
 import "../../styles/annuaire.css";
 
-export default function Annuaire({ articles }) {
+export default function Gestionnaire({ articles }) {
   if (!articles?.length) {
     return <p>Aucun article trouvé.</p>;
   }
@@ -11,7 +11,7 @@ export default function Annuaire({ articles }) {
   return (
     <div className="annuaire">
       {articles.map((article) => (
-        <ApercuArticle key={article.id} article={article} />
+        <ApercuArticleEdit key={article.id} article={article} />
       ))}
     </div>
   );

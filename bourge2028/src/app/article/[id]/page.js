@@ -1,5 +1,7 @@
 "use client";
 
+import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import "../../styles/article.css";
@@ -21,7 +23,6 @@ export default function ArticlePage() {
         if (!res.ok) throw new Error(`Erreur ${res.status}`);
 
         const data = await res.json();
-        console.log(data);
         setArticle(data);
       } catch (err) {
         console.error(err);
@@ -38,6 +39,13 @@ export default function ArticlePage() {
   if (error) return <p>{error}</p>;
   if (!article) return <p>Aucun article trouvé.</p>;
 
+  // 🔹 Fonction pour gérer les erreurs d’images
+  const handleImageError = (e) => {
+    if (!e.target.src.endsWith("default-article.png")) {
+      e.target.src = "/images/default-article.png";
+    }
+  };
+
   return (
     <>
       <Topbar />
@@ -49,16 +57,22 @@ export default function ArticlePage() {
             case "titre":
               return <h2 key={i}>{elt.titre.texteTitre}</h2>;
 
-            case "paragraphe":
-              return <p key={i}>{elt.paragraphe.texteParagraphe}</p>;
+            case "paragraphe": {
+              const safeHTML = DOMPurify.sanitize(
+                elt.paragraphe.texteParagraphe,
+                { ALLOWED_TAGS: ["b", "strong", "i", "em", "u", "br"] }
+              );
+              return <p key={i}>{parse(safeHTML)}</p>;
+            }
 
             case "image":
               return (
                 <img
                   key={i}
-                  src={elt.image.lienImage}
+                  src={elt.image.lienImage || "/images/default-article.png"}
                   alt={elt.image.titreImage || ""}
                   className="article-image"
+                  onError={handleImageError}
                 />
               );
 
@@ -67,18 +81,18 @@ export default function ArticlePage() {
                 [...(elt.caroussels[0]?.images || [])]
                   .reverse()
                   .map((img) => ({
-                    src: img.lienImage || "/images/tete.png",
+                    src: img.lienImage || "/images/default-article.png",
                     alt: img.titreImage || "",
                     caption: img.titreImage || "",
                   }));
 
+              // Si ton composant CenteredCarousel affiche <img>, fais la même gestion dans ce composant
               return (
                 <div key={i}>
                   <CenteredCarousel images={images} />
                 </div>
               );
             }
-
 
             default:
               return null;
