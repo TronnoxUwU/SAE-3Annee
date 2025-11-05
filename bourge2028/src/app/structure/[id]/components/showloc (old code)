@@ -1,0 +1,56 @@
+// import { useState } from 'react';
+// // import CatCrudModal from "./CRUDmodal"
+
+
+// interface ListItemProps {
+//   id: number;
+//   nomDepartement: string;
+// }
+
+// // const ListLocalisation = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: ListItemProps) => {
+// const ListLocalisation = ({ id, nomDepartement }: ListItemProps) => {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [openAddModal, setOpenAddModal] = useState(false);
+//   const [typeCrud, setTypeCrud] = useState("");
+
+//   console.log("feur");
+//   return (
+    // <li className={`card p-0 ${Style.item_bloc}`}>
+    //   <div className="d-flex align-items-center p-2">
+
+        {/* departement */}
+        {/* <span className={`flex-grow-1 ${Style.item_title}`}>{nomDepartement}</span> */}
+
+        {/* btn crud */}
+        {/* <div className="btn-group btn-group-sm" role="group">
+
+          <button
+              className="btn btn-outline-success btn-sm px-3"
+              title="Ajouter"
+              onClick={() => {setOpenAddModal(true), setTypeCrud("ADD")}}
+          >
+            <i className="bi bi-plus fs-4"></i>
+          </button>
+
+          <button 
+              className="btn btn-outline-primary btn-sm px-3"
+              title="Modifier"
+              onClick={() => {setOpenAddModal(true), setTypeCrud("UPDATE")}}
+          >
+            <i className="bi bi-pencil fs-5"></i>
+          </button>
+
+          <button 
+              className="btn btn-outline-danger btn-sm px-3"
+              title="Supprimer"
+              onClick={() => {setOpenAddModal(true), setTypeCrud("DELETE")}}
+          >
+            <i className="bi bi-trash fs-5"></i>
+          </button>
+        </div> */}
+    //   </div>
+    // </li>
+//   );
+// };
+
+// export default ListLocalisation;

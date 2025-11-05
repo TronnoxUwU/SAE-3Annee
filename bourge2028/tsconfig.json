@@ -34,7 +34,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/admin/dashboard/page.js", "src/app/components/Sidebar.tsx", "src/app/components/Sidebar/SidebarWrapper.tsx", "src/app/components/Sidebar/SidebarSkeleton.tsx"  ],
+, "src/app/admin/dashboard/page.js", "src/app/components/Sidebar.tsx", "src/app/components/Sidebar/SidebarWrapper.tsx", "src/app/components/Sidebar/SidebarSkeleton.tsx", "src/app/structure/[id]/components/showloc (old code)"  ],
   "exclude": [
     "node_modules"
   ]

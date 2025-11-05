@@ -9,6 +9,10 @@ Sujet 14 > Annuaire Culture et Ecologie en Région Centre Val de Loir
 - Richard Baptiste
 - Chaloine Tristan
 
+## CI
+
+[![CI](https://github.com/TronnoxUwU/SAE-3Annee/actions/workflows/CI.yml/badge.svg)](https://github.com/TronnoxUwU/SAE-3Annee/actions/workflows/CI.yml)
+
 ## Fonctionnalités à faire
 
     Technologies : 

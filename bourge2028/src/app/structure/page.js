@@ -1,52 +1,25 @@
-"use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+// import "./styles/admin.css";
+
 import Topbar from "@/components/Topbar.jsx";
-import Style from "../styles/user.module.css";
+import Structure from "./components/affichage-structure";
 
-export default function ProjetsPage() {
-  const router = useRouter();
-  const [images, setImages] = useState({
-    article: "/images/default-article.png",
-    localisation: "/images/localisation.png",
-  });
-
-  const handleRedirectProjet = () => {
-    router.push("/structure/projets");
-  };
-
-  const handleImageError = (key) => {
-    setImages((prev) => ({
-      ...prev,
-      [key]: "/images/default-article.png",
-    }));
-  };
+export default function AdminPage() {
 
   return (
     <>
-      <Topbar />
-      <div className={Style.userPage}>
-        <h1>Ma Structure</h1>
-        <div className={Style.conteneur}>
-          <div className={Style.card} onClick={handleRedirectProjet}>
-            <img
-              src={images.article}
-              alt="Article"
-              onError={() => handleImageError("article")}
-            />
-            <h2>Mes Articles</h2>
+      <Topbar title="Bourges 2028 - Structures"/>
+
+      <div className="container">
+
+        <main className="main">
+          <div className="top-content">
+            <h2>Voici les structures présentes sur la plateforme</h2>
           </div>
 
-          <div className={Style.card}>
-            <img
-              src={images.localisation}
-              alt="Localisation"
-              onError={() => handleImageError("localisation")}
-            />
-            <h2>Mes Localisations</h2>
-          </div>
-        </div>
+          <Structure />
+          
+        </main>
       </div>
     </>
   );

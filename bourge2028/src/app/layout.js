@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { Geist, Geist_Mono } from "next/font/google";
 import ClientProvider from "./ClientProvider";
+import "bootstrap-icons/font/bootstrap-icons.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
