@@ -58,3 +58,47 @@ export async function GET(
     );
   }
 }
+
+
+/**
+ * PUT /api/categories/[id]
+ * Met à jour le nom d'une catégorie
+ */
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const categoryId = Number(id);
+
+    if (isNaN(categoryId)) {
+      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    }
+
+    const body = await req.json();
+    const { nom } = body;
+
+    if (!nom || typeof nom !== "string" || nom.trim() === "") {
+      return NextResponse.json({ error: "Nom invalide" }, { status: 400 });
+    }
+
+    const updatedCat = await prisma.categorie.update({
+      where: { id: categoryId },
+      data: { nom },
+      include: {
+        parent: true,
+        tags: true,
+        children: true,
+      },
+    });
+
+    return NextResponse.json(serializeCategorie(updatedCat), { status: 200 });
+  } catch (error: any) {
+    console.error("Erreur PUT /api/categories/[id] :", error);
+    return NextResponse.json(
+      { error: "Impossible de mettre à jour la catégorie" },
+      { status: 500 }
+    );
+  }
+}
