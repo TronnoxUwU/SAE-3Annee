@@ -1,3 +1,4 @@
+/* Sidebar principale */
 .sidebar {
   position: fixed;
   top: 0;
@@ -19,7 +20,7 @@
   width: 60px;
 }
 
-/* Recherche géographique */
+/* Zone de recherche */
 .sidebar_search {
   display: flex;
   border-radius: 20px;
@@ -46,7 +47,7 @@
 /* Liste autocomplete sous le champ */
 .search_results {
   position: absolute;
-  top: 100%; /* juste sous le champ */
+  top: 100%; 
   left: 0;
   right: 0;
   background: aliceblue;
@@ -80,17 +81,16 @@
   font-weight: bold;
 }
 
-/* Filtres catégories/tags */
+/* Section filtres catégories/tags */
 .filter_section {
   padding-left: 10px;
   overflow-y: auto;
   max-height: calc(100vh - 150px);
 }
 
-.category_tree,
-.subcategory {
+.category_tree {
   list-style: none;
-  padding-left: 10px;
+  padding-left: 0;
   margin: 0;
 }
 
@@ -101,6 +101,7 @@
 .category_label {
   display: flex;
   align-items: center;
+  padding: 4px 0;
 }
 
 .expand_btn {
@@ -112,12 +113,15 @@
   margin-right: 5px;
 }
 
-.tag_item {
-  padding-left: 15px;
-}
-
 .checkbox {
   margin-right: 6px;
+}
+
+/* Sous-catégories (multi-niveaux) */
+.category_tree ul {
+  list-style: none;
+  padding-left: 15px;
+  margin: 2px 0;
 }
 
 /* Survol catégorie/tag */
@@ -125,4 +129,10 @@
 .tag_item:hover {
   background-color: rgba(163, 217, 167, 0.3);
   border-radius: 5px;
+}
+
+/* Gestion responsive ou collapsed */
+.sidebar.collapsed .filter_section,
+.sidebar.collapsed .sidebar_search input {
+  display: none;
 }

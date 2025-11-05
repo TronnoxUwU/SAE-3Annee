@@ -6,14 +6,11 @@ import Style from "./Sidebar.module.css";
 
 export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   const [open, setOpen] = useState(true);
-
-  // --- Recherche géographique ---
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [provider, setProvider] = useState(null);
   const [regionGeoJSON, setRegionGeoJSON] = useState(null);
 
-  // --- Filtres catégories/tags ---
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState({});
@@ -84,10 +81,9 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
       let searchResults = await provider.search({ query: value });
 
       if (regionGeoJSON) {
-        searchResults = searchResults.filter((r) => {
-          const point = turf.point([r.x, r.y]);
-          return turf.booleanPointInPolygon(point, regionGeoJSON);
-        });
+        searchResults = searchResults.filter((r) =>
+          turf.booleanPointInPolygon(turf.point([r.x, r.y]), regionGeoJSON)
+        );
       }
 
       setResults(searchResults);
@@ -110,18 +106,20 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   };
 
   // ------------------------------------------------------------
-  // Navigation clavier dans les résultats
+  // Navigation clavier
   // ------------------------------------------------------------
   useEffect(() => {
     let selectedIndex = -1;
 
-    function highlightResult(index) {
+    const highlightResult = (index) => {
       const lis = resultsRef.current?.querySelectorAll(`.${Style.search_results_item}`);
       if (!lis) return;
-      lis.forEach((li, i) => li.classList.toggle(Style.search_results_item_highlight, i === index));
-    }
+      lis.forEach((li, i) =>
+        li.classList.toggle(Style.search_results_item_highlight, i === index)
+      );
+    };
 
-    function handleKeyDown(e) {
+    const handleKeyDown = (e) => {
       if (results.length === 0) return;
 
       if (e.key === "ArrowDown") {
@@ -139,38 +137,29 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
         setResults([]);
         selectedIndex = -1;
       }
-    }
+    };
 
     const inputEl = searchRef.current?.querySelector("input");
     if (inputEl) inputEl.addEventListener("keydown", handleKeyDown);
 
-    return () => {
-      if (inputEl) inputEl.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => inputEl?.removeEventListener("keydown", handleKeyDown);
   }, [results]);
 
   // ------------------------------------------------------------
-  // Gestion des catégories
+  // Gestion catégories multi-niveaux
   // ------------------------------------------------------------
-  const getAllChildrenIds = (category) => {
-    const ids = [];
-    if (!category.children) return ids;
-    for (const child of category.children) {
-      ids.push(child.id);
-      ids.push(...getAllChildrenIds(child));
-    }
-    return ids;
+  const getAllChildrenIds = (cat) => {
+    if (!cat.children) return [];
+    return cat.children.flatMap((child) => [child.id, ...getAllChildrenIds(child)]);
   };
 
-  const handleCategoryToggle = (category) => {
-    const allIds = [category.id, ...getAllChildrenIds(category)];
+  const handleCategoryToggle = (cat) => {
+    const allIds = [cat.id, ...getAllChildrenIds(cat)];
     const isChecked = allIds.every((id) => selectedCategories.includes(id));
 
     if (isChecked) {
-      // Décocher parent → décocher tous les enfants
       setSelectedCategories((prev) => prev.filter((id) => !allIds.includes(id)));
     } else {
-      // Cocher parent → cocher tous les enfants
       setSelectedCategories((prev) => [...new Set([...prev, ...allIds])]);
     }
   };
@@ -180,7 +169,7 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   };
 
   // ------------------------------------------------------------
-  // Construction mapFilter final : only selected → categories (racines), tags (enfants)
+  // Construction mapFilter
   // ------------------------------------------------------------
   useEffect(() => {
     if (!onFilterChange) return;
@@ -188,35 +177,24 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
     const categoriesList = [];
     const tagsList = [];
 
-    function traverse(cats, hasParent = false) {
-      for (const cat of cats) {
+    const traverse = (cats, hasParent = false) => {
+      cats.forEach((cat) => {
         const isSelected = selectedCategories.includes(cat.id);
         if (isSelected) {
           const info = { id: cat.id, nom: cat.nom };
-          if (hasParent) {
-            tagsList.push(info); // enfant → tag
-          } else {
-            categoriesList.push(info); // racine → category
-          }
+          if (hasParent) tagsList.push(info);
+          else categoriesList.push(info);
         }
-
-        if (cat.children && cat.children.length > 0) {
-          traverse(cat.children, true); // enfants ont un parent
-        }
-      }
-    }
+        if (cat.children?.length) traverse(cat.children, true);
+      });
+    };
 
     traverse(categories);
-
-    onFilterChange({
-      categories: categoriesList,
-      tags: tagsList,
-    });
+    onFilterChange({ categories: categoriesList, tags: tagsList });
   }, [selectedCategories, categories, onFilterChange]);
 
-
   // ------------------------------------------------------------
-  // Rendu récursif des catégories avec enfant non décochable si parent coché
+  // Rendu récursif avec expansion possible pour tous niveaux
   // ------------------------------------------------------------
   const renderCategory = (cat, level = 0, parentChecked = false) => {
     const isExpanded = expanded[cat.id];
@@ -229,7 +207,8 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
           className={Style.category_label}
           style={{ paddingLeft: `${paddingLeft}px` }}
         >
-          {cat.children && cat.children.length > 0 && (
+          {/* Bouton expand toujours cliquable */}
+          {cat.children?.length > 0 && (
             <button
               className={Style.expand_btn}
               onClick={() => toggleExpand(cat.id)}
@@ -237,17 +216,19 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
               {isExpanded ? "▼" : "►"}
             </button>
           )}
+          {/* Checkbox désactivée si parent coché */}
           <input
             type="checkbox"
             checked={isChecked}
             onChange={() => handleCategoryToggle(cat)}
             className={Style.checkbox}
-            disabled={parentChecked} // enfants désactivés si parent coché
+            disabled={parentChecked && !selectedCategories.includes(cat.id)}
           />
           {cat.nom}
         </div>
 
-        {cat.children && cat.children.length > 0 && isExpanded && (
+        {/* Lazy load enfants seulement si expanded */}
+        {cat.children?.length > 0 && isExpanded && (
           <ul className={Style.category_tree}>
             {cat.children.map((child) =>
               renderCategory(child, level + 1, isChecked)
@@ -263,7 +244,7 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   // ------------------------------------------------------------
   return (
     <div className={`${Style.sidebar} ${open ? "" : "collapsed"}`}>
-      {/* Zone de recherche */}
+      {/* Recherche */}
       <div className={Style.sidebar_search} ref={searchRef}>
         <input
           type="text"

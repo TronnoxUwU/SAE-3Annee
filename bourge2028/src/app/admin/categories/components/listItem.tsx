@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import Style from "./listItem.module.css"
-import CatCrudModal from "./CRUDmodal"
-
+import Style from "./listItem.module.css";
+import CatCrudModal from "./CRUDmodal";
 
 interface ListItemProps {
   id: number;
@@ -15,15 +14,15 @@ interface ListItemProps {
 
 const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: ListItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [typeCrud, setTypeCrud] = useState("");
 
-  const hasChildren = childrens.length > 0;
+  const hasChildren = Array.isArray(childrens) && childrens.length > 0;
 
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
       <div className="d-flex align-items-center p-2">
-        {/* collapse */}
+        {/* Collapse */}
         {hasChildren ? (
           <button
             className="btn btn-link btn-sm p-0 me-2 text-decoration-none"
@@ -36,59 +35,60 @@ const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: Lis
           <span className="me-2" style={{ width: '20px', display: 'inline-block' }}></span>
         )}
 
-        {/* Nom categorie */}
+        {/* Nom catégorie */}
         <span className={`flex-grow-1 ${Style.item_title}`}>{nom}</span>
 
-        {/* btn crud */}
+        {/* Boutons CRUD */}
         <div className="btn-group btn-group-sm" role="group">
-
           <button
-              className="btn btn-outline-success btn-sm px-3"
-              title="Ajouter"
-              onClick={() => {setOpenAddModal(true), setTypeCrud("ADD")}}
+            className="btn btn-outline-success btn-sm px-3"
+            title="Ajouter"
+            onClick={() => { setOpenModal(true); setTypeCrud("ADD"); }}
           >
             <i className="bi bi-plus fs-4"></i>
           </button>
 
-          <button 
-              className="btn btn-outline-primary btn-sm px-3"
-              title="Modifier"
-              onClick={() => {setOpenAddModal(true), setTypeCrud("UPDATE")}}
+          <button
+            className="btn btn-outline-primary btn-sm px-3"
+            title="Modifier"
+            onClick={() => { setOpenModal(true); setTypeCrud("UPDATE"); }}
           >
             <i className="bi bi-pencil fs-5"></i>
           </button>
 
-          <button 
-              className="btn btn-outline-danger btn-sm px-3"
-              title="Supprimer"
-              onClick={() => {setOpenAddModal(true), setTypeCrud("DELETE")}}
+          <button
+            className="btn btn-outline-danger btn-sm px-3"
+            title="Supprimer"
+            onClick={() => { setOpenModal(true); setTypeCrud("DELETE"); }}
           >
             <i className="bi bi-trash fs-5"></i>
           </button>
         </div>
-          <CatCrudModal
-            CRUD={typeCrud}
-            isOpen={openAddModal}
-            onClose={() => setOpenAddModal(false)}
-            selfId={id}
-            name={nom}
-            onAdd={onAdd}
-            onUpdate={onUpdate}
-            onDelete={onDelete}
-          />
+
+        {/* Modal */}
+        <CatCrudModal
+          CRUD={typeCrud}
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          selfId={id}
+          name={nom}
+          onAdd={onAdd}
+          onUpdate={onUpdate}
+          onDelete={onDelete}
+        />
       </div>
 
-      {/* collapse enfants */}
+      {/* Collapse enfants */}
       {hasChildren && (
         <div className={`collapse ${isOpen ? 'show' : ''}`}>
           <ul className="list-group list-group-flush ms-4">
-            {childrens.map((item) => (
+            {childrens.map(child => (
               <ListItem
-                key={item.id}
-                id={item.id}
-                nom={item.nom}
-                parent={item.parentId}
-                childrens={item.children}
+                key={child.id}
+                id={child.id}
+                nom={child.nom}
+                parent={child.parentId}
+                childrens={child.children || []}
                 onAdd={onAdd}
                 onUpdate={onUpdate}
                 onDelete={onDelete}
