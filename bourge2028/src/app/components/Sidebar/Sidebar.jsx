@@ -216,7 +216,7 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
               {isExpanded ? "▼" : "►"}
             </button>
           )}
-          {/* Checkbox désactivée si parent coché */}
+          {!cat.children?.length && <span className={Style.expand_btn_placeholder}></span>}
           <input
             type="checkbox"
             checked={isChecked}

@@ -47,7 +47,7 @@
 /* Liste autocomplete sous le champ */
 .search_results {
   position: absolute;
-  top: 100%; 
+  top: 100%;
   left: 0;
   right: 0;
   background: aliceblue;
@@ -90,7 +90,7 @@
 
 .category_tree {
   list-style: none;
-  padding-left: 0;
+  padding-left: 0; /* Correction : plus de décalage en cascade */
   margin: 0;
 }
 
@@ -104,6 +104,7 @@
   padding: 4px 0;
 }
 
+/* Bouton expand : largeur fixe pour alignement */
 .expand_btn {
   background: none;
   border: none;
@@ -111,17 +112,20 @@
   cursor: pointer;
   font-size: 12px;
   margin-right: 5px;
+  width: 20px; /* Réserve la place même sans flèche */
+  display: inline-flex;
+  justify-content: center;
+}
+
+/* Placeholder pour aligner les items sans flèche */
+.expand_btn_placeholder {
+  display: inline-block;
+  width: 20px;
+  margin-right: 5px;
 }
 
 .checkbox {
   margin-right: 6px;
-}
-
-/* Sous-catégories (multi-niveaux) */
-.category_tree ul {
-  list-style: none;
-  padding-left: 15px;
-  margin: 2px 0;
 }
 
 /* Survol catégorie/tag */
