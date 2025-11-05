@@ -167,8 +167,10 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
     const isChecked = allIds.every((id) => selectedCategories.includes(id));
 
     if (isChecked) {
+      // Décocher parent → décocher tous les enfants
       setSelectedCategories((prev) => prev.filter((id) => !allIds.includes(id)));
     } else {
+      // Cocher parent → cocher tous les enfants
       setSelectedCategories((prev) => [...new Set([...prev, ...allIds])]);
     }
   };
@@ -212,11 +214,11 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   }, [selectedCategories, categories, onFilterChange]);
 
   // ------------------------------------------------------------
-  // Rendu récursif des catégories
+  // Rendu récursif des catégories avec enfant non décochable si parent coché
   // ------------------------------------------------------------
-  const renderCategory = (cat, level = 0) => {
+  const renderCategory = (cat, level = 0, parentChecked = false) => {
     const isExpanded = expanded[cat.id];
-    const isChecked = selectedCategories.includes(cat.id);
+    const isChecked = selectedCategories.includes(cat.id) || parentChecked;
     const paddingLeft = 10 + level * 15;
 
     return (
@@ -238,13 +240,16 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
             checked={isChecked}
             onChange={() => handleCategoryToggle(cat)}
             className={Style.checkbox}
+            disabled={parentChecked} // enfants désactivés si parent coché
           />
           {cat.nom}
         </div>
 
         {cat.children && cat.children.length > 0 && isExpanded && (
           <ul className={Style.category_tree}>
-            {cat.children.map((child) => renderCategory(child, level + 1))}
+            {cat.children.map((child) =>
+              renderCategory(child, level + 1, isChecked)
+            )}
           </ul>
         )}
       </li>
