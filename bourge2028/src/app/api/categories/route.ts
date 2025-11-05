@@ -35,30 +35,36 @@ export async function POST(req: Request) {
 
 /**
  * GET /api/categories
+ * Renvoie l'arbre complet multi-niveaux
  */
 export async function GET() {
   try {
-    const categories = await prisma.categorie.findMany({
-      include: {
-        tags: true,
-        parent: {
-          select: { id: true, nom: true },
-        },
-        children: {
-          include: {
-            tags: true,
-            children: true,
-          },
-        },
-      },
-      orderBy: {
-        id: "asc",
-      },
+    const allCategories = await prisma.categorie.findMany({
+      include: { tags: true, parent: true },
+      orderBy: { id: "asc" },
     });
 
-    const serialized = categories.map(serializeCategorie);
+    // Créer un map id => category
+    const map = new Map<number, any>();
+    allCategories.forEach(cat => {
+      map.set(cat.id, { ...serializeCategorie(cat), children: [] });
+    });
 
-    return NextResponse.json(serialized, { status: 200 });
+    const tree: any[] = [];
+
+    // Construire l'arbre
+    map.forEach(cat => {
+      if (cat.parentId === null) {
+        tree.push(cat);
+      } else {
+        const parent = map.get(cat.parentId);
+        if (parent) {
+          parent.children.push(cat);
+        }
+      }
+    });
+
+    return NextResponse.json(tree, { status: 200 });
   } catch (error) {
     console.error("Erreur GET /api/categories :", error);
     return NextResponse.json(
