@@ -9,7 +9,7 @@ export default function DashboardPage() {
 
   return (
     <>
-    <Topbar title="Dashboard"/>
+    <Topbar title="Bourges 2028 - Dashboard"/>
     <div className="admin-content">
       <AdminSidebar />
       <main className={Style.dashboard}>

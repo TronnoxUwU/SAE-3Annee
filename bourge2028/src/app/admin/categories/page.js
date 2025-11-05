@@ -16,7 +16,7 @@ export default function AdminPage() {
 
         <main className="admin-main">
           <div className="admin-top-content">
-            <h2>Voici les catégories disponibles pour les structures</h2>
+            <h2>Voici les catégories disponibles pour les projets</h2>
             <p>Vous pouvez en ajouter, modifier et supprimer</p>
 
             <AdminCategory />
