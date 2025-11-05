@@ -1,12 +1,9 @@
 // app/editor/page.tsx
-import EditorCanvas from "@/components/zoneEdition";
-import { ComponentPalette } from "@/components/palette";
+import { Editor } from "@/app/components/article/zoneEdition";
+import "@/app/components/article/global.css";
 
 export default function EditorPage() {
   return (
-    <div className="flex">
-      <EditorCanvas />
-      <ComponentPalette />
-    </div>
+        <Editor />
   );
 }

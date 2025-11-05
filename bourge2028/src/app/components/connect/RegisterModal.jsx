@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Modal from "@/components/Modal";
 import Style from "./connect.module.css";
 
-export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
+function RegisterModalContent({ isOpen, onClose, onSwitchToLogin }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -82,12 +82,20 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
         />
         <button type="submit">Créer un compte</button>
 
-      <button className={Style.login_switch} onClick={onSwitchToLogin}>
-        Retourner à la connexion
-      </button>
+        <button className={Style.login_switch} onClick={onSwitchToLogin}>
+          Retourner à la connexion
+        </button>
       </form>
 
       {message && <p className={Style.connect_message}>{message}</p>}
     </Modal>
+  );
+}
+
+export default function RegisterModal(props) {
+  return (
+    <Suspense fallback={null}>
+      <RegisterModalContent {...props} />
+    </Suspense>
   );
 }

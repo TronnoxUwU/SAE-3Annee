@@ -225,7 +225,9 @@ export const Editor: React.FC = () => {
 
                 {block.type === "paragraph" && (
                   <Paragraphe
-                    ref={(el) => (paragraphRefs.current[block.id] = el)}
+                    ref={(el: ParagrapheHandle | null) => {
+                      if (el) paragraphRefs.current[block.id] = el;
+                    }}
                     value={block.content}
                     onChange={(v) =>
                       setBlocks((prev) =>
