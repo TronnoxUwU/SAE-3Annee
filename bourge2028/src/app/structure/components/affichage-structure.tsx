@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import StructureItem from "./structure-Item";
 import tempStyle from "./structure-Item.module.css"
 
-export default function AdminStructure() {
+export default function Structure() {
   const router = useRouter();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);

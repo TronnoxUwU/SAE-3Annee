@@ -14,60 +14,59 @@ export const authOptions = {
       async authorize(credentials) {
         const { email, password } = credentials;
         const personne = await prisma.personne.findUnique({ where: { email } });
-        
+
         if (!personne) return null;
-        
+
         const isValid = await bcrypt.compare(password, personne.password);
         if (!isValid) return null;
 
+        // Récupère la structure liée à la personne
+        const structure = await prisma.appartenir.findFirst({
+          where: { personneId: personne.id },
+        });
+
         return {
+          id: personne.id,
           email: personne.email,
           name: personne.name,
-          role: personne.role, 
+          role: personne.role,
+          structure: structure ? structure.structureId : null,
         };
       },
     }),
   ],
+
   session: {
     strategy: "jwt",
   },
-  callbacks: {
-    // create token
-    async jwt({ token, user }) {
-      if (user) {
-        token.personne = {
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
-      }
-      return token;
-    },
-    // create session
-    async session({ session, token }) {
-      if (token?.personne) {
-        session.personne = token.personne;
-      }
-      return session;
-    },
-  },
-  secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
         token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.role = user.role;
+        token.structure = user.structure;
       }
       return token;
     },
+
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+        session.user = {
+          id: token.id,
+          email: token.email,
+          name: token.name,
+          role: token.role,
+          structure: token.structure,
+        };
       }
       return session;
     },
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
