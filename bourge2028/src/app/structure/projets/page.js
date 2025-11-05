@@ -45,9 +45,17 @@ export default function ProjetsPage() {
     fetchArticles();
   }, [mapFilter]);
 
-  const handleCreate = () => {
-    // le bouton doit rediriger vers la création, pas vers un article inexistant
-    window.location.href = `/structure/projets/new`;
+  // 🔹 Log des changements de filtres
+  useEffect(() => {
+    if (mapFilter) {
+      console.log("Filtres mis à jour :", mapFilter);
+    }
+  }, [mapFilter]);
+
+  const handleClose = () => {
+    setAnimate(true);
+    setDrawerOpen(false);
+    setTimeout(() => router.push("/"), 600);
   };
 
   return (

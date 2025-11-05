@@ -185,17 +185,18 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   useEffect(() => {
     if (!onFilterChange) return;
 
-    const categoryNames = [];
-    const tagNames = [];
+    const categoriesList = [];
+    const tagsList = [];
 
     function traverse(cats, hasParent = false) {
       for (const cat of cats) {
         const isSelected = selectedCategories.includes(cat.id);
         if (isSelected) {
+          const info = { id: cat.id, nom: cat.nom };
           if (hasParent) {
-            tagNames.push(cat.nom); // enfant → tag
+            tagsList.push(info); // enfant → tag
           } else {
-            categoryNames.push(cat.nom); // racine → category
+            categoriesList.push(info); // racine → category
           }
         }
 
@@ -208,10 +209,11 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
     traverse(categories);
 
     onFilterChange({
-      categories: categoryNames,
-      tags: tagNames,
+      categories: categoriesList,
+      tags: tagsList,
     });
   }, [selectedCategories, categories, onFilterChange]);
+
 
   // ------------------------------------------------------------
   // Rendu récursif des catégories avec enfant non décochable si parent coché
