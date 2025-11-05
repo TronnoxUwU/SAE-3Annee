@@ -57,6 +57,7 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
             <ul>
                 <li><a href={`/`}>Acceuil</a></li>
                 <li><a href={`/annuaire`}>Annuaire</a></li>
+                <li><a href={`/structure`}>Les structures</a></li>
               {session && session.user.role === "Admin" && ( // à adapter
                 <li><a href={`/admin`}>Administration</a></li>
               )}

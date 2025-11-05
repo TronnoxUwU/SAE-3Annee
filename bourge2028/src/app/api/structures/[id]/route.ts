@@ -50,11 +50,14 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+
+    const tmp = await params;
+    const id = Number(tmp.id);
     const body = await req.json();
     const data = deserializeStructure(body);
 
     const structure = await prisma.structure.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data,
       include: {
         departements: { include: { departement: true } },

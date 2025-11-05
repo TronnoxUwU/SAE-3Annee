@@ -5,6 +5,30 @@
     padding: 20px;
 }
 
+.header_top {
+    display: flex;
+}
+
+.btn_back{
+    display: flex;
+    /* background-color: aliceblue; */
+    margin-left: 2%;
+    border-radius: 0.25rem 0.25rem 0 0;
+    border-bottom: none;
+}
+.btn_back i { margin-right: 6px;}
+.btn_crud {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* max-width: 10vw; */
+    margin-left: 83%;
+    margin-right: 2%;
+    border-radius: 0.25rem 0.25rem 0 0;
+    border-bottom: none;
+}
+.btn_crud i { margin-left: 6px;}
+
 .userPage h1 {
     font-size: 5vw;
     font-weight: bold;
@@ -71,3 +95,4 @@
   box-shadow: 0 8px 8px rgba(0, 0, 0, 0.15);
   transition: all 0.2
 }
+

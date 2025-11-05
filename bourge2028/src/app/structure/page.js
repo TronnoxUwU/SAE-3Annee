@@ -1,31 +1,26 @@
-"use client";
 
-import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+// import "./styles/admin.css";
+
 import Topbar from "@/components/Topbar.jsx";
-import Style from "../styles/user.module.css";
+import Structure from "./components/affichage-structure";
 
-export default function ProjetsPage() {
+export default function AdminPage() {
 
+  return (
+    <>
+      <Topbar title="Bourges 2028 - Structures"/>
 
-    return (
-        <>
-            <Topbar/>
-            <div className={Style.userPage}>
-                <h1>Ma Structure</h1>
-                <div className={Style.conteneur}>
-                    <a href="structure/projets" className={Style.card}>
-                        <img src="/images/default-article.png" alt="Article" />
-                        <h2>Mes Articles</h2>
-                    </a>
-                    <a className={Style.card}>
-                        <img src="/images/localisation.png" alt="Project" />
-                        <h2>Mes Localisations</h2>
-                    </a>
+      <div className="container">
 
-                </div>
-            </div>
-        </>
-    );
+        <main className="main">
+          <div className="top-content">
+            <h2>Voici les structures présentes sur la plateforme</h2>
+          </div>
+
+          <Structure />
+          
+        </main>
+      </div>
+    </>
+  );
 }
-
