@@ -11,6 +11,7 @@ RUN npm ci
 COPY . .
 
 # Générer Prisma
+ENV DATABASE_URL="file:./dev.db"
 RUN npx prisma generate
 
 # Build Next.js
@@ -19,32 +20,31 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Copier les fichiers nécessaires
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/next.config.mjs ./
-
-# Copier le dossier prisma si vous l'utilisez en runtime
-COPY --from=builder /app/prisma ./prisma
-
-# Installer uniquement les dépendances de production
-RUN npm ci --omit=dev
-
-# Générer Prisma client en production aussi
-RUN npx prisma generate
-
-# Copier les fichiers buildés
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.mjs ./next.config.mjs
-
-
-# Si vous utilisez standalone output, ajoutez :
-# COPY --from=builder /app/.next/standalone ./
-# COPY --from=builder /app/.next/static ./.next/static
-
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV DATABASE_URL="file:./prisma/dev.db"
+
+# Créer utilisateur non-root
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copier UNIQUEMENT ce qui est nécessaire (standalone inclut déjà node_modules optimisés)
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+# Copier Prisma
+COPY --from=builder /app/prisma/schema.prisma ./prisma/schema.prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
+# Copier middleware si nécessaire
+COPY --from=builder /app/middleware.js ./middleware.js 2>/dev/null || true
+
+# Permissions pour la DB
+RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app/prisma
+
+USER nextjs
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD sh -c "npx prisma db push --skip-generate --accept-data-loss && node server.js"
