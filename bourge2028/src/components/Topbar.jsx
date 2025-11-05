@@ -58,12 +58,18 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
                 <li><a href={`/`}>Acceuil</a></li>
                 <li><a href={`/annuaire`}>Annuaire</a></li>
                 <li><a href={`/structure`}>Les structures</a></li>
-              {session && session.user.role === "Admin" && ( // à adapter
-                <li><a href={`/admin`}>Administration</a></li>
-              )}
+              {session && session.user.structure && (
+                <li><a href={`/structure/${session.user.structure}`}>Ma structure</a></li>
+              <li onClick={() => handleNavigation("/contact")}>Contact</li>
+              <li onClick={() => handleNavigation("/credit")}>Crédits</li>
+              <li onClick={() => handleNavigation("/information")}>Informations</li>
               {session && session.user.structure && (
                 <li><a href={`/structure/${session.user.structure}`}>Ma structure</a></li>
               )}
+              {session && session.user.role === "Admin" && ( // à adapter
+                <li><a href={`/admin`}>Administration</a></li>
+              )}
+              <li onClick={() => handleNavigation("/legal")}>Mentions légales</li>
             </ul>
           </div>
         )}

@@ -4,9 +4,11 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import "../../styles/article.css";
+import styles from "../../styles/article.module.css";
 import Topbar from "@/components/Topbar.jsx";
 import CenteredCarousel from "../../components/CenteredCarousel.jsx";
+import ArticleImage from "../../components/ArticleImage.jsx";
+
 
 export default function ArticlePage() {
   const { id } = useParams();
@@ -21,7 +23,6 @@ export default function ArticlePage() {
       try {
         const res = await fetch(`/api/articles/${id}`);
         if (!res.ok) throw new Error(`Erreur ${res.status}`);
-
         const data = await res.json();
         setArticle(data);
       } catch (err) {
@@ -39,23 +40,19 @@ export default function ArticlePage() {
   if (error) return <p>{error}</p>;
   if (!article) return <p>Aucun article trouvé.</p>;
 
-  // 🔹 Fonction pour gérer les erreurs d’images
-  const handleImageError = (e) => {
-    if (!e.target.src.endsWith("default-article.png")) {
-      e.target.src = "/images/default-article.png";
-    }
-  };
-
   return (
     <>
       <Topbar />
-      <div className="article-page">
+      <div className={styles.articlePage}>
         <h1>{article.titre}</h1>
 
         {article.composants.map((elt, i) => {
           switch (elt.type) {
-            case "titre":
-              return <h2 key={i}>{elt.titre.texteTitre}</h2>;
+            case "titre": {
+              const niveau = Math.min(Math.max(elt.titre.niveauTitre || 2, 2), 6);
+              const TitreTag = `h${niveau}`;
+              return <TitreTag key={i}>{elt.titre.texteTitre}</TitreTag>;
+            }
 
             case "paragraphe": {
               const safeHTML = DOMPurify.sanitize(
@@ -65,28 +62,29 @@ export default function ArticlePage() {
               return <p key={i}>{parse(safeHTML)}</p>;
             }
 
-            case "image":
+            case "image": {
+              const src = elt.image?.lienImage || "/images/default-article.png";
+              const alt = elt.image?.titreImage || "";
               return (
-                <img
+                <ArticleImage
                   key={i}
-                  src={elt.image.lienImage || "/images/default-article.png"}
-                  alt={elt.image.titreImage || ""}
-                  className="article-image"
-                  onError={handleImageError}
+                  src={src}
+                  alt={alt}
+                  className={styles.articleImage}
+                  timeout={4000}
                 />
               );
+            }
 
             case "caroussel": {
-              const images =
-                [...(elt.caroussels[0]?.images || [])]
-                  .reverse()
-                  .map((img) => ({
-                    src: img.lienImage || "/images/default-article.png",
-                    alt: img.titreImage || "",
-                    caption: img.titreImage || "",
-                  }));
+              const images = [...(elt.caroussels?.[0]?.images || [])]
+                .reverse()
+                .map((img) => ({
+                  src: img.lienImage || "/images/default-article.png",
+                  alt: img.titreImage || "",
+                  caption: img.titreImage || "",
+                }));
 
-              // Si ton composant CenteredCarousel affiche <img>, fais la même gestion dans ce composant
               return (
                 <div key={i}>
                   <CenteredCarousel images={images} />
@@ -100,12 +98,12 @@ export default function ArticlePage() {
         })}
 
         {article.documents?.length > 0 && (
-          <section className="article-documents">
+          <section className={styles.articleDocuments}>
             <h3>Documents associés :</h3>
             <ul>
               {article.documents.map((doc, i) => (
                 <li key={i}>
-                  <a href={doc.lien} target="_blank">
+                  <a href={doc.lien} target="_blank" rel="noreferrer">
                     {doc.lien || "Document sans nom"}
                   </a>
                 </li>

@@ -1,12 +1,12 @@
 /* Bouton flottant en bas à droite */
-.btn-add {
+.btnAdd {
   position: fixed;
-  bottom: 2rem;     /* distance du bas */
-  right: 2rem;      /* distance de la droite */
+  bottom: 2rem;
+  right: 2rem;
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 15%;
-  background-color: gray; /* couleur principale (modifiable) */
+  background-color: gray;
   color: white;
   font-size: 2rem;
   font-weight: bold;
@@ -14,11 +14,10 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  z-index: 1000; /* reste au-dessus du contenu */
+  z-index: 1000;
 }
 
-/* Effet au survol */
-.btn-add:hover {
+.btnAdd:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }
