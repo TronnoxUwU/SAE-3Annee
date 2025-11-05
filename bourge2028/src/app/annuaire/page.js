@@ -20,6 +20,7 @@ export default function AnnuairePage() {
 
   // États data
   const [mapFilter, setMapFilter] = useState(null);
+  const [geoFilter, setGeoFilter] = useState(null);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,7 +44,7 @@ export default function AnnuairePage() {
     }
   }, []);
 
-  // 🔹 Récupération des articles (c’est ici que la requête est faite)
+  // 🔹 Récupération des articles
   useEffect(() => {
     async function fetchArticles() {
       try {
@@ -72,6 +73,13 @@ export default function AnnuairePage() {
     fetchArticles();
   }, [mapFilter]);
 
+  // 🔹 Log des changements de filtres
+  useEffect(() => {
+    if (mapFilter) {
+      console.log("Filtres mis à jour :", mapFilter);
+    }
+  }, [mapFilter]);
+
   const handleClose = () => {
     setAnimate(true);
     setDrawerOpen(false);
@@ -82,22 +90,21 @@ export default function AnnuairePage() {
     <main className="main-container">
       <Topbar fixed />
 
-      {/* 🔸 Sidebar gère le filtre de la carte */}
-      <Sidebar map={null} onFilterChange={setMapFilter} />
+      {/* Sidebar gère le filtre de la carte */}
+      <Sidebar map={null} onFilterChange={setMapFilter} onGeoFilterChange={setGeoFilter} />
 
-      {/* 🔸 Carte principale */}
+      {/* Carte principale */}
       <div className="map-wrapper">
         <div className="map-inner">
-          <Map mapFilter={mapFilter} onMapReady={() => {}} />
+          <Map mapFilter={geoFilter} onMapReady={() => { }} />
         </div>
       </div>
 
-      {/* 🔸 Annuaire latéral */}
+      {/* Annuaire latéral */}
       {mounted && (
         <section
-          className={`section-annuaire ${drawerOpen ? "show" : ""} ${
-            animate ? "" : "no-transition"
-          }`}
+          className={`section-annuaire ${drawerOpen ? "show" : ""} ${animate ? "" : "no-transition"
+            }`}
         >
           {loading ? (
             <p>Chargement...</p>
@@ -109,11 +116,10 @@ export default function AnnuairePage() {
         </section>
       )}
 
-      {/* 🔸 Bouton de bascule carte/annuaire */}
+      {/* Bouton de bascule carte/annuaire */}
       <button
-        className={`toggle-btn ${drawerOpen ? "closed" : "open"} ${
-          animate ? "" : "no-transition"
-        }`}
+        className={`toggle-btn ${drawerOpen ? "closed" : "open"} ${animate ? "" : "no-transition"
+          }`}
         onClick={handleClose}
       >
         {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’Annuaire ↓"}

@@ -16,7 +16,6 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   // --- Filtres catégories/tags ---
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
   const [expanded, setExpanded] = useState({});
 
   const resultsRef = useRef(null);
@@ -31,11 +30,7 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
 
     axios
       .get("/api/categories")
-      .then((res) => {
-        const data = res.data;
-        const roots = data.filter((c) => c.parentId === null);
-        setCategories(roots);
-      })
+      .then((res) => setCategories(res.data.filter((c) => c.parentId === null)))
       .catch((err) => console.error("Erreur chargement catégories :", err));
 
     fetch("/data/cartes/(initial)region-centre-val-de-loire.geojson")
@@ -155,7 +150,7 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   }, [results]);
 
   // ------------------------------------------------------------
-  // Filtres catégories/tags
+  // Gestion des catégories
   // ------------------------------------------------------------
   const getAllChildrenIds = (category) => {
     const ids = [];
@@ -168,36 +163,53 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   };
 
   const handleCategoryToggle = (category) => {
-    const id = category.id;
-    const allChildren = getAllChildrenIds(category);
-    const alreadySelected = selectedCategories.includes(id);
+    const allIds = [category.id, ...getAllChildrenIds(category)];
+    const isChecked = allIds.every((id) => selectedCategories.includes(id));
 
-    if (alreadySelected) {
-      setSelectedCategories((prev) => prev.filter((x) => ![id, ...allChildren].includes(x)));
-      setSelectedTags((prev) => prev.filter((x) => !allChildren.includes(x)));
+    if (isChecked) {
+      setSelectedCategories((prev) => prev.filter((id) => !allIds.includes(id)));
     } else {
-      setSelectedCategories((prev) => [...new Set([...prev, id, ...allChildren])]);
-      setSelectedTags((prev) => [...new Set([...prev, ...allChildren])]);
+      setSelectedCategories((prev) => [...new Set([...prev, ...allIds])]);
     }
-  };
-
-  const handleTagToggle = (id) => {
-    setSelectedTags((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
   };
 
   const toggleExpand = (id) => {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  // ------------------------------------------------------------
+  // Construction mapFilter final : only selected → categories (racines), tags (enfants)
+  // ------------------------------------------------------------
   useEffect(() => {
-    onFilterChange &&
-      onFilterChange({
-        categories: selectedCategories,
-        tags: selectedTags,
-      });
-  }, [selectedCategories, selectedTags]);
+    if (!onFilterChange) return;
+
+    const categoryNames = [];
+    const tagNames = [];
+
+    function traverse(cats, hasParent = false) {
+      for (const cat of cats) {
+        const isSelected = selectedCategories.includes(cat.id);
+        if (isSelected) {
+          if (hasParent) {
+            tagNames.push(cat.nom); // enfant → tag
+          } else {
+            categoryNames.push(cat.nom); // racine → category
+          }
+        }
+
+        if (cat.children && cat.children.length > 0) {
+          traverse(cat.children, true); // enfants ont un parent
+        }
+      }
+    }
+
+    traverse(categories);
+
+    onFilterChange({
+      categories: categoryNames,
+      tags: tagNames,
+    });
+  }, [selectedCategories, categories, onFilterChange]);
 
   // ------------------------------------------------------------
   // Rendu récursif des catégories
@@ -205,8 +217,7 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   const renderCategory = (cat, level = 0) => {
     const isExpanded = expanded[cat.id];
     const isChecked = selectedCategories.includes(cat.id);
-
-    const paddingLeft = 10 + level * 15; // 10px de base + 15px par niveau
+    const paddingLeft = 10 + level * 15;
 
     return (
       <li key={cat.id} className={Style.category_item}>
@@ -240,8 +251,9 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
     );
   };
 
-
-
+  // ------------------------------------------------------------
+  // Rendu Sidebar
+  // ------------------------------------------------------------
   return (
     <div className={`${Style.sidebar} ${open ? "" : "collapsed"}`}>
       {/* Zone de recherche */}

@@ -31,11 +31,11 @@ export default function Page() {
           <div className="map-inner">
             <Sidebar
               map={mapInstance}
-              onFilterChange={setContentFilter}   // categories/tags seulement
-              onGeoFilterChange={setGeoFilter}    // position seulement
+              onFilterChange={setContentFilter}
+              onGeoFilterChange={setGeoFilter}
             />
             <Map
-              mapFilter={geoFilter} // <--- uniquement géoloc
+              mapFilter={geoFilter}
               onMapReady={setMapInstance}
             />
           </div>
