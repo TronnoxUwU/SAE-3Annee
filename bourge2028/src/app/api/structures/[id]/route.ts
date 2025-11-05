@@ -47,12 +47,11 @@ export async function GET(
  */
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
 
-    const tmp = await params;
-    const id = Number(tmp.id);
+    const { id } = await context.params;
     const body = await req.json();
     const data = deserializeStructure(body);
 
@@ -79,11 +78,11 @@ export async function PUT(
  */
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const deleted = await prisma.structure.delete({
-      where: { id: Number(params.id) },
+      where: { id: Number(await context.params) },
     });
 
     return NextResponse.json(

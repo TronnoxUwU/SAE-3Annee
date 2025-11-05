@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar.jsx";
 import Sidebar from "../../components/Sidebar/SidebarWrapper";
-import "../../styles/projets.css";
+import "../../styles/projets.module.css";
 
 const GestionnaireArticle = dynamic(() => import("../../components/user/GestionnaireArticle"), { ssr: false });
 
