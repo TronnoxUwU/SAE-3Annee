@@ -12,11 +12,20 @@ export default function AdminCategory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // ------------------------------------------------------------
+  // Chargement initial des catégories
+  // ------------------------------------------------------------
   async function loadCategories() {
     const res = await fetch("/api/categories");
     const data = await res.json();
-    setItems(data);
-    setLoading(false);
+
+    // On initialise children pour éviter undefined
+    const normalized = data.map(cat => ({
+      ...cat,
+      children: cat.children || []
+    }));
+
+    setItems(normalized);
   }
 
   useEffect(() => { 
@@ -55,28 +64,29 @@ export default function AdminCategory() {
       );
     }
 
-  // add
+  // ------------------------------------------------------------
+  // ADD
+  // ------------------------------------------------------------
   function handleAdd(newCat) {
-
-    if(newCat.parentId === null) {setItems(prev => [...prev, newCat]);}
-    else {
+    if (newCat.parentId === null) {
+      setItems(prev => [...prev, { ...newCat, children: [] }]);
+    } else {
       setItems(prev => addRecursive(prev, newCat));
-
-      function addRecursive(categories, addCat) {
-        return categories.map(cat =>
-          cat.id === addCat.parentId
-            ? { ...cat, children: [...(cat.children || []), addCat] }
-            : { ...cat, children: addRecursive(cat.children || [], addCat) }
-        );
-      }
     }
-    
 
+    function addRecursive(categories, addCat) {
+      return categories.map(cat =>
+        cat.id === addCat.parentId
+          ? { ...cat, children: [...(cat.children || []), { ...addCat, children: [] }] }
+          : { ...cat, children: addRecursive(cat.children || [], addCat) }
+      );
+    }
   }
 
-  // update
+  // ------------------------------------------------------------
+  // UPDATE
+  // ------------------------------------------------------------
   function handleUpdate(updatedCat) {
-
     setItems(prev => updtRecursive(prev, updatedCat));
 
     function updtRecursive(categories, updatedCat) {
@@ -86,12 +96,12 @@ export default function AdminCategory() {
           : { ...cat, children: updtRecursive(cat.children || [], updatedCat) }
       );
     }
-
   }
 
-  // delete
+  // ------------------------------------------------------------
+  // DELETE
+  // ------------------------------------------------------------
   function handleDelete(id) {
-
     setItems(prev => rmvRecursive(prev, id));
 
     function rmvRecursive(categories, idRmv) {
@@ -102,23 +112,23 @@ export default function AdminCategory() {
           children: rmvRecursive(cat.children || [], idRmv),
         }));
     }
-
   }
 
-
+  // ------------------------------------------------------------
+  // Rendu
+  // ------------------------------------------------------------
   return (
-      <>
-
+    <>
       <button
         className="btn btn-outline-success btn-sm mb-4 fs-5"
         title="Ajouter"
-        onClick={() => setOpenAddModal(true) }
+        onClick={() => setOpenAddModal(true)}
       >
         <i className="bi bi-plus fs-5"></i>
         Ajouter une catégorie
       </button>
 
-    <CatCrudModal
+      <CatCrudModal
         CRUD={"ADD"}
         isOpen={openAddModal}
         onClose={() => setOpenAddModal(false)}
@@ -126,28 +136,25 @@ export default function AdminCategory() {
         name={""}
         onAdd={handleAdd}
         onUpdate={null}
-        onDelete={null} 
-    />
-    
-    <ul className="list-group">
-      {items.map(item => {
-        if (item.parentId) {
-          return null;
-        };
-        return (
-          <ListItem
-            key={item.id}
-            id={item.id}
-            nom={item.nom}
-            parent={item.parentId}
-            childrens={item.children}
-            onAdd={handleAdd}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-          />
-        );
-      })}
-    </ul>
+        onDelete={null}
+      />
+
+      <ul className="list-group">
+        {items
+          .filter(item => item.parentId === null)
+          .map(item => (
+            <ListItem
+              key={item.id}
+              id={item.id}
+              nom={item.nom}
+              parent={item.parentId}
+              childrens={item.children || []}
+              onAdd={handleAdd}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+            />
+          ))}
+      </ul>
     </>
   );
 }

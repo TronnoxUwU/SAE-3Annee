@@ -6,20 +6,20 @@ import { useRouter } from "next/navigation";
 import "./styles/home.css";
 
 const Map = dynamic(() => import("./components/Map/Map"), { ssr: false });
-// const Sidebar = dynamic(() => import("./components/SidebarWrapper"), { ssr: false });
 import Sidebar from './components/Sidebar/SidebarWrapper'
 import Topbar from "@/components/Topbar.jsx";
-
-
 
 export default function Page() {
   const router = useRouter();
   const [mapInstance, setMapInstance] = useState(null);
-  const [mapFilter, setMapFilter] = useState(null);
+
+  // Filtres séparés
+  const [contentFilter, setContentFilter] = useState({ categories: [], tags: [] }); // uniquement pour fetch articles
+  const [geoFilter, setGeoFilter] = useState(null); // uniquement pour la carte
 
   const goToAnnuaire = () => {
     sessionStorage.setItem("fromHome", "true");
-    router.push("/annuaire"); // juste naviguer, animation gérée côté /annuaire
+    router.push("/annuaire");
   };
 
   return (
@@ -27,17 +27,21 @@ export default function Page() {
       <Topbar fixed title="Carte de la culture à Bourges 2028 !" />
 
       <section className="section-map">
-
-
         <div className="map-wrapper">
           <div className="map-inner">
-            <Sidebar map={mapInstance} onFilterChange={setMapFilter} />
-            <Map mapFilter={mapFilter} onMapReady={setMapInstance} />
+            <Sidebar
+              map={mapInstance}
+              onFilterChange={setContentFilter}
+              onGeoFilterChange={setGeoFilter}
+            />
+            <Map
+              mapFilter={geoFilter}
+              onMapReady={setMapInstance}
+            />
           </div>
         </div>
-
-
       </section>
+
       <button
         className="toggle-btn open"
         onClick={goToAnnuaire}
