@@ -46,11 +46,6 @@ export default function ProjetsPage() {
     fetchArticles();
   }, [mapFilter]);
 
-  const handleCreate = () => {
-    return () => {
-      window.location.href = `/user/projets/${article.id}/edit`;
-    };
-  };
 
   return (
     <main className="main-container">
@@ -61,11 +56,9 @@ export default function ProjetsPage() {
 
       {/* Bouton d'ajout de projet/article */}
 
-      <a className={styles.btnAddWrapper} href="/articles">
-        <button className={styles.btnAdd}>
+        <button className={styles.btnAdd} onClick={() => router.push('/articles')}>
           +
         </button>
-      </a>
 
 
       <section className="section-articles">

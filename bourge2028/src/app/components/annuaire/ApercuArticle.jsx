@@ -8,10 +8,6 @@ export default function ApercuArticle({ article }) {
   const router = useRouter();
   const [imageSrc, setImageSrc] = useState("/images/default-article.png");
 
-  const handleClick = () => {
-    router.push(`/article/${article.id}`);
-  };
-
   const firstImageComponent = article.composants?.find(
     (elt) => elt.type === "image"
   );
@@ -19,7 +15,11 @@ export default function ApercuArticle({ article }) {
   const originalSrc =
     firstImageComponent?.image?.lienImage || "/images/default-article.png";
 
-  const title = article.titre || "Article sans titre";
+  const title =
+    article.titre?.length > 30
+      ? article.titre.substring(0, 27) + "..."
+      : article.titre || "Article sans titre";
+
 
   useEffect(() => {
     let canceled = false;
@@ -57,9 +57,11 @@ export default function ApercuArticle({ article }) {
   }, [originalSrc]);
 
   return (
-    <div className={styles.apercuArticle} onClick={handleClick}>
+    <div className={styles.apercuArticle} onClick={() => router.push(`/article/${article.id}`)}>
       <img src={imageSrc} alt={title} className={styles.apercuArticleImage} />
-      <h2>{title}</h2>
+      <h2 className={styles.apercuArticleTitle} data-fulltitle={article.titre}>
+        {title}
+      </h2>
     </div>
   );
 }
