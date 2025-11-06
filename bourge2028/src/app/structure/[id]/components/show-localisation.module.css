@@ -1,0 +1,16 @@
+.item_bloc {
+    flex-grow: 1;
+}
+.item_bloc div {
+    justify-content: center;
+}
+.item_bloc h2 {
+    margin-left: 0.5em;
+    flex-grow: 0 !important;
+}
+
+
+.item_title {
+    font-size: larger;
+    font-weight: bold;
+}

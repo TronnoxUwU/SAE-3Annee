@@ -7,7 +7,7 @@ export const deserializeStructure = (
     nomStructure,
     dateCreation,
     description,
-    departementId,
+    departements,
     tags,
     personnes,
     realisations,
@@ -20,8 +20,9 @@ export const deserializeStructure = (
     dateCreation: dateCreation ? new Date(dateCreation) : undefined,
     description,
 
-    departement: departementId
-      ? { connect: { id: departementId } }
+    departements: departements?.length
+    //   ? { connect: { id: departementId } }
+      ? { connect: departements.map((d: any) => ({ id: d.id })),}
       : undefined,
 
     tags: tags?.length

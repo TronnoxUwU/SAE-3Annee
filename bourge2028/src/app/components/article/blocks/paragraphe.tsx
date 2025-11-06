@@ -36,15 +36,13 @@ export const Paragraphe = forwardRef<ParagrapheHandle, ParagrapheProps>(
     // ✨ NOUVELLE FONCTION : normalise le HTML pour éviter les balises imbriquées
     const normalizeHTML = (element: HTMLElement) => {
       // Unwrap les balises imbriquées identiques (ex: <strong><strong>text</strong></strong>)
-      const unwrapNestedSameTags = (parent: Node) => {
+      const unwrapNestedSameTags = (parent: Element) => {
         let changed = true;
         
         // Boucle jusqu'à ce qu'il n'y ait plus de changements
         while (changed) {
           changed = false;
-          const elements = parent.querySelectorAll ? 
-            Array.from((parent as Element).querySelectorAll('*')) : 
-            [];
+          const elements = Array.from(parent.querySelectorAll('*'));
           
           for (const el of elements) {
             const element = el as HTMLElement;

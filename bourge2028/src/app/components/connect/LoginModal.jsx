@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import RegisterModal from "./RegisterModal";
 import Modal from "@/components/Modal";
 import Style from './connect.module.css';
 import TopStyle from "@/components/Topbar.module.css"
-// ...
 import ForgotPasswordModal from "./ForgotPasswordModal";
 
-export default function LoginModal() {
+function LoginModalContent() {
   const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -109,12 +108,19 @@ export default function LoginModal() {
         }}
       />
 
-      {/* 👇 Et ton nouveau modal */}
       <ForgotPasswordModal
         isOpen={showForgot}
         onClose={() => setShowForgot(false)}
         onSwitchToLogin={() => setShowLogin(true)}
       />
     </>
+  );
+}
+
+export default function LoginModal() {
+  return (
+    <Suspense fallback={null}>
+      <LoginModalContent />
+    </Suspense>
   );
 }

@@ -113,11 +113,15 @@
 }
 
 .dropdown li {
-  padding: 10px 16px;
+  /* padding: 10px 16px; */
   cursor: pointer;
   color: white;
   transition: background-color 0.2s;
   border-radius: inherit;
+}
+.dropdown li a {
+  padding: 10px 16px;
+  display: block;
 }
 
 .dropdown li:hover {

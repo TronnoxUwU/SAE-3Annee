@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ListItem from "./listItem";
+import { useRouter } from "next/navigation";
+import ListItem from "./listItem"
 import CatCrudModal from "./CRUDmodal";
 
 export default function AdminCategory() {
+  const router = useRouter();
   const [items, setItems] = useState([]);
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // ------------------------------------------------------------
   // Chargement initial des catégories
@@ -24,7 +28,41 @@ export default function AdminCategory() {
     setItems(normalized);
   }
 
-  useEffect(() => { loadCategories(); }, []);
+  useEffect(() => { 
+    try {
+      setLoading(true);
+      loadCategories(); 
+    } catch (err) {
+      setError(err.message);
+    }
+
+  }, []);
+
+  if (loading) {
+    return (
+      <>
+        {/* <div className={Style.userPage}> */}
+        <div>
+          <p>Chargement...</p>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+      return (
+        <>
+          {/* <div className={Style.userPage}> */}
+          <div>
+            <h1>Erreur</h1>
+            <p>{error}</p>
+            <button onClick={() => router.push("/admin")}>
+              Retour aux structures
+            </button>
+          </div>
+        </>
+      );
+    }
 
   // ------------------------------------------------------------
   // ADD
