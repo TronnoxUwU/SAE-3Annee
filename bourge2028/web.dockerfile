@@ -29,8 +29,7 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 # Copier UNIQUEMENT ce qui est nécessaire (standalone inclut déjà node_modules optimisés)
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 
 # Copier Prisma
