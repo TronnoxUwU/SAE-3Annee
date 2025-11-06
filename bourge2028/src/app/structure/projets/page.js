@@ -4,73 +4,60 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar.jsx";
 import Sidebar from "../../components/Sidebar/SidebarWrapper";
-import "../../styles/projets.module.css";
+import styles from "../../styles/projets.module.css";
 
 const GestionnaireArticle = dynamic(() => import("../../components/user/GestionnaireArticle"), { ssr: false });
 
 export default function ProjetsPage() {
 
-    // États data
-    const [mapFilter, setMapFilter] = useState(null);
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  // États data
+  const [mapFilter, setMapFilter] = useState(null);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
 
-    // 🔹 Récupération des articles (c’est ici que la requête est faite)
-    useEffect(() => {
-        async function fetchArticles() {
-            try {
-                setLoading(true);
-                setError(null);
+  // 🔹 Récupération des articles (c’est ici que la requête est faite)
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        setLoading(true);
+        setError(null);
 
-                let url = "/api/articles"; // api/user/articles
-                if (mapFilter) {
-                    const params = new URLSearchParams(mapFilter).toString();
-                    url += `?${params}`;
-                }
-
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`Erreur ${res.status}`);
-
-                const data = await res.json();
-                setArticles(data);
-            } catch (err) {
-                console.error(err);
-                setError("Impossible de charger les articles.");
-            } finally {
-                setLoading(false);
-            }
+        let url = "/api/articles"; // api/user/articles
+        if (mapFilter) {
+          const params = new URLSearchParams(mapFilter).toString();
+          url += `?${params}`;
         }
 
-        fetchArticles();
-    }, [mapFilter]);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
 
-    const handleCreate = () => {
-        return () => {
-            window.location.href = `/user/projets/${article.id}/edit`;
-        };
-    };
-
-    return (
-        <main className="main-container">
-            <Topbar fixed />
-
-  // 🔹 Log des changements de filtres
-  useEffect(() => {
-    if (mapFilter) {
-      console.log("Filtres mis à jour :", mapFilter);
+        const data = await res.json();
+        setArticles(data);
+      } catch (err) {
+        console.error(err);
+        setError("Impossible de charger les articles.");
+      } finally {
+        setLoading(false);
+      }
     }
+
+    fetchArticles();
   }, [mapFilter]);
 
-  const handleClose = () => {
-    setAnimate(true);
-    setDrawerOpen(false);
-    setTimeout(() => router.push("/"), 600);
+  const handleCreate = () => {
+    return () => {
+      window.location.href = `/user/projets/${article.id}/edit`;
+    };
   };
 
-            {/* 🔸 Sidebar gère le filtre de la carte */}
-            <Sidebar map={null} onFilterChange={setMapFilter} />
+  return (
+    <main className="main-container">
+      <Topbar fixed />
+
+      {/* 🔸 Sidebar gère le filtre de la carte */}
+      <Sidebar map={null} onFilterChange={setMapFilter} />
 
       {/* Bouton d'ajout de projet/article */}
 
@@ -80,7 +67,6 @@ export default function ProjetsPage() {
         </button>
       </a>
 
-      <Sidebar map={null} onFilterChange={setMapFilter} />
 
       <section className="section-articles">
         <GestionnaireArticle articles={articles} />
