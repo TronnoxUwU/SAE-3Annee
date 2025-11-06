@@ -38,7 +38,7 @@ COPY --from=builder /app/prisma/schema.prisma ./prisma/schema.prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Copier middleware si nécessaire
-COPY --from=builder /app/middleware.js ./middleware.js 2>/dev/null || true
+COPY --from=builder /app/src/middleware.js ./middleware.js 2>/dev/null || true
 
 # Permissions pour la DB
 RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app/prisma
