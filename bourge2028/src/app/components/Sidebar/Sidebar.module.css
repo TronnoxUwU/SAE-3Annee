@@ -1,4 +1,3 @@
-/* Sidebar principale */
 .sidebar {
   position: fixed;
   top: 0;
@@ -44,7 +43,7 @@
   font-size: 14px;
 }
 
-/* Liste autocomplete sous le champ */
+/* Liste autocomplete */
 .search_results {
   position: absolute;
   top: 100%;
@@ -81,51 +80,89 @@
   font-weight: bold;
 }
 
-/* Section filtres catégories/tags */
+/* Section filtres */
 .filter_section {
   padding-left: 10px;
   overflow-y: auto;
   max-height: calc(100vh - 150px);
 }
 
+/* Catégories */
 .category_tree {
   list-style: none;
-  padding-left: 0; /* Correction : plus de décalage en cascade */
+  padding-left: 0;
   margin: 0;
 }
 
 .category_item {
   margin-bottom: 4px;
+  position: relative;
 }
 
 .category_label {
   display: flex;
   align-items: center;
-  padding: 4px 0;
+  justify-content: space-between;
+  padding: 4px 6px;
+  cursor: pointer;
+  border-radius: 6px;
 }
 
-/* Bouton expand : largeur fixe pour alignement */
+.category_label:hover {
+  background-color: rgba(163, 217, 167, 0.2);
+}
+
+.category_left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .expand_btn {
   background: none;
   border: none;
   color: white;
   cursor: pointer;
   font-size: 12px;
-  margin-right: 5px;
-  width: 20px; /* Réserve la place même sans flèche */
+  width: 20px;
   display: inline-flex;
   justify-content: center;
 }
 
-/* Placeholder pour aligner les items sans flèche */
 .expand_btn_placeholder {
   display: inline-block;
   width: 20px;
-  margin-right: 5px;
 }
 
+/* Checkbox alignée à droite */
 .checkbox {
-  margin-right: 6px;
+  cursor: pointer;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Texte des catégories */
+.category_text {
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Catégories verrouillées (enfants d’un parent sélectionné) */
+.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.locked .checkbox{
+  cursor: not-allowed;
+}
+
+/* Responsive */
+.sidebar.collapsed .filter_section,
+.sidebar.collapsed .sidebar_search input {
+  display: none;
 }
 
 /* Survol catégorie/tag */
@@ -133,10 +170,4 @@
 .tag_item:hover {
   background-color: rgba(163, 217, 167, 0.3);
   border-radius: 5px;
-}
-
-/* Gestion responsive ou collapsed */
-.sidebar.collapsed .filter_section,
-.sidebar.collapsed .sidebar_search input {
-  display: none;
 }

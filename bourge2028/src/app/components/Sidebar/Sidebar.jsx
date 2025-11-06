@@ -194,44 +194,57 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   }, [selectedCategories, categories, onFilterChange]);
 
   // ------------------------------------------------------------
-  // Rendu récursif avec expansion possible pour tous niveaux
+  // Rendu récursif
   // ------------------------------------------------------------
   const renderCategory = (cat, level = 0, parentChecked = false) => {
     const isExpanded = expanded[cat.id];
-    const isChecked = selectedCategories.includes(cat.id) || parentChecked;
+    const isChecked = selectedCategories.includes(cat.id);
+    const isLocked = parentChecked;
     const paddingLeft = 10 + level * 15;
 
     return (
       <li key={cat.id} className={Style.category_item}>
         <div
-          className={Style.category_label}
+          className={`${Style.category_label} ${isLocked ? Style.locked : ""}`}
           style={{ paddingLeft: `${paddingLeft}px` }}
+          onClick={() => {
+            if (!isLocked) handleCategoryToggle(cat);
+          }}
         >
-          {/* Bouton expand toujours cliquable */}
-          {cat.children?.length > 0 && (
-            <button
-              className={Style.expand_btn}
-              onClick={() => toggleExpand(cat.id)}
-            >
-              {isExpanded ? "▼" : "►"}
-            </button>
-          )}
-          {!cat.children?.length && <span className={Style.expand_btn_placeholder}></span>}
+          <div className={Style.category_left}>
+            {cat.children?.length > 0 && (
+              <button
+                className={Style.expand_btn}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleExpand(cat.id);
+                }}
+              >
+                {isExpanded ? "▼" : "►"}
+              </button>
+            )}
+            {!cat.children?.length && (
+              <span className={Style.expand_btn_placeholder}></span>
+            )}
+            <span className={Style.category_text}>{cat.nom}</span>
+          </div>
+
           <input
             type="checkbox"
-            checked={isChecked}
-            onChange={() => handleCategoryToggle(cat)}
+            checked={isChecked || isLocked}
+            onChange={(e) => {
+              e.stopPropagation();
+              if (!isLocked) handleCategoryToggle(cat);
+            }}
             className={Style.checkbox}
-            disabled={parentChecked && !selectedCategories.includes(cat.id)}
+            disabled={isLocked}
           />
-          {cat.nom}
         </div>
 
-        {/* Lazy load enfants seulement si expanded */}
         {cat.children?.length > 0 && isExpanded && (
           <ul className={Style.category_tree}>
             {cat.children.map((child) =>
-              renderCategory(child, level + 1, isChecked)
+              renderCategory(child, level + 1, isChecked || isLocked)
             )}
           </ul>
         )}
@@ -244,7 +257,6 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   // ------------------------------------------------------------
   return (
     <div className={`${Style.sidebar} ${open ? "" : "collapsed"}`}>
-      {/* Recherche */}
       <div className={Style.sidebar_search} ref={searchRef}>
         <input
           type="text"
@@ -267,13 +279,11 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
         )}
       </div>
 
-      {/* Header + collapse */}
       <div className={Style.sidebar_header}>
         {open && <span>Filtres</span>}
         <button onClick={() => setOpen(!open)}>{open ? "<" : ">"}</button>
       </div>
 
-      {/* Filtres catégories/tags */}
       <ul className={Style.filter_section}>
         {categories.map((cat) => renderCategory(cat))}
       </ul>
