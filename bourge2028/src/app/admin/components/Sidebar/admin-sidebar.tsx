@@ -10,7 +10,7 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   const menuItems = [
-    { name: "Acceuil admin", path: "/admin" },
+    { name: "Acceuil", path: "/admin" },
     { name: "Dashboard", path: "/admin/dashboard" },
     { name: "Catégories", path: "/admin/categories" },
     { name: "Structures", path: "/admin/structures" },

@@ -60,7 +60,7 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
                 <li><a href={`/contact`}>Contact</a></li>
                 <li><a href={`/credit`}>Crédits</a></li>
                 <li><a href={`/information`}>Informations</a></li>
-                <li><a href={`/structure`}>Les structures</a></li>
+                <li><a href={`/structure`}>Structures</a></li>
               {session && session.user.structure && (
                 <li><a href={`/structure/${session.user.structure}`}>Ma structure</a></li>
               )}
