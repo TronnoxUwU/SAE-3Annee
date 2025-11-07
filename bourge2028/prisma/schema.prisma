@@ -17,6 +17,7 @@ model Structure {
   id            Int          @id @default(autoincrement())
   nomStructure  String?
   description   String?
+  lienPhoto     String?
   dateCreation  DateTime?
   // departementId Int?
 
@@ -39,10 +40,9 @@ model Situer {
 
 model Departement {
   id           Int           @id @default(autoincrement())
-  nom          String
+  nomDep       String
   structures   Situer[]
-  personnes    Personne[]
-  realisations Realisation[]
+  projets      Projet[]
 }
 
 model Personne {
@@ -51,12 +51,13 @@ model Personne {
   nom           String
   prenom        String
   email         String       @unique
-  password      String       
+  tel           String?
+  password      String    
+  description   String?
+  lienPhoto     String?   
   dateCreation  DateTime     @default(now())
   role          String
 
-  departement   Departement? @relation(fields: [departementId], references: [id])
-  departementId Int?
 
   structures Appartenir[]
   redactions Rediger[]
@@ -69,18 +70,23 @@ model Appartenir {
   personne    Personne  @relation(fields: [personneId], references: [id])
   personneId  Int
 
-  role String?
+  role        Role      @relation(fields: [roleId], references: [id])
+  roleId      Int
 
   @@unique([structureId, personneId])
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  nom  String @unique
+
+  appartenir Appartenir[]
 }
 
 model Realisation {
   id            Int          @id @default(autoincrement())
   nom           String?
-  departement   Departement? @relation(fields: [departementId], references: [id])
-  departementId Int?
-  structure     Structure?   @relation(fields: [structureId], references: [id])
-  structureId   Int?
+  structure     Structure[]
 
   // Relations communes
   tags      RealisationTag[]
@@ -97,6 +103,8 @@ model Projet {
   nomProjet      String?
   realisation    Realisation @relation(fields: [realisationId], references: [id])
   realisationId  Int         @unique
+
+  departement    Departement[]
 }
 
 model Materiau {
