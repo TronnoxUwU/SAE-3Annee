@@ -19,7 +19,7 @@ export async function GET(
       where: { id: Number(id) },
       include: {
         departements: { include: { departement: true } },
-        tags: { include: { tag: true } },
+        cats: { include: { categorie: true } },
         realisations: true,
         personnes: true,
       },
@@ -60,7 +60,7 @@ export async function PUT(
       data,
       include: {
         departements: { include: { departement: true } },
-        tags: { include: { tag: true } },
+        cats: { include: { categorie: true } },
         realisations: true,
         personnes: true,
       },
