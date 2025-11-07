@@ -135,17 +135,16 @@ export const Sidebar = ({ selectedBlock, onUpdateBlock, paragraphRefs }) => {
             <select
               value={selectedBlock.options?.headingLevel || 'h2'}
               onChange={(e) => {
-                const newLevel = e.target.value as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+                const newLevel = e.target.value as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
                 onUpdateBlock(selectedBlock.id, selectedBlock.content, { headingLevel: newLevel });
               }}
               className="heading-level-select"
             >
-              <option value="h1">Titre 1</option>
-              <option value="h2">Titre 2</option>
-              <option value="h3">Titre 3</option>
-              <option value="h4">Titre 4</option>
-              <option value="h5">Titre 5</option>
-              <option value="h6">Titre 6</option>
+              <option value="h2">Titre 1</option>
+              <option value="h3">Titre 2</option>
+              <option value="h4">Titre 3</option>
+              <option value="h5">Titre 4</option>
+              <option value="h6">Titre 5</option>
             </select>
           </div>
           

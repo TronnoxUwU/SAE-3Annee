@@ -6,13 +6,14 @@ import { Titre } from "./blocks/titre";
 import { Paragraphe, ParagrapheHandle } from "./blocks/paragraphe";
 import { Image } from "./blocks/image";
 import { Sidebar } from "./sideEdition";
+import { SavePopup } from "./savepopup";
 
 interface Block {
   id: string;
   type: string;
   content?: any;
   options?: {
-    headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    headingLevel?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   };
 }
 
@@ -22,13 +23,14 @@ export const Editor: React.FC = () => {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   // 👉 Nouveau : on garde une référence sur CHAQUE paragraphe
   const paragraphRefs = useRef<Record<string, ParagrapheHandle | null>>({});
 
-  const handleSave = async() => {
+  const handleSave = async(titre: string) => {
     const json = {
-      titre: "",
+      titre: titre,
       composants: blocks.map((b, index) => {
         const position = index + 1;
 
@@ -37,7 +39,7 @@ export const Editor: React.FC = () => {
             type: "titre",
             positionComposant: position,
             titre: {
-              niveauTitre: Number(b.options?.headingLevel?.replace("h", "")) || 1,
+              niveauTitre: Number(b.options?.headingLevel?.replace("h", "")) || 2,
               texteTitre: b.content,
             },
           };
@@ -49,7 +51,7 @@ export const Editor: React.FC = () => {
             positionComposant: position,
             image: {
               lienImage: b.content || "",
-              titreImage: "", // tu pourras ajouter ce champ dans ton composant Image plus tard
+              titreImage: "",
             },
           };
         }
@@ -69,26 +71,27 @@ export const Editor: React.FC = () => {
     };
 
     console.log("📝 Article sauvegardé :", JSON.stringify(json, null, 2));
+    
     try {
-    const response = await fetch("/api/articles", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(json),
-    });
+      const response = await fetch("/api/articles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(json),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP : ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP : ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("✅ Article sauvegardé avec succès :", result);
+      alert(`Article "${titre}" sauvegardé avec succès !`); // ✅ Affiche le titre dans l'alert
+    } catch (error) {
+      console.error("❌ Erreur lors de la sauvegarde :", error);
+      alert("Erreur lors de la sauvegarde !");
     }
-
-    const result = await response.json();
-    console.log("✅ Article sauvegardé avec succès :", result);
-    alert("Article sauvegardé avec succès !");
-  } catch (error) {
-    console.error("❌ Erreur lors de la sauvegarde :", error);
-    alert("Erreur lors de la sauvegarde !");
-  }
   };
 
 
@@ -103,7 +106,7 @@ export const Editor: React.FC = () => {
       id: Date.now().toString(), 
       type, 
       content: defaultContent,
-      options: type === "heading" ? { headingLevel: 'h1' as 'h1'} : {} 
+      options: type === "heading" ? { headingLevel: 'h2' as 'h2'} : {} 
     };
     setBlocks((prev) => {
       const updated = [...prev];
@@ -191,7 +194,7 @@ export const Editor: React.FC = () => {
         onRemoveBlock={removeBlock}
         isDragging={isDragging}
         setIsDragging={setIsDragging}
-        onSave={handleSave} // 🆕
+        onSave={() => setIsPopupOpen(true)}
       />
 
       <div className="editor">
@@ -214,7 +217,7 @@ export const Editor: React.FC = () => {
                 {block.type === "heading" && (
                   <Titre
                     value={block.content}
-                    level={block.options?.headingLevel || 'h1'}
+                    level={block.options?.headingLevel || 'h2'}
                     onChange={(v) =>
                       setBlocks((prev) =>
                         prev.map((b) => (b.id === block.id ? { ...b, content: v } : b))
@@ -299,6 +302,11 @@ export const Editor: React.FC = () => {
           );
         }}
         paragraphRefs={paragraphRefs} // ✅ on passe les refs à la sidebar
+      />
+      <SavePopup
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onSave={handleSave}
       />
     </div>
   );

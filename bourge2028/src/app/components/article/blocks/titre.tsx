@@ -5,7 +5,7 @@ import React, { useRef, useEffect } from "react";
 interface TitreProps {
   value: string;
   onChange: (value: string) => void;
-  level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  level?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
 export const Titre: React.FC<TitreProps> = ({ value, onChange, level = 'h1' }) => {
@@ -13,7 +13,6 @@ export const Titre: React.FC<TitreProps> = ({ value, onChange, level = 'h1' }) =
   
   const getFontSize = () => {
     switch(level) {
-      case 'h1': return '2.5em';
       case 'h2': return '2em';
       case 'h3': return '1.75em';
       case 'h4': return '1.5em';

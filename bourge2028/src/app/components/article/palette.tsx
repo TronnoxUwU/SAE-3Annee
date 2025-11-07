@@ -7,7 +7,7 @@ interface PaletteProps {
   onRemoveBlock: (id: string) => void;
   isDragging: boolean;
   setIsDragging: (v: boolean) => void;
-  onSave: () => void; // 🆕 nouvelle prop
+  onSave: () => void;
 }
 
 export const Palette: React.FC<PaletteProps> = ({
@@ -15,7 +15,7 @@ export const Palette: React.FC<PaletteProps> = ({
   onRemoveBlock,
   isDragging,
   setIsDragging,
-  onSave, // 🆕
+  onSave,
 }) => {
   const components = [
     { type: "heading", label: "Titre" },
