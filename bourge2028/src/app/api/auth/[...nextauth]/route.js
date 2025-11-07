@@ -17,7 +17,6 @@ export const authOptions = {
         if (!personne) return null;
         const isValid = await bcrypt.compare(password, personne.password);
         if (!isValid) return null;
-        // Récupère la structure liée à la personne
         const structure = await prisma.appartenir.findFirst({
           where: { personneId: personne.id },
         });
@@ -33,10 +32,15 @@ export const authOptions = {
     }),
   ],
   session: {
-    strategy: "jwt", // Typage explicite retiré pour compatibilité JS
+    strategy: "jwt", 
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update" && session?.user) {
+        token.nom = session.user.nom;
+        token.prenom = session.user.prenom;
+        token.email = session.user.email;
+      }
       if (user) {
         token.id = user.id;
         token.email = user.email;

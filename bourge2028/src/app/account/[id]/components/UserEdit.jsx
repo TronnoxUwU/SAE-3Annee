@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 import Styles from "../Account.module.css";
 
 export default function UserEdit({ user, onCancel, onSave }) {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  // const { data: session, update } = useSession();
   const [formData, setFormData] = useState({
     nom: user.nom || "",
     prenom: user.prenom || "",
@@ -48,6 +50,7 @@ export default function UserEdit({ user, onCancel, onSave }) {
       dataToSend.newPassword = formData.newPassword;
     }
 
+    
     onSave(dataToSend);
   };
 

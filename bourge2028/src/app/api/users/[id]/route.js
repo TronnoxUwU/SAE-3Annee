@@ -87,7 +87,7 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const personneId = parseInt(id, 10);
     if (isNaN(personneId)) {
       return NextResponse.json({ error: "ID invalide" }, { status: 400 });

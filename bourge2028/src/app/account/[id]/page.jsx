@@ -9,8 +9,8 @@ import UserInfo from "./components/userinfo";
 import UserEdit from "./components/UserEdit";
 
 export default function AccountPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const { data: session, update } = useSession();
+  const router = useRouter()
   const params = useParams();
   const userId = parseInt(params.id);
 
@@ -20,14 +20,15 @@ export default function AccountPage() {
   const [isEditing, setIsEditing] = useState(false);
 
   // Vérifier l'authentification
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/");
-    }
-  }, [status, router]);
+  // useEffect(() => {
+  //   if (status === "unauthenticated") {
+  //     router.push("/");
+  //   }
+  // }, [status, router]);
 
   // Charger les données utilisateur
   useEffect(() => {
+
     const fetchUser = async () => {
       try {
         const response = await fetch(`/api/users/${userId}`);
@@ -65,12 +66,37 @@ export default function AccountPage() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Erreur lors de la mise à jour");
-      }
 
-      const updatedUser = await response.json();
-      setUser(updatedUser);
-      setIsEditing(false);
-      alert("Profil mis à jour avec succès !");
+      }
+      else {
+        const updatedUser = await response.json();
+
+        setUser(updatedUser);
+
+        setIsEditing(false);
+        alert("Profil mis à jour avec succès !");
+
+        // 
+        //  MISE A JOUR DU TOKEN
+        // 
+
+        const refresh = await fetch("/api/auth/refresh");
+        if (!refresh.ok) {
+          alert("Erreur de rafraîchissement de session");
+          return;
+        }
+
+        const newUser = await refresh.json();
+
+        await update({
+          ...session,
+          user: {
+            ...session.user,
+            ...newUser,
+          },
+        });
+      }
+      
     } catch (err) {
       alert("Erreur : " + err.message);
     }

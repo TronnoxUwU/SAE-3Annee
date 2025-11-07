@@ -17,7 +17,7 @@ export const deserializePersonne = (
     redactions,
   } = data;
 
-  console.log(data)
+//   console.log(data)
 
   const deserialized: Prisma.PersonneCreateInput = {
     identifiant,
