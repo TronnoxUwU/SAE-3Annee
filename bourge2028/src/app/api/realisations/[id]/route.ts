@@ -3,13 +3,9 @@ import { serializeRealisation } from "@/lib/serializers";
 import { NextResponse } from "next/server";
 
 /**
- * ----- GET /api/realisations/[id] -----
- * Renvoie une réalisation par son ID
+ * ----- GET /api/realisation/[id] -----
  */
-export async function GET(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const realisationId = Number(id);
@@ -20,19 +16,16 @@ export async function GET(
 
     const realisation = await prisma.realisation.findUnique({
       where: { id: realisationId },
-      include: {
-        projets: true,
-        documents: true,
-      },
+      include: { techniques: true, materiaux: true, projets: true },
     });
 
     if (!realisation) {
-      return NextResponse.json({ error: "Réalisation non trouvée" }, { status: 404 });
+      return NextResponse.json({ error: "Réalisation introuvable" }, { status: 404 });
     }
 
     return NextResponse.json(serializeRealisation(realisation), { status: 200 });
   } catch (error) {
-    console.error("Erreur GET /api/realisations/[id] :", error);
+    console.error("Erreur GET /api/realisation/[id] :", error);
     return NextResponse.json(
       { error: "Impossible de récupérer la réalisation" },
       { status: 500 }
@@ -41,57 +34,39 @@ export async function GET(
 }
 
 /**
- * ---- PUT /api/realisations/[id] -----
- * Met à jour une réalisation existante 
+ * ---- PUT /api/realisation/[id] -----
  */
-
-export async function PUT(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const realisationId = Number(id);
-
     if (isNaN(realisationId)) {
       return NextResponse.json({ error: "ID invalide" }, { status: 400 });
     }
 
-    const body = await req.json();
-    const { nom, description } = body;
+    const { nomRealisation } = await req.json();
 
-    if (!nom || typeof nom !== "string" || nom.trim() === "") {
-      return NextResponse.json({ error: "Nom invalide" }, { status: 400 });
+    if (!nomRealisation || typeof nomRealisation !== "string" || nomRealisation.trim() === "") {
+      return NextResponse.json({ error: "nomRealisation invalide" }, { status: 400 });
     }
 
-    if (!description || typeof description !== "string" || description.trim() === "") {
-      return NextResponse.json({ error: "Description invalide" }, { status: 400 });
-    }
-
-    const updatedRealisation = await prisma.realisation.update({
+    const updated = await prisma.realisation.update({
       where: { id: realisationId },
-      data: { nom, description },
-      include: {
-        projets: true,
-        documents: true,
-      },
+      data: { nomRealisation },
+      include: { techniques: true, materiaux: true, projets: true },
     });
-    
-    return NextResponse.json(serializeRealisation(updatedRealisation), { status: 200 });
-  } catch (error: any) {
-    console.error("Erreur PUT /api/realisations/[id] :", error);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+
+    return NextResponse.json(serializeRealisation(updated), { status: 200 });
+  } catch (error) {
+    console.error("Erreur PUT /api/realisation/[id] :", error);
+    return NextResponse.json({ error: "Impossible de mettre à jour la réalisation" }, { status: 500 });
   }
 }
 
 /**
- * ----- DELETE /api/realisations/[id] -----
- * Supprime une réalisation existante
+ * ---- DELETE /api/realisation/[id] -----
  */
-export async function DELETE(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const realisationId = Number(id);
@@ -100,13 +75,11 @@ export async function DELETE(
       return NextResponse.json({ error: "ID invalide" }, { status: 400 });
     }
 
-    await prisma.realisation.delete({
-      where: { id: realisationId },
-    });
+    await prisma.realisation.delete({ where: { id: realisationId } });
 
     return NextResponse.json({ message: "Réalisation supprimée avec succès" }, { status: 200 });
-  } catch (error: any) {
-    console.error("Erreur DELETE /api/realisations/[id] :", error);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+  } catch (error) {
+    console.error("Erreur DELETE /api/realisation/[id] :", error);
+    return NextResponse.json({ error: "Impossible de supprimer la réalisation" }, { status: 500 });
   }
 }

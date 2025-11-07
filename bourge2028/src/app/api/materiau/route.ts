@@ -8,12 +8,11 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const materiaux = await prisma.materiau.findMany({
+      include: { realisation: true },
       orderBy: { id: "asc" },
     });
 
-    const serializedMateriaux = materiaux.map(serializeMateriau);
-
-    return NextResponse.json(serializedMateriaux, { status: 200 });
+    return NextResponse.json(materiaux.map(serializeMateriau), { status: 200 });
   } catch (error) {
     console.error("Erreur GET /api/materiau :", error);
     return NextResponse.json(
@@ -25,28 +24,30 @@ export async function GET() {
 
 /**
  * ----- POST /api/materiau -----
- * Crée un nouveau matériau
  */
 export async function POST(req: Request) {
   try {
-    const { nom, description } = await req.json();
+    const { nomMateriau, realisationId } = await req.json();
 
-    if (!nom || !description) {
-      return NextResponse.json(
-        { error: "Nom et description sont requis" },
-        { status: 400 }
-      );
+    if (!nomMateriau || typeof nomMateriau !== "string" || nomMateriau.trim() === "") {
+      return NextResponse.json({ error: "nomMateriau invalide" }, { status: 400 });
+    }
+
+    if (!realisationId || isNaN(Number(realisationId))) {
+      return NextResponse.json({ error: "realisationId invalide" }, { status: 400 });
     }
 
     const materiau = await prisma.materiau.create({
-      data: { nom, description },
+      data: {
+        nomMateriau,
+        realisation: { connect: { id: Number(realisationId) } },
+      },
+      include: { realisation: true },
     });
 
-    return NextResponse.json(serializeMateriau(materiau), {
-      status: 201,
-    });
-  } catch (error: any) {
-    console.error("Erreur création matériau:", error);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json(serializeMateriau(materiau), { status: 201 });
+  } catch (error) {
+    console.error("Erreur POST /api/materiau :", error);
+    return NextResponse.json({ error: "Impossible de créer le matériau" }, { status: 500 });
   }
 }
