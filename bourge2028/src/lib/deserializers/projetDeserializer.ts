@@ -7,8 +7,8 @@ export const deserializeProjet = (p: any) => {
         nomProjet: p.nomProjet,
         realisation: p.realisation.map(deserializeRealisation),
 
-        departement: { 
-            create: p.departement.map(deserializeDepartement) 
+        departement: {
+            create: p.departement.map(deserializeDepartement)
         },
 
     };
