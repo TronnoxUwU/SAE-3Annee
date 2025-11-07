@@ -121,35 +121,25 @@ model Technique {
   realisationId  Int         @unique
 }
 
-model Tag {
-  id  Int    @id @default(autoincrement())
-  nom String
-
-  category   Categorie? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId Int?
-
-  realisations RealisationTag[]
-  structures   StructureTag[]
-}
 
 model RealisationTag {
   id            Int         @id @default(autoincrement())
   realisation   Realisation @relation(fields: [realisationId], references: [id])
   realisationId Int
-  tag           Tag         @relation(fields: [tagId], references: [id])
-  tagId         Int
+  tag           Categorie   @relation(fields: [categorieId], references: [id])
+  categorieId   Int
 
-  @@unique([realisationId, tagId])
+  @@unique([realisationId, categorieId])
 }
 
 model StructureTag {
   id          Int       @id @default(autoincrement())
   structure   Structure @relation(fields: [structureId], references: [id])
   structureId Int
-  tag         Tag       @relation(fields: [tagId], references: [id])
-  tagId       Int
+  categorie   Categorie @relation(fields: [categorieId], references: [id])
+  categorieId Int
 
-  @@unique([structureId, tagId])
+  @@unique([structureId, categorieId])
 }
 
 model Categorie {
@@ -160,7 +150,9 @@ model Categorie {
   parent   Categorie?  @relation("CategorieToSouscategories", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   children Categorie[] @relation("CategorieToSouscategories")
 
-  tags Tag[]
+  
+  realisations RealisationTag[]
+  structures   StructureTag[]
 }
 
 model Article {
