@@ -153,6 +153,7 @@ model Categorie {
   children Categorie[] @relation("CategorieToSouscategories")
 
   tags Tag[]
+  cartes Carte[]
 }
 
 model Article {
@@ -258,4 +259,13 @@ model Analytics {
   ipAddress   String?     // need to be hashed
   userAgent   String?     // type d’appareil
   dateVisite   DateTime @default(now())
+}
+
+model Carte {
+  id               Int      @id @default(autoincrement())
+  titre            String?
+  descriptionCarte String?
+  lienCarte        String     
+
+  categories       Categorie[]
 }
