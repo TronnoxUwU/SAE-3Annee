@@ -1,4 +1,6 @@
 import type { Personne } from "@prisma/client";
+
+
 export function serializePersonne(personne) {
   if (!personne) return null;
 
@@ -8,6 +10,7 @@ export function serializePersonne(personne) {
     nom: personne.nom,
     prenom: personne.prenom,
     email: personne.email,
+    description: personne.description,
     role: personne.role,
     dateCreation: personne.dateCreation?.toISOString() ?? null,
 

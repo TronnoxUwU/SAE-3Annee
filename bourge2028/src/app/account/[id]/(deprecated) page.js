@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import Styles from "./Account.module.css";
 import Topbar from "@/components/Topbar";
+import Structure from "./components/affichage-structure";
 
 export default function AccountPage() {
   const { data: session, status } = useSession();
@@ -159,6 +160,7 @@ export default function AccountPage() {
     <>
       <Topbar title={`Profil de ${user.prenom} ${user.nom}`} />
       <div className={Styles.container}>
+
         <div className={Styles.profileCard}>
           {/* Avatar */}
           <div className={Styles.avatarSection}>
@@ -193,23 +195,7 @@ export default function AccountPage() {
                     <span>{user.departement.nom}</span>
                   </div>
                 )}
-                {user.structures && user.structures.length > 0 && (
-                  <div className={Styles.field}>
-                    <strong>Structures :</strong>
-                    <div className={Styles.structuresList}>
-                      {user.structures.map((app) => (
-                        <a
-                          key={app.id}
-                          href={`/structure/${app.structureId}`}
-                          className={Styles.structureLink}
-                        >
-                          {app.structure.nomStructure}
-                          {app.role && ` (${app.role})`}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                
                 {user.redactions && user.redactions.length > 0 && (
                   <div className={Styles.field}>
                     <strong>Articles rédigés :</strong>
@@ -346,6 +332,12 @@ export default function AccountPage() {
               </div>
             </form>
           )}
+        </div>
+
+        <div className={Styles.structures}>
+            <h2>Mes structures</h2>
+            
+          <Structure />
         </div>
       </div>
     </>

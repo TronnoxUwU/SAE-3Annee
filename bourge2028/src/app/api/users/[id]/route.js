@@ -3,37 +3,23 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { deserializePersonne } from "@/lib/deserializers";
+import { serializePersonne } from "@/lib/serializers";
 
-// Fonction pour serializer les dates
-// function serializePersonne(personne) {
-//   return {
-//     ...personne,
-//     dateCreation: personne.dateCreation?.toISOString(),
-//     structures: personne.structures?.map(app => ({
-//       ...app,
-//       structure: app.structure
-//     })),
-//     redactions: personne.redactions?.map(red => ({
-//       ...red,
-//       dateRedaction: red.dateRedaction?.toISOString(),
-//       dateModif: red.dateModif?.toISOString()
-//     }))
-//   };
-// }
 
-UTILISER LE SERIALIZER
-
-// GET - Récupérer un utilisateur
+/**
+ * GET /api/users/[id]
+ */
 export async function GET(request, { params }) {
   try {
-    const session = await getServerSession(authOptions);
+    // const session = await getServerSession(authOptions);
     
-    if (!session) {
-      return NextResponse.json(
-        { error: "Non authentifié" },
-        { status: 401 }
-      );
-    }
+    // if (!session) {
+    //   return NextResponse.json(
+    //     { error: "Non authentifié" },
+    //     { status: 401 }
+    //   );
+    // }
 
     const { id } = await params;
     const personneId = parseInt(id);
@@ -70,23 +56,17 @@ export async function GET(request, { params }) {
       );
     }
 
-    // Vérifier que l'utilisateur peut voir ce profil
-    const canView =
-      session.user.id === personneId ||
-      session.user.role === "Admin";
+    // verification user
+    // const canView =
+    //   session.user.id === personneId || session.user.role === "Admin";
+    // if (!canView) {
+    //   return NextResponse.json({ error: "Accès refusé" },{ status: 403 });
+    // }
 
-    if (!canView) {
-      return NextResponse.json(
-        { error: "Accès refusé" },
-        { status: 403 }
-      );
-    }
 
-    // Ne pas renvoyer le mot de passe
+    // console.log(session)
+
     const { password, ...personneWithoutPassword } = personne;
-
-    console.log(personne.structures[0].structure)
-
     return NextResponse.json(serializePersonne(personneWithoutPassword));
   } catch (error) {
     console.error("Erreur GET user:", error);
@@ -97,66 +77,70 @@ export async function GET(request, { params }) {
   }
 }
 
-// PUT - Mettre à jour un utilisateur
+/**
+ * PUT /api/users/[id]
+ */
 export async function PUT(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
-    
     if (!session) {
-      return NextResponse.json(
-        { error: "Non authentifié" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
     const { id } = params;
-    const personneId = parseInt(id);
+    const personneId = parseInt(id, 10);
+    if (isNaN(personneId)) {
+      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    }
+
     const body = await request.json();
 
-    if (isNaN(personneId)) {
-      return NextResponse.json(
-        { error: "ID invalide" },
-        { status: 400 }
-      );
-    }
-
-    // Vérifier les permissions
+    // verification user
     const canEdit =
-      session.user.id === personneId ||
-      session.user.role === "Admin";
-
+      session.user.id === personneId || session.user.role === "Admin";
     if (!canEdit) {
-      return NextResponse.json(
-        { error: "Accès refusé" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
     }
 
-    // Filtrer les champs autorisés
+
+
+    const deserializedData = deserializePersonne(body);
+
+
+
     const updateData = {};
-    
+
     // Champs modifiables par l'utilisateur
-    const userEditableFields = ["nom", "prenom", "email"];
+    const userEditableFields = ["nom", "prenom", "email", "description", "departement"];
     userEditableFields.forEach((field) => {
-      if (body[field] !== undefined) {
-        updateData[field] = body[field];
+      if (deserializedData[field] !== undefined) {
+        updateData[field] = deserializedData[field];
       }
     });
 
-    // Champs modifiables uniquement par les admins
-    if (session.user.role === "Admin") {
-      if (body.role !== undefined) updateData.role = body.role;
-      if (body.departementId !== undefined) updateData.departementId = body.departementId;
-    }
+    // Champs réservés à l’admin
+    // if (session.user.role === "Admin") {
+    //   if (deserializedData.role !== undefined)
+    //     updateData.role = deserializedData.role;
+    //   if (deserializedData.departement)
+    //     updateData.departement = deserializedData.departement;
+    // }
 
-    // Gestion du changement de mot de passe
+
+
+    // 
+    // Mot de passe
+    // 
     if (body.newPassword && body.currentPassword) {
       const personne = await prisma.personne.findUnique({
-        where: { id: personneId }
+        where: { id: personneId },
       });
 
-      const isValid = await bcrypt.compare(body.currentPassword, personne.password);
-      
+      const isValid = await bcrypt.compare(
+        body.currentPassword,
+        personne.password
+      );
+
       if (!isValid) {
         return NextResponse.json(
           { error: "Mot de passe actuel incorrect" },
@@ -168,10 +152,13 @@ export async function PUT(request, { params }) {
       updateData.password = hashedPassword;
     }
 
-    // Vérifier l'unicité de l'email si modifié
+
+
+
+    // verif email unique
     if (updateData.email) {
       const existingUser = await prisma.personne.findUnique({
-        where: { email: updateData.email }
+        where: { email: updateData.email },
       });
 
       if (existingUser && existingUser.id !== personneId) {
@@ -182,26 +169,30 @@ export async function PUT(request, { params }) {
       }
     }
 
+
+
     const updatedPersonne = await prisma.personne.update({
       where: { id: personneId },
       data: updateData,
       include: {
         departement: true,
-        structures: {
-          include: {
-            structure: true
-          }
-        }
-      }
+        structures: { include: { structure: true } },
+        redactions: {
+          include: { article: true, realisation: true },
+        },
+      },
     });
 
-    const { password, ...personneWithoutPassword } = updatedPersonne;
-
-    return NextResponse.json(serializePersonne(personneWithoutPassword));
-  } catch (error) {
-    console.error("Erreur PUT user:", error);
     
-    if (error.code === 'P2002') {
+
+    // Supprimer le mot de passe avant envoi
+    const { password, ...safePersonne } = updatedPersonne;
+
+    return NextResponse.json(serializePersonne(safePersonne));
+  } catch (error) {
+    console.error("Erreur PUT /personnes :", error);
+
+    if (error.code === "P2002") {
       return NextResponse.json(
         { error: "Cette valeur est déjà utilisée" },
         { status: 400 }
@@ -215,7 +206,9 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE - Supprimer un utilisateur (Admin uniquement)
+/**
+ * DELETE /api/users/[id]
+ */
 export async function DELETE(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
@@ -227,12 +220,12 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    if (session.user.role !== "Admin") {
-      return NextResponse.json(
-        { error: "Accès refusé - Admin uniquement" },
-        { status: 403 }
-      );
-    }
+    // if (session.user.role !== "Admin") {
+    //   return NextResponse.json(
+    //     { error: "Accès refusé - Admin uniquement" },
+    //     { status: 403 }
+    //   );
+    // }
 
     const { id } = params;
     const personneId = parseInt(id);

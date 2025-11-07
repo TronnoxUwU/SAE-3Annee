@@ -50,8 +50,9 @@ model Personne {
   identifiant   String       @unique
   nom           String
   prenom        String
+  description   String?
   email         String       @unique
-  password      String       
+  password      String
   dateCreation  DateTime     @default(now())
   role          String
 
