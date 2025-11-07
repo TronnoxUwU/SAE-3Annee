@@ -25,7 +25,7 @@ model Structure {
   departements Situer[]
   personnes    Appartenir[] // Appartenir (avec role)
   realisations Realisation[] // Réaliser
-  tags         StructureTag[] // Avoir
+  Cats         StructureCat[] // Avoir
 }
 
 model Situer {
@@ -89,11 +89,11 @@ model Realisation {
   structure     Structure[]
 
   // Relations communes
-  tags      RealisationTag[]
+  Cats      RealisationCat[]
   Rediger   Rediger[]
   // relations ISA 1:1
   projet    Projet?
-  materiau  Materiau?
+  materiaux  Materiau?
   technique Technique?
 
 }
@@ -122,17 +122,17 @@ model Technique {
 }
 
 
-model RealisationTag {
+model RealisationCat {
   id            Int         @id @default(autoincrement())
   realisation   Realisation @relation(fields: [realisationId], references: [id])
   realisationId Int
-  tag           Categorie   @relation(fields: [categorieId], references: [id])
+  Cat           Categorie   @relation(fields: [categorieId], references: [id])
   categorieId   Int
 
   @@unique([realisationId, categorieId])
 }
 
-model StructureTag {
+model StructureCat {
   id          Int       @id @default(autoincrement())
   structure   Structure @relation(fields: [structureId], references: [id])
   structureId Int
@@ -151,8 +151,8 @@ model Categorie {
   children Categorie[] @relation("CategorieToSouscategories")
 
   
-  realisations RealisationTag[]
-  structures   StructureTag[]
+  realisations RealisationCat[]
+  structures   StructureCat[]
 }
 
 model Article {
