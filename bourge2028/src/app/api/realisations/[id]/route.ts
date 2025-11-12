@@ -6,9 +6,10 @@ import { NextResponse } from "next/server";
 /**
  * ----- GET /api/realisation/[id] -----
  */
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const realisationId = Number(params.id);
+    const tmp = await params;
+    const realisationId = Number(tmp.id);
     if (isNaN(realisationId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     const realisation = await prisma.realisation.findUnique({
@@ -39,9 +40,10 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 /**
  * ----- PUT /api/realisation/[id] -----
  */
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const realisationId = Number(params.id);
+    const tmp = await params;
+    const realisationId = Number(tmp.id);
     if (isNaN(realisationId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     const body = await req.json();
@@ -75,9 +77,10 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 /**
  * ----- DELETE /api/realisation/[id] -----
  */
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const realisationId = Number(params.id);
+    const tmp = await params;
+    const realisationId = Number(tmp.id);
     if (isNaN(realisationId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     // Supprimer les enfants liés si existent

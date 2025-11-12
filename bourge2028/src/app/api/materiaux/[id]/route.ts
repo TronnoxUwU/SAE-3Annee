@@ -8,15 +8,20 @@ import { NextResponse } from "next/server";
  */
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
-    const materiauId = Number(params.id);
-    if (isNaN(materiauId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    const { id } = params;
+    const materiauId = Number(id);
+    if (isNaN(materiauId)) {
+      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    }
 
     const materiau = await prisma.materiau.findUnique({
       where: { id: materiauId },
       include: { realisation: true },
     });
 
-    if (!materiau) return NextResponse.json({ error: "Matériau introuvable" }, { status: 404 });
+    if (!materiau) {
+      return NextResponse.json({ error: "Matériau introuvable" }, { status: 404 });
+    }
 
     return NextResponse.json(serializeMateriau(materiau), { status: 200 });
   } catch (error) {
@@ -30,8 +35,11 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
  */
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
-    const materiauId = Number(params.id);
-    if (isNaN(materiauId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    const { id } = params;
+    const materiauId = Number(id);
+    if (isNaN(materiauId)) {
+      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    }
 
     const data = await req.json();
     const materiauData = deserializeMateriau(data);
@@ -54,8 +62,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
  */
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
   try {
-    const materiauId = Number(params.id);
-    if (isNaN(materiauId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    const { id } = params;
+    const materiauId = Number(id);
+    if (isNaN(materiauId)) {
+      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    }
 
     await prisma.materiau.delete({ where: { id: materiauId } });
     return NextResponse.json({ message: "Matériau supprimé avec succès" }, { status: 200 });

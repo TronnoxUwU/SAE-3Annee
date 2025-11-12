@@ -6,9 +6,9 @@ import { NextResponse } from "next/server";
 /**
  * ----- GET /api/technique/[id] -----
  */
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const techniqueId = Number(params.id);
+    const techniqueId = Number(await params.id);
     if (isNaN(techniqueId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     const technique = await prisma.technique.findUnique({
@@ -28,9 +28,9 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 /**
  * ----- PUT /api/technique/[id] -----
  */
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const techniqueId = Number(params.id);
+    const techniqueId = Number(await params.id);
     if (isNaN(techniqueId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     const data = await req.json();
@@ -52,9 +52,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 /**
  * ----- DELETE /api/technique/[id] -----
  */
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const techniqueId = Number(params.id);
+    const techniqueId = Number(await params.id);
     if (isNaN(techniqueId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     await prisma.technique.delete({ where: { id: techniqueId } });
