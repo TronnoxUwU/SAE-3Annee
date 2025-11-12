@@ -1,7 +1,7 @@
 "use client";
 
 import ApercuArticle from "./ApercuArticle";
-import styles from "../../styles/annuaire.module.css";
+import styles from "../../styles/projets.module.css";
 
 export default function Annuaire({ articles }) {
   if (!articles?.length) {

@@ -4,11 +4,11 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Topbar from "@/components/Topbar.jsx";
-import Sidebar from "../components/Sidebar/SidebarWrapper";
-import "../styles/home.css";
+import Sidebar from "@/app/components/Sidebar/SidebarWrapper";
+import "@/app/styles/home.css";
 
-const Map = dynamic(() => import("../components/Map/Map"), { ssr: false });
-const Annuaire = dynamic(() => import("../components/annuaire/Annuaire"), { ssr: false });
+const Map = dynamic(() => import("@/app/components/Map/Map"), { ssr: false });
+const Annuaire = dynamic(() => import("@/app/components/annuaire/Annuaire"), { ssr: false });
 
 export default function AnnuairePage() {
   const router = useRouter();
@@ -116,7 +116,7 @@ export default function AnnuairePage() {
         </section>
       )}
 
-      {/* Bouton de bascule carte/annuaire */}
+      {/* Bouton de bascule carte/annuaires/projets */}
       <button
         className={`toggle-btn ${drawerOpen ? "closed" : "open"} ${animate ? "" : "no-transition"
           }`}

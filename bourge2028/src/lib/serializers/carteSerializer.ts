@@ -1,4 +1,5 @@
 import type { Carte, Categorie } from "@prisma/client";
+import { serializeCategorie } from "./categorieSerializer";
 
 export const serializeCarte = (
   carte: Carte & {
@@ -9,8 +10,7 @@ export const serializeCarte = (
   titre: carte.titre,
   descriptionCarte: carte.descriptionCarte,
   lienCarte: carte.lienCarte,
-  categories: carte.categories?.map(categorie => ({
-      id: categorie.id,
-      nom: categorie.nom,
-  })) || [],
+  categories: carte.categories?.map(categorie => 
+      serializeCategorie(categorie)
+  ) || [],
 });

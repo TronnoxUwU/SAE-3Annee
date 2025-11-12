@@ -19,7 +19,7 @@ export default function Page() {
 
   const goToAnnuaire = () => {
     sessionStorage.setItem("fromHome", "true");
-    router.push("/annuaire");
+    router.push("/annuaires/projets");
   };
 
   return (

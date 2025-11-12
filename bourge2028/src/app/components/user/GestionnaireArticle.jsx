@@ -1,7 +1,7 @@
 "use client";
 
 import ApercuArticleEdit from "./ApercuArticleEdit";
-import styles from "../../styles/annuaire.module.css";
+import styles from "../../styles/annuaires/projets.module.css";
 
 export default function Gestionnaire({ articles }) {
   if (!articles?.length) {
