@@ -2,7 +2,7 @@
 // import "./styles/admin.css";
 
 import Topbar from "@/components/Topbar.jsx";
-import Structure from "./components/affichage-structure";
+import Structure from "@/components/structures-list/affichage-structure";
 
 export default function AdminPage() {
 

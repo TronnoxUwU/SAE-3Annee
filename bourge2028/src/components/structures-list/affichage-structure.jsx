@@ -4,12 +4,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import StructureItem from "./structure-Item";
 import tempStyle from "./structure-Item.module.css"
+import { useSession } from 'next-auth/react';
 
-export default function AdminStructure() {
+
+
+export default function Structure() {
   const router = useRouter();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { data: session } = useSession();
+
+
 
   async function loadCategories() {
     const res = await fetch("/api/structures");
@@ -24,6 +30,7 @@ export default function AdminStructure() {
 
   useEffect(() => { 
     try {
+
       setLoading(true);
       loadCategories(); 
     } catch (err) {
@@ -61,6 +68,12 @@ export default function AdminStructure() {
   return (
     <ul className={`${tempStyle.override_list}`}>
       {items.map(item => {
+
+      const canEdit = session?.user?.role === "Admin";
+      if(!canEdit) {
+        item.personnes.map(p => {const canEdit = (p.role==="Createur" && p.personneId === session?.user?.id)})
+      }
+
         return (
           <StructureItem
             key={item.id}
@@ -68,6 +81,7 @@ export default function AdminStructure() {
             nom={item.nomStructure}
             date={item.dateCreation}
             description={item.description}
+            edit={canEdit}
           />
         );
       })}

@@ -2,7 +2,31 @@
     "folder-color.pathColors": [
         {
             "folderPath": "SAE-3Annee\\bourge2028\\src\\app\\api\\",
-            "color": "foldercolorizer.color_660033"
+            "color": "foldercolorizer.color_00cc66"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\app\\admin\\",
+            "color": "foldercolorizer.color_cccc33"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\lib\\",
+            "color": "foldercolorizer.color_996633"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\components\\",
+            "color": "foldercolorizer.color_00ccff"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\app\\admin\\categories\\",
+            "color": "foldercolorizer.color_00cc00"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\app\\admin\\structures\\",
+            "color": "foldercolorizer.color_00cc99"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\components\\structures-list\\",
+            "color": "foldercolorizer.color_0066cc"
         }
     ]
 }

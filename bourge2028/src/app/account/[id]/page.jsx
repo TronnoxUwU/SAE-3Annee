@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import Styles from "./Account.module.css";
 import Topbar from "@/components/Topbar";
-import Structure from "./components/affichage-structure";
+import Structure from "@/components/structures-list/affichage-structure";
 import UserInfo from "./components/userinfo";
 import UserEdit from "./components/UserEdit";
 

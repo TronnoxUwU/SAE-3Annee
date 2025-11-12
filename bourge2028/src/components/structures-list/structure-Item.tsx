@@ -1,12 +1,20 @@
 import { useState } from 'react';
 import Style from "./structure-Item.module.css"
+// import { useSession } from 'next-auth/react';
 
+
+// const { data: session } = useSession();
+
+
+// const canEdit =
+//     session?.user?.id === userId || session?.user?.role === "Admin";
 
 interface ListItemProps {
   id: number;
   nom: string;
   date: Date;
   description: string;
+  edit: boolean;
 }
 
 function renderDate(date){
@@ -22,7 +30,7 @@ function renderDate(date){
   })}`;
 }
 
-const StructureItem = ({ id, nom, date, description }: ListItemProps) => {
+const StructureItem = ({ id, nom, date, description, edit }: ListItemProps) => {
 
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
@@ -39,15 +47,19 @@ const StructureItem = ({ id, nom, date, description }: ListItemProps) => {
             Consulter
             <i className="bi bi-eye fs-4"></i>
           </button>
-
-          <button 
-              className={`${Style.btn_crud} btn btn-outline-primary btn-sm px-3`}
-              title="Modifier"
-              onClick={() => {window.location.href = `/structure/${id}/edit`;}}
-          >
-            Modifier
-            <i className="bi bi-pencil fs-5"></i>
-          </button>
+          {
+            edit && (
+              <button 
+                className={`${Style.btn_crud} btn btn-outline-primary btn-sm px-3`}
+                title="Modifier"
+                onClick={() => {window.location.href = `/structure/${id}/edit`;}}
+              >
+                Modifier
+                <i className="bi bi-pencil fs-5"></i>
+              </button>
+            )
+          }
+          
         </div>
       </div>
       <div className={`${Style.struct_card} card-body p-2`}>
