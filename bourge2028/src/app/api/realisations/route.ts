@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { serializeRealisation } from "@/lib/serializers";
+import { deserializeRealisation } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
 
 /**
@@ -8,8 +9,17 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const realisations = await prisma.realisation.findMany({
-      include: { techniques: true, materiaux: true, projets: true },
-      orderBy: { id: "asc" },
+      include: {
+        structure: true,
+        cats: true,
+        projet: {
+          include: {
+            departement: true,
+          },
+        },
+        materiaux: true,
+        technique: true,
+      },
     });
 
     return NextResponse.json(realisations.map(serializeRealisation), { status: 200 });
@@ -24,17 +34,25 @@ export async function GET() {
  */
 export async function POST(req: Request) {
   try {
-    const { nomRealisation } = await req.json();
+    const data = await req.json();
+    const realisationData = deserializeRealisation(data);
 
-    if (!nomRealisation || typeof nomRealisation !== "string" || nomRealisation.trim() === "") {
-      return NextResponse.json({ error: "nomRealisation invalide" }, { status: 400 });
-    }
-
-    const realisation = await prisma.realisation.create({
-      data: { nomRealisation },
+    const newRealisation = await prisma.realisation.create({
+      data: realisationData,
+      include: {
+        structure: true,
+        cats: true,
+        projet: {
+          include: {
+            departement: true,
+          },
+        },
+        materiaux: true,
+        technique: true,
+      },
     });
 
-    return NextResponse.json(serializeRealisation(realisation), { status: 201 });
+    return NextResponse.json(serializeRealisation(newRealisation), { status: 201 });
   } catch (error) {
     console.error("Erreur POST /api/realisation :", error);
     return NextResponse.json({ error: "Impossible de créer la réalisation" }, { status: 500 });

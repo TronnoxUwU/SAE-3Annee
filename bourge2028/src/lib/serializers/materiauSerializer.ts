@@ -1,12 +1,16 @@
-import type { Materiau, Realisation } from '@prisma/client';
-import { serializeRealisation } from './realisationSerializer';
+import { Materiau, Realisation } from "@prisma/client";
+import { serializeRealisation } from "./realisationSerializer";
 
-export const serializeMateriau = (
-    dep : Materiau & {
-        realisation?: Realisation[];
-    }
-) => ({
+type RealisationWithRelations = Realisation & {
+    structure: any[];
+    cats: any[];
+    projet?: any;
+    materiaux?: any;
+    technique?: any;
+};
+
+export const serializeMateriau = (dep: Materiau & { realisation?: RealisationWithRelations | null }) => ({
     id: dep.id,
     nomMateriau: dep.nomMateriau,
-    realisation: dep.realisation?.map(serializeRealisation),
+    realisation: dep.realisation ? serializeRealisation(dep.realisation) : null,
 });

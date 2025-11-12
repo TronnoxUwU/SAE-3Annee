@@ -1,15 +1,16 @@
 import prisma from "@/lib/prisma";
 import { serializeTechnique } from "@/lib/serializers";
+import { deserializeTechnique } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
 
 /**
  * ----- GET /api/technique -----
+ * Récupère toutes les techniques
  */
 export async function GET() {
   try {
     const techniques = await prisma.technique.findMany({
       include: { realisation: true },
-      orderBy: { id: "asc" },
     });
 
     return NextResponse.json(techniques.map(serializeTechnique), { status: 200 });
@@ -21,28 +22,19 @@ export async function GET() {
 
 /**
  * ----- POST /api/technique -----
+ * Crée une nouvelle technique
  */
 export async function POST(req: Request) {
   try {
-    const { nomTechnique, realisationId } = await req.json();
+    const data = await req.json();
+    const techniqueData = deserializeTechnique(data);
 
-    if (!nomTechnique || typeof nomTechnique !== "string" || nomTechnique.trim() === "") {
-      return NextResponse.json({ error: "nomTechnique invalide" }, { status: 400 });
-    }
-
-    if (!realisationId || isNaN(Number(realisationId))) {
-      return NextResponse.json({ error: "realisationId invalide" }, { status: 400 });
-    }
-
-    const technique = await prisma.technique.create({
-      data: {
-        nomTechnique,
-        realisation: { connect: { id: Number(realisationId) } },
-      },
+    const newTechnique = await prisma.technique.create({
+      data: techniqueData,
       include: { realisation: true },
     });
 
-    return NextResponse.json(serializeTechnique(technique), { status: 201 });
+    return NextResponse.json(serializeTechnique(newTechnique), { status: 201 });
   } catch (error) {
     console.error("Erreur POST /api/technique :", error);
     return NextResponse.json({ error: "Impossible de créer la technique" }, { status: 500 });

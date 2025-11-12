@@ -9,18 +9,17 @@ export const serializeRealisation = (
     realisation: Realisation & {
         structure: Structure[];
         cats: Categorie[];
-        projet?: Projet;
-        materiaux?: Materiau;
-        technique?: Technique;
+        projet?: Projet | null;
+        materiaux?: Materiau | null;
+        technique?: Technique | null;
     }
-
 ) => ({
     id: realisation.id,
-    nom: realisation.nom,
-    structure: realisation.structure.map(serializeStructure),
-    cats: realisation.cats.map(serializeCategorie),
+    nom: realisation.nom ?? null,
+    structure: realisation.structure?.map(serializeStructure) ?? [],
+    cats: realisation.cats?.map(serializeCategorie) ?? [],
 
-    projet: serializeProjet(realisation.projet),
-    materiaux: serializeMateriau(realisation.materiaux),
-    technique: serializeTechnique(realisation.technique),
+    projet: realisation.projet ? serializeProjet(realisation.projet) : null,
+    materiaux: realisation.materiaux ? serializeMateriau(realisation.materiaux) : null,
+    technique: realisation.technique ? serializeTechnique(realisation.technique) : null,
 });

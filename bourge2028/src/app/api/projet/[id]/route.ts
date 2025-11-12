@@ -1,27 +1,22 @@
 import prisma from "@/lib/prisma";
 import { serializeProjet } from "@/lib/serializers";
+import { deserializeProjet } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
 
 /**
  * ----- GET /api/projet/[id] -----
  */
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = await params;
-    const projetId = Number(id);
-
-    if (isNaN(projetId)) {
-      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
-    }
+    const projetId = Number(params.id);
+    if (isNaN(projetId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     const projet = await prisma.projet.findUnique({
       where: { id: projetId },
-      include: { realisation: true },
+      include: { realisation: true, departement: true },
     });
 
-    if (!projet) {
-      return NextResponse.json({ error: "Projet introuvable" }, { status: 404 });
-    }
+    if (!projet) return NextResponse.json({ error: "Projet introuvable" }, { status: 404 });
 
     return NextResponse.json(serializeProjet(projet), { status: 200 });
   } catch (error) {
@@ -31,29 +26,20 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 }
 
 /**
- * ---- PUT /api/projet/[id] -----
+ * ----- PUT /api/projet/[id] -----
  */
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = await params;
-    const projetId = Number(id);
-    if (isNaN(projetId)) {
-      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
-    }
+    const projetId = Number(params.id);
+    if (isNaN(projetId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
-    const { nomProjet, realisationId } = await req.json();
-
-    if (!nomProjet || typeof nomProjet !== "string" || nomProjet.trim() === "") {
-      return NextResponse.json({ error: "nomProjet invalide" }, { status: 400 });
-    }
-
-    const data: any = { nomProjet };
-    if (realisationId) data.realisation = { connect: { id: Number(realisationId) } };
+    const data = await req.json();
+    const projetData = deserializeProjet(data);
 
     const updated = await prisma.projet.update({
       where: { id: projetId },
-      data,
-      include: { realisation: true },
+      data: projetData,
+      include: { realisation: true, departement: true },
     });
 
     return NextResponse.json(serializeProjet(updated), { status: 200 });
@@ -64,19 +50,14 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 }
 
 /**
- * ---- DELETE /api/projet/[id] -----
+ * ----- DELETE /api/projet/[id] -----
  */
-export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = await params;
-    const projetId = Number(id);
-
-    if (isNaN(projetId)) {
-      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
-    }
+    const projetId = Number(params.id);
+    if (isNaN(projetId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     await prisma.projet.delete({ where: { id: projetId } });
-
     return NextResponse.json({ message: "Projet supprimé avec succès" }, { status: 200 });
   } catch (error) {
     console.error("Erreur DELETE /api/projet/[id] :", error);

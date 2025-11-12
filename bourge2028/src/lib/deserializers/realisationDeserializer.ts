@@ -1,21 +1,47 @@
 import { deserializeCategorie } from "./categorieDeserializer";
-import { deserializeMateriau } from "./materiauDeserializer";
-import { deserializeProjet } from "./projetDeserializer";
-import { deserializeStructure } from "./structureDeserializer"
-import { deserializeTechnique } from "./techniqueDeserializer";
+import { deserializeStructure } from "./structureDeserializer";
 
 export const deserializeRealisation = (r: any) => {
-    return {
-        id: r.id,
-        nom: r.nom,
-        structure: {
-            create: r.structure.map(deserializeStructure),
-        },
-        cats: {
-            create: r.categorie.map(deserializeCategorie)
-        },
-        projet: deserializeProjet(r.projet),
-        materiaux: deserializeMateriau(r.materiaux),
-        technique: deserializeTechnique(r.technique),
+  if (!r) return {};
+
+  // Structure : si tableau, créer, sinon connect
+  const structureData = r.structure
+    ? Array.isArray(r.structure)
+      ? { create: r.structure.map(deserializeStructure) }
+      : { connect: { id: r.structure.id } }
+    : undefined;
+
+  // Categorie
+  const catsData = r.categorie?.length
+    ? { create: r.categorie.map(deserializeCategorie) }
+    : undefined;
+
+  // Projet
+  let projetData;
+  if (r.projet) {
+    const departementsConnect =
+      r.projet.departement?.map((dep: any) => ({ id: dep.id })) ?? [];
+
+    projetData = {
+      create: {
+        nomProjet: r.projet.nomProjet,
+        departement: departementsConnect.length
+          ? { connect: departementsConnect }
+          : undefined,
+      },
     };
-}
+  }
+
+  return {
+    nom: r.nom,
+    structure: structureData,
+    cats: catsData,
+    projet: projetData,
+    materiaux: r.materiaux
+      ? { create: { nomMateriau: r.materiaux.nomMateriau } }
+      : undefined,
+    technique: r.technique
+      ? { create: { nomTechnique: r.technique.nomTechnique } }
+      : undefined,
+  };
+};
