@@ -6,7 +6,7 @@ import Topbar from "@/components/Topbar.jsx";
 import Sidebar from "../../components/Sidebar/SidebarWrapper";
 import styles from "../../styles/projets.module.css";
 
-const GestionnaireArticle = dynamic(() => import("../../components/user/GestionnaireArticle"), { ssr: false });
+const GestionnaireArticle = dynamic(() => import("../../components/projet/GestionnaireArticle"), { ssr: false });
 
 export default function ProjetsPage() {
 
