@@ -6,9 +6,12 @@ import { NextResponse } from "next/server";
 /**
  * ----- GET /api/materiau/[id] -----
  */
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const materiauId = Number(id);
     if (isNaN(materiauId)) {
       return NextResponse.json({ error: "ID invalide" }, { status: 400 });
@@ -33,15 +36,18 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 /**
  * ----- PUT /api/materiau/[id] -----
  */
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const materiauId = Number(id);
     if (isNaN(materiauId)) {
       return NextResponse.json({ error: "ID invalide" }, { status: 400 });
     }
 
-    const data = await req.json();
+    const data = await _req.json();
     const materiauData = deserializeMateriau(data);
 
     const updated = await prisma.materiau.update({
@@ -60,9 +66,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 /**
  * ----- DELETE /api/materiau/[id] -----
  */
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const materiauId = Number(id);
     if (isNaN(materiauId)) {
       return NextResponse.json({ error: "ID invalide" }, { status: 400 });

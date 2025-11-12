@@ -7,8 +7,8 @@ import {deserializeDepartement} from "@/lib/deserializers";
  * GET /api/departement/[id]
  */
 export async function GET(
-    _req: Request,
-    {params}: { params: Promise<{ id: string }> }
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
 
 ) {
     try {

@@ -8,7 +8,9 @@ import { NextResponse } from "next/server";
  */
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const techniqueId = Number(await params.id);
+    
+    const { id } = await params;
+    const techniqueId = Number(id);
     if (isNaN(techniqueId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     const technique = await prisma.technique.findUnique({
@@ -30,7 +32,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
  */
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const techniqueId = Number(await params.id);
+    const { id } = await params;
+    const techniqueId = Number(id);
     if (isNaN(techniqueId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     const data = await req.json();
@@ -54,7 +57,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
  */
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const techniqueId = Number(await params.id);
+    const { id } = await params;
+    const techniqueId = Number(id);
     if (isNaN(techniqueId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
 
     await prisma.technique.delete({ where: { id: techniqueId } });
