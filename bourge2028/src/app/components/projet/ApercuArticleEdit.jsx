@@ -8,10 +8,6 @@ export default function ApercuArticle({ article }) {
   const router = useRouter();
   const [imageSrc, setImageSrc] = useState("/images/default-article.png");
 
-  const handleClick = () => {
-    router.push(`/structure/projets/${article.id}/edit`);
-  };
-
   const firstImageComponent = article.composants?.find(
     (elt) => elt.type === "image"
   );
@@ -57,9 +53,11 @@ export default function ApercuArticle({ article }) {
   }, [originalSrc]);
 
   return (
-    <div className={styles.apercuArticle} onClick={handleClick}>
+    <div className={styles.apercuArticle} onClick={() => router.push(`/structure/projets/${article.id}/edit`)}>
       <img src={imageSrc} alt={title} className={styles.apercuArticleImage} />
-      <h2>{title}</h2>
+      <h2 className={styles.apercuArticleTitle} data-fulltitle={article.titre}>
+        {title}
+      </h2>
     </div>
   );
 }

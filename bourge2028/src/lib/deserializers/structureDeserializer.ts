@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { deserializeCategorie } from "./categorieDeserializer";
 
 export const deserializeStructure = (
   data: any
@@ -8,7 +9,7 @@ export const deserializeStructure = (
     dateCreation,
     description,
     departements,
-    tags,
+    cats,
     personnes,
     realisations,
   } = data;
@@ -25,9 +26,9 @@ export const deserializeStructure = (
       ? { connect: departements.map((d: any) => ({ id: d.id })),}
       : undefined,
 
-    tags: tags?.length
-      ? { connect: tags.map((t: any) => ({ id: t.id })),}
-      : undefined,
+    cats:{
+      create: cats.map(deserializeCategorie),
+    },
 
     personnes: personnes?.length
       ? { connect: personnes.map((p: any) => ({ id: p.id })),}

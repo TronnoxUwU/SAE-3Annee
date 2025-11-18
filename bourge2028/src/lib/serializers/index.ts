@@ -7,3 +7,8 @@ export * from "./documentSerializer";
 export * from "./articleSerializer";
 export * from "./categorieSerializer";
 export * from "./structureSerializer";
+export * from "./departementSerializer";
+export * from "./realisationSerializer";
+export * from "./projetSerializer";
+export * from "./materiauSerializer";
+export * from "./techniqueSerializer";

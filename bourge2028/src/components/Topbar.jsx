@@ -55,19 +55,19 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
         {menuOpen && (
           <div className={Styles.dropdown}>
             <ul>
-                <li><a href={`/`}>Acceuil</a></li>
-                <li><a href={`/annuaire`}>Annuaire</a></li>
-                <li><a href={`/contact`}>Contact</a></li>
-                <li><a href={`/credit`}>Crédits</a></li>
-                <li><a href={`/information`}>Informations</a></li>
-                <li><a href={`/structure`}>Structures</a></li>
+                <li onClick={() => router.push('/')}>Accueil</li>
+                <li onClick={() => router.push('/annuaire')}>Annuaire</li>
+                <li onClick={() => router.push('/contact')}>Contact</li>
+                <li onClick={() => router.push('/credit')}>Crédits</li>
+                <li onClick={() => router.push('/information')}>Informations</li>
+                <li onClick={() => router.push('/structure')}>Structures</li>
               {session && session.user.structure && (
-                <li><a href={`/structure/${session.user.structure}`}>Ma structure</a></li>
+                <li onClick={() => router.push(`/structure/${session.user.structure}`)}>Ma structure</li>
               )}
               {session && session.user.role === "Admin" && ( // à adapter
-                <li><a href={`/admin`}>Administration</a></li>
+                <li onClick={() => router.push(`/admin`)}>Administration</li>
               )}
-                <li><a href={`/legal`}>Mentions légales</a></li>
+                <li onClick={() => router.push(`/legal`)}>Mentions légales</li>
             </ul>
           </div>
         )}

@@ -35,7 +35,6 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, name, onAd
       })
     });
     const newCat = await res.json();
-    console.log(newCat)
     if(res.status.toString().startsWith("20")){
       onAdd(newCat);
     }
@@ -57,7 +56,6 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, name, onAd
       })
     });
     const newCat = await res.json();
-    console.log(newCat)
     if(res.status.toString().startsWith("20")){
       onUpdate(newCat);
     }
@@ -68,7 +66,6 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, name, onAd
 
   const handleSubmitDelete = async (e) => {
     e.preventDefault();
-    console.log(parent)
 
     const res = await fetch(`/api/categories/${selfId}`, {
       method: "DELETE",
@@ -77,7 +74,6 @@ export default function CatCrudModal({ CRUD, isOpen, onClose, selfId, name, onAd
       }
     });
     const newCat = await res.json();
-    console.log(newCat)
     if(res.status.toString().startsWith("20")){
       onDelete(newCat.id);
     }

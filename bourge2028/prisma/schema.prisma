@@ -14,49 +14,49 @@ generator client {
 }
 
 model Structure {
-  id            Int          @id @default(autoincrement())
-  nomStructure  String?
-  description   String?
-  dateCreation  DateTime?
+  id           Int       @id @default(autoincrement())
+  nomStructure String?
+  description  String?
+  lienPhoto    String?
+  dateCreation DateTime?
   // departementId Int?
 
   // relations
   departements Situer[]
   personnes    Appartenir[] // Appartenir (avec role)
   realisations Realisation[] // Réaliser
-  tags         StructureTag[] // Avoir
+  cats         StructureCat[] // Avoir
 }
 
 model Situer {
-  id             Int           @id @default(autoincrement())
-  structure      Structure      @relation(fields: [structureId], references: [id])
-  structureId    Int
-  departement    Departement    @relation(fields: [departementId], references: [id])
-  departementId  Int
+  id            Int         @id @default(autoincrement())
+  structure     Structure   @relation(fields: [structureId], references: [id])
+  structureId   Int
+  departement   Departement @relation(fields: [departementId], references: [id])
+  departementId Int
 
   @@unique([structureId, departementId])
 }
 
 model Departement {
-  id           Int           @id @default(autoincrement())
-  nom          String
-  structures   Situer[]
-  personnes    Personne[]
-  realisations Realisation[]
+  id         Int      @id @default(autoincrement())
+  nomDep     String
+  structures Situer[]
+  projets    Projet[]
 }
 
 model Personne {
-  id            Int          @id @default(autoincrement())
-  identifiant   String       @unique
-  nom           String
-  prenom        String
-  email         String       @unique
-  password      String       
-  dateCreation  DateTime     @default(now())
-  role          String
-
-  departement   Departement? @relation(fields: [departementId], references: [id])
-  departementId Int?
+  id           Int      @id @default(autoincrement())
+  identifiant  String   @unique
+  nom          String
+  prenom       String
+  email        String   @unique
+  tel          String?
+  password     String
+  description  String?
+  lienPhoto    String?
+  dateCreation DateTime @default(now())
+  role         String
 
   structures Appartenir[]
   redactions Rediger[]
@@ -69,108 +69,104 @@ model Appartenir {
   personne    Personne  @relation(fields: [personneId], references: [id])
   personneId  Int
 
-  role String?
+  role   Role @relation(fields: [roleId], references: [id])
+  roleId Int
 
   @@unique([structureId, personneId])
 }
 
+model Role {
+  id  Int    @id @default(autoincrement())
+  nom String @unique
+
+  appartenir Appartenir[]
+}
+
 model Realisation {
-  id            Int          @id @default(autoincrement())
-  nom           String?
-  departement   Departement? @relation(fields: [departementId], references: [id])
-  departementId Int?
-  structure     Structure?   @relation(fields: [structureId], references: [id])
-  structureId   Int?
+  id        Int         @id @default(autoincrement())
+  nom       String?
+  structure Structure[]
 
   // Relations communes
-  tags      RealisationTag[]
-  Rediger   Rediger[]
+  cats      RealisationCat[]
+  rediger   Rediger[]
   // relations ISA 1:1
   projet    Projet?
-  materiau  Materiau?
+  materiaux Materiau?
   technique Technique?
-
 }
 
 model Projet {
-  id             Int         @id @default(autoincrement())
-  nomProjet      String?
-  realisation    Realisation @relation(fields: [realisationId], references: [id])
-  realisationId  Int         @unique
+  id            Int         @id @default(autoincrement())
+  nomProjet     String
+  realisation   Realisation @relation(fields: [realisationId], references: [id])
+  realisationId Int         @unique
+
+  departement Departement[]
 }
 
 model Materiau {
-  id             Int         @id @default(autoincrement())
-  nomMateriau    String?
-  realisation    Realisation @relation(fields: [realisationId], references: [id])
-  realisationId  Int         @unique
+  id            Int         @id @default(autoincrement())
+  nomMateriau   String
+  realisation   Realisation @relation(fields: [realisationId], references: [id])
+  realisationId Int         @unique
 }
 
 model Technique {
-  id             Int         @id @default(autoincrement())
-  nomTechnique   String?
-  realisation    Realisation @relation(fields: [realisationId], references: [id])
-  realisationId  Int         @unique
+  id            Int         @id @default(autoincrement())
+  nomTechnique  String
+  realisation   Realisation @relation(fields: [realisationId], references: [id])
+  realisationId Int         @unique
 }
 
-model Tag {
-  id  Int    @id @default(autoincrement())
-  nom String
-
-  category   Categorie? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId Int?
-
-  realisations RealisationTag[]
-  structures   StructureTag[]
-}
-
-model RealisationTag {
+model RealisationCat {
   id            Int         @id @default(autoincrement())
   realisation   Realisation @relation(fields: [realisationId], references: [id])
   realisationId Int
-  tag           Tag         @relation(fields: [tagId], references: [id])
-  tagId         Int
+  Cat           Categorie   @relation(fields: [categorieId], references: [id])
+  categorieId   Int
 
-  @@unique([realisationId, tagId])
+  @@unique([realisationId, categorieId])
 }
 
-model StructureTag {
+model StructureCat {
   id          Int       @id @default(autoincrement())
   structure   Structure @relation(fields: [structureId], references: [id])
   structureId Int
-  tag         Tag       @relation(fields: [tagId], references: [id])
-  tagId       Int
+  categorie   Categorie @relation(fields: [categorieId], references: [id])
+  categorieId Int
 
-  @@unique([structureId, tagId])
+  @@unique([structureId, categorieId])
 }
 
 model Categorie {
   id  Int    @id @default(autoincrement())
   nom String
-  
+
   parentId Int?
   parent   Categorie?  @relation("CategorieToSouscategories", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   children Categorie[] @relation("CategorieToSouscategories")
 
-  tags Tag[]
+  realisations RealisationCat[]
+  structures   StructureCat[]
 }
 
 model Article {
   id         Int         @id @default(autoincrement())
   titre      String
-  redactions Rediger[]   
-  composants Composant[] 
-  documents   Document[]
+  redactions Rediger[]
+  composants Composant[]
+  documents  Document[]
 }
 
 model Rediger {
-  id         Int      @id @default(autoincrement())
-  article    Article  @relation(fields: [articleId], references: [id])
-  articleId  Int
-  personne   Personne @relation(fields: [personneId], references: [id])
-  personneId Int
-  realisation Realisation @relation(fields: [realisationId], references: [id])
-  realisationId Int 
+  id            Int         @id @default(autoincrement())
+  article       Article     @relation(fields: [articleId], references: [id])
+  articleId     Int
+  personne      Personne    @relation(fields: [personneId], references: [id])
+  personneId    Int
+  realisation   Realisation @relation(fields: [realisationId], references: [id])
+  realisationId Int
 
   dateRedaction DateTime?
   dateModif     DateTime?
@@ -182,11 +178,11 @@ model Rediger {
  * ----- DOCUMENTS liés à un ARTICLE via CONTENIR -----
  */
 model Document {
-  id        Int        @id @default(autoincrement())
-  lien      String
+  id   Int    @id @default(autoincrement())
+  lien String
 
-  article    Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  articleId  Int
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId Int
 }
 
 /**
@@ -251,11 +247,10 @@ model Caroussel {
   images Image[] // 2..N relation
 }
 
-
 model Analytics {
-  id          Int      @id @default(autoincrement())
-  page        String
-  ipAddress   String?     // need to be hashed
-  userAgent   String?     // type d’appareil
-  dateVisite   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  page       String
+  ipAddress  String? // need to be hashed
+  userAgent  String? // type d’appareil
+  dateVisite DateTime @default(now())
 }
