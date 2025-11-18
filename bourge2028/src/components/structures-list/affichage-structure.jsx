@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname  } from "next/navigation";
 import StructureItem from "./structure-Item";
 import tempStyle from "./structure-Item.module.css"
 import { useSession } from 'next-auth/react';
@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react';
 
 export default function Structure() {
   const router = useRouter();
+  const pathname = usePathname()
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -73,14 +74,19 @@ export default function Structure() {
     }
 
   return (
+    
     <ul className={`${tempStyle.override_list}`}>
       {items.map(item => {
 
-      const canEdit = session?.user?.role === "Admin";
+      var canEdit = session?.user?.role === "Admin";
       if(!canEdit) {
-        item.personnes.map(p => {const canEdit = (p.role==="Createur" && p.personneId === session?.user?.id)})
+        item.personnes.map(p => {canEdit = (p.role==="Createur" && p.personneId === session?.user?.id)})
       }
-
+      var str_role;
+      if(pathname.includes("account/") && pathname!==`account/${session?.user?.id}`) {
+        item.personnes.map(p => {str_role = `Cette personne est ${p.role} de cette structure`})
+      }
+        
         return (
           <StructureItem
             key={item.id}
@@ -89,6 +95,7 @@ export default function Structure() {
             date={item.dateCreation}
             description={item.description}
             edit={canEdit}
+            role={str_role}
           />
         );
       })}

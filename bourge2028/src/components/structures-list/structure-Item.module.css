@@ -6,6 +6,10 @@
 
 /* Module */
 
+.item_bloc {
+    box-shadow: 0 20px 60px rgba(69, 69, 69, 0.3);
+}
+
 .struct_header {
     background-color: rgb(231, 209, 246);
     display: flex;
@@ -35,8 +39,25 @@
 .struct_content {
     margin-left: 2vw;
 }
-.struct_date {
-    background-color: rgb(218, 218, 218);
+
+.struct_info {
+    display: flex;
+    justify-content: space-between;
+    gap: 5%;
+}
+.struct_top {
     padding: 0.5em;
     border-radius: 1em;
+    text-align: center;
+}
+.struct_date {
+    background-color: rgb(218, 218, 218);
+    flex-basis: 50%;
+}
+.struct_role {
+    background-color: rgb(202, 207, 255);
+    flex-basis: 100%;
+}
+.struct_desc {
+    max-width: 30vw;
 }

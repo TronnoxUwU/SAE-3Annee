@@ -7,7 +7,7 @@ export default function UserInfo({ user, canEdit, onEdit }) {
       <h2>
         {user.prenom} {user.nom}
       </h2>
-      <p className={Styles.role}>{user.role || "Membre"}</p>
+      <p className={Styles.role}>{user.role !== "User" || "Membre"}</p>
 
       <div className={Styles.details}>
 

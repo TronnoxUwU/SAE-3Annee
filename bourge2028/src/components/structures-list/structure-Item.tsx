@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import Style from "./structure-Item.module.css"
-// import { useSession } from 'next-auth/react';
 
-
-// const { data: session } = useSession();
-
-
-// const canEdit =
-//     session?.user?.id === userId || session?.user?.role === "Admin";
 
 interface ListItemProps {
   id: number;
@@ -15,6 +8,7 @@ interface ListItemProps {
   date: Date;
   description: string;
   edit: boolean;
+  role: string;
 }
 
 function renderDate(date){
@@ -23,14 +17,14 @@ function renderDate(date){
   const d = new Date(date);
   if (isNaN(d.getTime())) return "Date invalide";
 
-  return `Cette structure a été fondée le ${d.toLocaleDateString('fr-FR', {
+  return `${d.toLocaleDateString('fr-FR', {
     year: "numeric",
     month: "long",
     day: "numeric"
   })}`;
 }
 
-const StructureItem = ({ id, nom, date, description, edit }: ListItemProps) => {
+const StructureItem = ({ id, nom, date, description, edit, role }: ListItemProps) => {
 
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
@@ -65,8 +59,14 @@ const StructureItem = ({ id, nom, date, description, edit }: ListItemProps) => {
       <div className={`${Style.struct_card} card-body p-2`}>
         <img src={"/images/map-replacement-opti.jpg"}/>
         <div className={`${Style.struct_content}`}>
-          <p className={`${Style.struct_date}`}>{renderDate(date)}</p>
-          <p>{description}</p>
+          <div className={Style.struct_info}>
+            {role && (<p className={`${Style.struct_top} ${Style.struct_role}`}>{role}</p>)}
+            <p className={`${Style.struct_top} ${Style.struct_date}`}>
+              <i className="bi bi-calendar me-2"></i>{renderDate(date)}
+            </p>
+          </div>
+          
+          <p className={Style.struct_desc}>{description}</p>
         </div>
         
       </div>

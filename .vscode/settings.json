@@ -27,6 +27,14 @@
         {
             "folderPath": "SAE-3Annee\\bourge2028\\src\\components\\structures-list\\",
             "color": "foldercolorizer.color_0066cc"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\app\\account\\[id]\\",
+            "color": "foldercolorizer.color_6600ff"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\app\\structure\\",
+            "color": "foldercolorizer.color_00cc99"
         }
     ]
 }

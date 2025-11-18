@@ -191,6 +191,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 1rem;
 }
 
 .cancelButton:hover {
@@ -228,6 +229,7 @@
 } */
 
 .structures h2{
+    min-width: 25vw;
     margin-bottom: 2em;
     font-weight: bold;
     text-align: center;

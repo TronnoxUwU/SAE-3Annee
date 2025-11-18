@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import Styles from "./Account.module.css";
 import Topbar from "@/components/Topbar";
-import Structure from "@/components/structures-list/affichage-structure";
+import Structure from "@/components/structures-list/affichage-structure-user";
 import UserInfo from "./components/userinfo";
 import UserEdit from "./components/UserEdit";
 
@@ -52,6 +52,7 @@ export default function AccountPage() {
   // Vérifier que l'utilisateur connecté peut modifier ce compte
   const canEdit =
     session?.user?.id === userId || session?.user?.role === "Admin";
+  const isMine = session?.user?.id === userId;
 
   const handleSave = async (dataToSend) => {
     try {
@@ -168,10 +169,10 @@ export default function AccountPage() {
 
         <div className={Styles.structures}>
           <h2>
-            {canEdit ? "Mes structures" : `Structures de ${user.prenom}`}
+            {isMine ? "Mes structures" : `Structures de ${user.prenom}`}
           </h2>
 
-          <Structure />
+          <Structure userId={userId}/>
         </div>
       </div>
     </>
