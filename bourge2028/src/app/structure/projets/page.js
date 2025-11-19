@@ -6,7 +6,7 @@ import Topbar from "@/components/Topbar.jsx";
 import Sidebar from "../../components/Sidebar/SidebarWrapper";
 import styles from "../../styles/projets.module.css";
 
-const GestionnaireArticle = dynamic(() => import("../../components/user/GestionnaireArticle"), { ssr: false });
+const GestionnaireArticle = dynamic(() => import("../../components/projet/GestionnaireArticle"), { ssr: false });
 
 export default function ProjetsPage() {
 
@@ -46,11 +46,6 @@ export default function ProjetsPage() {
     fetchArticles();
   }, [mapFilter]);
 
-  const handleCreate = () => {
-    return () => {
-      window.location.href = `/user/projets/${article.id}/edit`;
-    };
-  };
 
   return (
     <main className="main-container">
@@ -61,11 +56,9 @@ export default function ProjetsPage() {
 
       {/* Bouton d'ajout de projet/article */}
 
-      <a className={styles.btnAddWrapper} href="/articles">
-        <button className={styles.btnAdd}>
+        <button className={styles.btnAdd} onClick={() => router.push('/articles')}>
           +
         </button>
-      </a>
 
 
       <section className="section-articles">

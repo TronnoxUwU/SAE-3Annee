@@ -22,7 +22,6 @@ export async function GET(
       const cat = await prisma.categorie.findUnique({
         where: { id: catId },
         include: {
-          tags: true,
           parent: { select: { id: true, nom: true } },
           children: true, // récupère enfants directs
         },
@@ -88,7 +87,6 @@ export async function PUT(
       data: { nom },
       include: {
         parent: true,
-        tags: true,
         children: true,
       },
     });

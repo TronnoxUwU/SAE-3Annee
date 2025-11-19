@@ -15,10 +15,8 @@ export async function POST(req: Request) {
     const categorie = await prisma.categorie.create({
       data,
       include: {
-        tags: true,
         children: {
           include: {
-            tags: true,
             children: true,
           },
         },
@@ -40,7 +38,7 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     const allCategories = await prisma.categorie.findMany({
-      include: { tags: true, parent: true },
+      include: { parent: true },
       orderBy: { id: "asc" },
     });
 

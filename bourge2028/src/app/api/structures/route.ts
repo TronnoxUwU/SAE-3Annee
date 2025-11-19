@@ -15,7 +15,7 @@ export async function POST(req: Request) {
       data,
       include: {
         departements: { include: { departement: true } },
-        tags: { include: { tag: true } },
+        cats: { include: { categorie: true } },
         realisations: true,
         personnes: true,
       },
@@ -37,7 +37,7 @@ export async function GET() {
     const structures = await prisma.structure.findMany({
       include: {
         departements: { include: { departement: true } },
-        tags: { include: { tag: true } },
+        cats: { include: { categorie: true } },
         realisations: true,
         personnes: true,
       },

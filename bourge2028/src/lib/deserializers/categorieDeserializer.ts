@@ -17,11 +17,6 @@ export const deserializeCategorie = (
   const deserialized: Prisma.CategorieCreateInput = {
     nom,
     parent: !isNested && parentId != null ? { connect: { id: parentId } } : undefined,
-    tags: tags?.length
-      ? {
-          connect: tags.map(tag => ({ id: tag.id })),
-        }
-      : undefined,
     children: children?.length
       ? {
           create: children.map(child => deserializeCategorie(child) as Prisma.CategorieCreateInput),
