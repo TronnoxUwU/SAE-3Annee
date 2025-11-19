@@ -51,7 +51,7 @@ export default function AnnuairePage() {
         setLoading(true);
         setError(null);
 
-        let url = "/api/articles";
+        let url = "/api/cartes";
         if (mapFilter) {
           const params = new URLSearchParams(mapFilter).toString();
           url += `?${params}`;
@@ -64,7 +64,7 @@ export default function AnnuairePage() {
         setArticles(data);
       } catch (err) {
         console.error(err);
-        setError("Impossible de charger les articles.");
+        setError("Impossible de charger les cartes.");
       } finally {
         setLoading(false);
       }
