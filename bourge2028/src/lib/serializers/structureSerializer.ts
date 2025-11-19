@@ -13,7 +13,7 @@ import { serializeCategorie } from "./categorieSerializer";
 export const serializeStructure = (
   structure: Structure & {
     departements?: (Situer & { departement?: Departement | null })[];
-    cats?: (StructureCat & { cat?: Categorie | null })[];
+    cats?: Categorie[];
     realisations?: Realisation[];
     personnes?: Appartenir[];
   }
@@ -29,7 +29,7 @@ export const serializeStructure = (
     ) ?? [],
 
   cats:
-    structure.cats?.map((cat) => serializeCategorie(cat.cat!)) ?? [],
+    structure.cats?.map(serializeCategorie) ?? [],
 
   personnes: structure.personnes?.map(p => ({ // revoir ....
     id: p.id,

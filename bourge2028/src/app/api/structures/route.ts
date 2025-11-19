@@ -32,9 +32,32 @@ export async function POST(req: Request) {
 /**
  * GET /api/structures
  */
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+
+    const categoriesParam = searchParams.get("cats");
+
+    let categoryIds: number[] | undefined = undefined;
+
+    if (categoriesParam) {
+      categoryIds = categoriesParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
+    }
+
+
     const structures = await prisma.structure.findMany({
+      where: categoryIds && categoryIds.length > 0
+        ? {
+            cats: {
+              some: {
+                id: { in: categoryIds }
+              }
+            }
+          }
+        : undefined,
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
