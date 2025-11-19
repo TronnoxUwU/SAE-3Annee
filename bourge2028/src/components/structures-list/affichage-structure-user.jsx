@@ -78,9 +78,9 @@ export default function Structure({userId}) {
 
   return (
   <>
-    {items.length === 0 ? (
-      <h3>Cette personne n'est membre d'aucune structure</h3>
-    ) : (
+    {items.length === 0 ? session?.user?.id===userId ?(
+      <h3>Vous n'êtes membre d'aucune structure</h3>
+    ): (<h3>Cette personne n'est membre d'aucune structure</h3>) : (
       <ul className={`${tempStyle.override_list}`}>
         {items.map((item) => {
           var canEdit = session?.user?.role === "Admin";

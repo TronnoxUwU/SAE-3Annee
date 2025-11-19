@@ -86,7 +86,7 @@ export default function Structure() {
       if(pathname.includes("account/") && pathname!==`account/${session?.user?.id}`) {
         item.personnes.map(p => {str_role = `Cette personne est ${p.role} de cette structure`})
       }
-        
+
         return (
           <StructureItem
             key={item.id}

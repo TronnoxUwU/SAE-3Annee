@@ -8,6 +8,7 @@
 
 .item_bloc {
     box-shadow: 0 20px 60px rgba(69, 69, 69, 0.3);
+    margin-bottom: 5vh;
 }
 
 .struct_header {
@@ -37,6 +38,7 @@
 
 
 .struct_content {
+    width: 100%;
     margin-left: 2vw;
 }
 
@@ -60,4 +62,32 @@
 }
 .struct_desc {
     max-width: 30vw;
+}
+
+/* affichage gallerie pretty */
+
+.structure_img_wrapper {
+    height: 130px;
+    background: linear-gradient(135deg, #e9d5ff, #fce7f3, #dbeafe);
+    overflow: hidden;
+}
+
+.structure_img_wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.structure_title {
+    border-left: 4px solid #c084fc;
+    padding-left: 8px;
+}
+
+.structure_card {
+    border-radius: 8px;
+    transition: box-shadow 0.2s ease;
+}
+
+.structure_card:hover {
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.12);
 }
