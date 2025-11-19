@@ -2,7 +2,7 @@
 
 import ApercuArticle from "./ApercuArticle";
 import ApercuCarte from "./ApercuCarte";
-import styles from "../../styles/projets.module.css";
+import styles from "../../styles/annuaire.module.css";
 
 export default function Annuaire({ articles }) {
   if (!articles?.length) {
