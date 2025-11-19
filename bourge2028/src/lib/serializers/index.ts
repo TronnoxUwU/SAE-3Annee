@@ -12,3 +12,4 @@ export * from "./realisationSerializer";
 export * from "./projetSerializer";
 export * from "./materiauSerializer";
 export * from "./techniqueSerializer";
+export * from "./carteSerializer";
