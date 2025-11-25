@@ -2,6 +2,7 @@ export * from "./composantDeserializer";
 export * from "./articleDeserializer";
 export * from "./categorieDeserializer";
 export * from "./structureDeserializer";
+export * from "./carteDeserializer";
 export * from "./departementDeserializer";
 export * from "./documentDeserializer";
 export * from "./realisationDeserializer";

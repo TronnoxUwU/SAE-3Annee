@@ -4,11 +4,11 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Topbar from "@/components/Topbar.jsx";
-import Sidebar from "../components/Sidebar/SidebarWrapper";
-import "../styles/home.css";
+import Sidebar from "@/app/components/Sidebar/SidebarWrapper";
+import "@/app/styles/home.css";
 
-const Map = dynamic(() => import("../components/Map/Map"), { ssr: false });
-const Annuaire = dynamic(() => import("../components/annuaire/Annuaire"), { ssr: false });
+const Map = dynamic(() => import("@/app/components/Map/Map"), { ssr: false });
+const Annuaire = dynamic(() => import("@/app/components/annuaire/Annuaire"), { ssr: false });
 
 export default function AnnuairePage() {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function AnnuairePage() {
   const [mounted, setMounted] = useState(false);
 
   // États data
-  const [catFilter, setcatFilter] = useState(null);
+  const [mapFilter, setMapFilter] = useState(null);
   const [geoFilter, setGeoFilter] = useState(null);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,15 +51,10 @@ export default function AnnuairePage() {
         setLoading(true);
         setError(null);
 
-        let url = "/api/articles";
-        if (catFilter && catFilter.length > 0) {
-          console.log("Filtres mis à jour :", catFilter);
-          const params = new URLSearchParams();
-          params.set(
-            "cats",
-            catFilter.map(c => c.id).join(",")
-          );
-          url += `?${params.toString()}`;
+        let url = "/api/cartes";
+        if (mapFilter) {
+          const params = new URLSearchParams(mapFilter).toString();
+          url += `?${params}`;
         }
 
         const res = await fetch(url);
@@ -69,15 +64,21 @@ export default function AnnuairePage() {
         setArticles(data);
       } catch (err) {
         console.error(err);
-        setError("Impossible de charger les articles.");
+        setError("Impossible de charger les cartes.");
       } finally {
         setLoading(false);
       }
     }
 
     fetchArticles();
-  }, [catFilter]);
+  }, [mapFilter]);
 
+  // 🔹 Log des changements de filtres
+  useEffect(() => {
+    if (mapFilter) {
+      console.log("Filtres mis à jour :", mapFilter);
+    }
+  }, [mapFilter]);
 
   const handleClose = () => {
     setAnimate(true);
@@ -90,12 +91,12 @@ export default function AnnuairePage() {
       <Topbar fixed />
 
       {/* Sidebar gère le filtre de la carte */}
-      <Sidebar map={null} onFilterChange={setcatFilter} onGeoFilterChange={setGeoFilter} />
+      <Sidebar map={null} onFilterChange={setMapFilter} onGeoFilterChange={setGeoFilter} />
 
       {/* Carte principale */}
       <div className="map-wrapper">
         <div className="map-inner">
-          <Map catFilter={geoFilter} onMapReady={() => { }} />
+          <Map mapFilter={geoFilter} onMapReady={() => { }} />
         </div>
       </div>
 
@@ -115,7 +116,7 @@ export default function AnnuairePage() {
         </section>
       )}
 
-      {/* Bouton de bascule carte/annuaire */}
+      {/* Bouton de bascule carte/annuaires/projets */}
       <button
         className={`toggle-btn ${drawerOpen ? "closed" : "open"} ${animate ? "" : "no-transition"
           }`}

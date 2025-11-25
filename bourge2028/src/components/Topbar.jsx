@@ -55,12 +55,12 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
         {menuOpen && (
           <div className={Styles.dropdown}>
             <ul>
-                <li onClick={() => router.push('/')}>Accueil</li>
-                <li onClick={() => router.push('/annuaire')}>Annuaire</li>
-                <li onClick={() => router.push('/contact')}>Contact</li>
-                <li onClick={() => router.push('/credit')}>Crédits</li>
-                <li onClick={() => router.push('/information')}>Informations</li>
-                <li onClick={() => router.push('/structure')}>Structures</li>
+                <li><a href={`/`}>Acceuil</a></li>
+                <li><a href={`/annuaires/projets`}>Annuaire</a></li>
+                <li><a href={`/contact`}>Contact</a></li>
+                <li><a href={`/credit`}>Crédits</a></li>
+                <li><a href={`/information`}>Informations</a></li>
+                <li><a href={`/structure`}>Structures</a></li>
               {session && session.user.structure && (
                 <li onClick={() => router.push(`/structure/${session.user.structure}`)}>Ma structure</li>
               )}
