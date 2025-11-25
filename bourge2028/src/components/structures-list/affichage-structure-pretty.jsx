@@ -62,7 +62,7 @@ export default function Structure() {
     <div className="p-4 bg-white min-vh-100">
 
       {/* --- Header --- */}
-      <div className="container mb-4 d-flex justify-content-between align-items-center">
+      <div className="container-fluid mb-4 d-flex justify-content-between align-items-center">
         <h1 className="h2 fw-semibold text-dark">Structures</h1>
 
         {/* Toggle view */}
@@ -85,39 +85,34 @@ export default function Structure() {
 
       {/* --- GRID VIEW --- */}
       {viewMode === "grid" && (
-        <div className="container">
-          <div className="row g-4 justify-content-evenly">
-            {items.map(item => {
-              let canEdit = session?.user?.role === "Admin";
-
-              if (!canEdit) {
-                item.personnes?.forEach(p => {
-                  if (p.role === "Createur" && p.personneId === session?.user?.id) {
-                    canEdit = true;
-                  }
-                });
-              }
-
-              let str_role = null;
-              if (pathname.includes("account/") && pathname !== `account/${session?.user?.id}`) {
-                const r = item.personnes?.find(p => p.personneId !== session?.user?.id);
-                if (r) str_role = `Cette personne est ${r.role} de cette structure`;
-              }
-
-              return (
-                <StructureItem
-                  key={item.id}
-                  id={item.id}
-                  nom={item.nomStructure}
-                  date={item.dateCreation}
-                  description={item.description}
-                  edit={canEdit}
-                  role={str_role}
-                  etat={"galerie"}
-                />
-              );
-            })}
-          </div>
+        <div className={`${Style.grid_wrapper}`}>
+          {items.map(item => {
+            let canEdit = session?.user?.role === "Admin";
+            if (!canEdit) {
+              item.personnes?.forEach(p => {
+                if (p.role === "Createur" && p.personneId === session?.user?.id) {
+                  canEdit = true;
+                }
+              });
+            }
+            let str_role = null;
+            if (pathname.includes("account/") && pathname !== `account/${session?.user?.id}`) {
+              const r = item.personnes?.find(p => p.personneId !== session?.user?.id);
+              if (r) str_role = `Cette personne est ${r.role} de cette structure`;
+            }
+            return (
+              <StructureItem
+                key={item.id}
+                id={item.id}
+                nom={item.nomStructure}
+                date={item.dateCreation}
+                description={item.description}
+                edit={canEdit}
+                role={str_role}
+                etat={"galerie"}
+              />
+            );
+          })}
         </div>
       )}
 

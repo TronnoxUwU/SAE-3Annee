@@ -77,7 +77,6 @@ const StructureItem = ({ id, nom, date, description, edit, role, etat }: ListIte
     } 
     else {
         return (
-            <div key={id} className="col-6 col-md-4 col-lg-3">
                 <div className={`${Style.structure_card} card shadow-sm`}>
 
                     {/* Image */}
@@ -124,7 +123,7 @@ const StructureItem = ({ id, nom, date, description, edit, role, etat }: ListIte
                         </div>
                     </div>
                 </div>
-            </div>
+            // </div>
 
         );
     }

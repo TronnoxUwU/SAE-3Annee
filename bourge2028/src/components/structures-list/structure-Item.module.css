@@ -66,8 +66,10 @@
 
 /* affichage gallerie pretty */
 
+
+
 .structure_img_wrapper {
-    height: 130px;
+    height: 200px;
     background: linear-gradient(135deg, #e9d5ff, #fce7f3, #dbeafe);
     overflow: hidden;
 }
@@ -83,7 +85,17 @@
     padding-left: 8px;
 }
 
+.grid_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+    justify-content: space-around;
+    width: 100%;
+}
+
 .structure_card {
+    width: 400px;
+    flex-shrink: 0;
     border-radius: 8px;
     transition: box-shadow 0.2s ease;
 }
