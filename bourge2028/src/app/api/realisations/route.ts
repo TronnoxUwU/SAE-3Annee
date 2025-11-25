@@ -25,16 +25,16 @@ export async function GET(req: Request) {
     const realisations = await prisma.realisation.findMany({
       where: categoryIds && categoryIds.length > 0
         ? {
-            cats: {
-              some: {
-                id: { in: categoryIds }
-              }
+          cats: {
+            some: {
+              categorieId: { in: categoryIds }
             }
           }
+        }
         : undefined,
       include: {
         structure: true,
-        cats: true,
+        cats: { include: { categorie: true } },
         projet: {
           include: {
             departement: true,
@@ -72,14 +72,14 @@ export async function POST(req: Request) {
       data: realisationData,
       include: {
         structure: true,
-        cats: true,
+        cats: { include: { categorie: true } },
         projet: {
           include: {
             departement: true,
           },
+          materiaux: true,
+          technique: true,
         },
-        materiaux: true,
-        technique: true,
       },
     });
 

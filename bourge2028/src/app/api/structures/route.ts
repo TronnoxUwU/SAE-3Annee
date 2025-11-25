@@ -51,13 +51,14 @@ export async function GET(req: Request) {
     const structures = await prisma.structure.findMany({
       where: categoryIds && categoryIds.length > 0
         ? {
-            cats: {
-              some: {
-                id: { in: categoryIds }
-              }
+          cats: {
+            some: {
+              categorieId: { in: categoryIds }
             }
           }
+        }
         : undefined,
+
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
@@ -68,7 +69,6 @@ export async function GET(req: Request) {
         id: "asc",
       },
     });
-
     const serialized = structures.map(serializeStructure);
 
     return NextResponse.json(serialized, { status: 200 });
