@@ -63,20 +63,19 @@ export default function Structure() {
 
       {/* --- Header --- */}
       <div className="container-fluid mb-4 d-flex justify-content-between align-items-center">
-        <h1 className="h2 fw-semibold text-dark">Structures</h1>
+        {/* <h1 className="h2 fw-semibold text-dark">Structures</h1> */}
 
         {/* Toggle view */}
         <div className="btn-group border rounded bg-light">
           <button
             onClick={() => setViewMode("grid")}
-            className={`btn btn-sm ${viewMode === "grid" ? "btn-white text-dark border-end" : "btn-light text-secondary"}`}
+            className={`btn btn-lg ${viewMode === "grid" ? "btn-white text-dark border-end" : "btn-light text-secondary"}`}
           >
             <i className="bi bi-grid-fill me-1" /> Galerie
           </button>
-
           <button
             onClick={() => setViewMode("list")}
-            className={`btn btn-sm ${viewMode === "list" ? "btn-white text-dark" : "btn-light text-secondary"}`}
+            className={`btn btn-lg ${viewMode === "list" ? "btn-white text-dark" : "btn-light text-secondary"}`}
           >
             <i className="bi bi-card-list me-1" /> Liste
           </button>

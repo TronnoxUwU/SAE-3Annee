@@ -3,6 +3,11 @@
     margin-left: 20vw;
 }
 
+.titre_stylee {
+    text-align: center;
+    font-weight: bold;
+}
+
 .container {
     margin-left: 0;
     margin-right: 0;

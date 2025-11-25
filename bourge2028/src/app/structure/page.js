@@ -17,7 +17,7 @@ export default function AdminPage() {
 
         <main className={Style.main}>
           <div className="top-content">
-            <h2>Voici les structures présentes sur la plateforme</h2>
+            <h2 className={Style.titre_stylee}>Voici les structures présentes sur la plateforme</h2>
           </div>
 
           <Structure />
