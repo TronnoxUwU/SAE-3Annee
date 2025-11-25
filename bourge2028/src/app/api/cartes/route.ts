@@ -13,24 +13,27 @@ const prisma = new PrismaClient();
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+    const categoriesParam = searchParams.get("cats");
 
-    if (id) {
-      // 🔹 Récupère une carte spécifique
-      const carte = await prisma.carte.findUnique({
-        where: { id: Number(id) },
-        include: { categories: true },
-      });
+    let categoryIds: number[] | undefined = undefined;
 
-      if (!carte) {
-        return NextResponse.json({ error: "Carte non trouvée" }, { status: 404 });
-      }
-
-      return NextResponse.json(serializeCarte(carte));
+    if (categoriesParam) {
+      categoryIds = categoriesParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
     }
-
     // 🔹 Récupère toutes les cartes
     const cartes = await prisma.carte.findMany({
+      where: categoryIds && categoryIds.length > 0
+        ? {
+          categories: {
+            some: {
+              id: { in: categoryIds }
+            }
+          }
+        }
+        : undefined,
       include: { categories: true },
       orderBy: { id: "desc" },
     });
