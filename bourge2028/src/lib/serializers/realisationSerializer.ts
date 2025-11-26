@@ -16,6 +16,8 @@ export const serializeRealisation = (
 ) => ({
     id: realisation.id,
     nom: realisation.nom ?? null,
+    description: realisation.description ?? null,
+    dateCreation: realisation.dateCreation ?? null,
     structure: realisation.structure?.map(serializeStructure) ?? [],
     cats: realisation.cats?.map(serializeCategorie) ?? [],
 

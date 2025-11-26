@@ -85,6 +85,8 @@ model Role {
 model Realisation {
   id        Int         @id @default(autoincrement())
   nom       String?
+  description       String?
+  dateCreation      DateTime?
   structure Structure[]
 
   // Relations communes

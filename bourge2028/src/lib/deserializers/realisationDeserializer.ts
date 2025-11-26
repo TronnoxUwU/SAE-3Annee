@@ -34,6 +34,8 @@ export const deserializeRealisation = (r: any) => {
 
   return {
     nom: r.nom,
+    description: r.description,
+    dateCreation: r.dateCreation,
     structure: structureData,
     cats: catsData,
     projet: projetData,
