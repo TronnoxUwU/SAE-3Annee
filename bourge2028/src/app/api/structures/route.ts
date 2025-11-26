@@ -14,8 +14,8 @@ export async function POST(req: Request) {
     const structure = await prisma.structure.create({
       data,
       include: {
-        departements: { include: { departement: false } },
-        tags: { include: { tag: true } },
+        departements: { include: { departement: true } },
+        cats: { include: { categorie: true } },
         realisations: true,
         personnes: true,
       },
@@ -32,12 +32,36 @@ export async function POST(req: Request) {
 /**
  * GET /api/structures
  */
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+
+    const categoriesParam = searchParams.get("cats");
+
+    let categoryIds: number[] | undefined = undefined;
+
+    if (categoriesParam) {
+      categoryIds = categoriesParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
+    }
+
+
     const structures = await prisma.structure.findMany({
+      where: categoryIds && categoryIds.length > 0
+        ? {
+          cats: {
+            some: {
+              categorieId: { in: categoryIds }
+            }
+          }
+        }
+        : undefined,
+
       include: {
-        departements: { include: { departement: false } },
-        tags: { include: { tag: true } },
+        departements: { include: { departement: true } },
+        cats: { include: { categorie: true } },
         realisations: true,
         personnes: true,
       },
@@ -45,7 +69,6 @@ export async function GET() {
         id: "asc",
       },
     });
-
     const serialized = structures.map(serializeStructure);
 
     return NextResponse.json(serialized, { status: 200 });

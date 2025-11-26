@@ -175,22 +175,20 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
     if (!onFilterChange) return;
 
     const categoriesList = [];
-    const tagsList = [];
 
     const traverse = (cats, hasParent = false) => {
       cats.forEach((cat) => {
         const isSelected = selectedCategories.includes(cat.id);
         if (isSelected) {
           const info = { id: cat.id, nom: cat.nom };
-          if (hasParent) tagsList.push(info);
-          else categoriesList.push(info);
+          categoriesList.push(info);
         }
         if (cat.children?.length) traverse(cat.children, true);
       });
     };
 
     traverse(categories);
-    onFilterChange({ categories: categoriesList, tags: tagsList });
+    onFilterChange(categoriesList);
   }, [selectedCategories, categories, onFilterChange]);
 
   // ------------------------------------------------------------

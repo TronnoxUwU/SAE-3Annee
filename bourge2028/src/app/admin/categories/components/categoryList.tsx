@@ -32,7 +32,8 @@ export default function AdminCategory() {
   useEffect(() => { 
     try {
       setLoading(true);
-      loadCategories(); 
+      loadCategories();
+      setLoading(false); 
     } catch (err) {
       setError(err.message);
     }
