@@ -139,7 +139,7 @@ export default function StructureDetailPage() {
           </div>
 
             <img
-                src="/images/map-replacement-opti.jpg"
+                src="/images/default.jpg"     // A REMPLACER PAR L IMAGE DE LA STRUCTURE
                 alt="representation structure"
                 className={Style.showImage}
             />

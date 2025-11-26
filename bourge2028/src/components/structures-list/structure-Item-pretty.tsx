@@ -59,7 +59,7 @@ const StructureItem = ({ id, nom, date, description, edit, role, etat }: ListIte
                 </div>
             </div>
             <div className={`${Style.struct_card} card-body p-2`}>
-                <img src={"/images/map-replacement-opti.jpg"}/>
+                <img src={"/images/default.jpg"}/>
                 <div className={`${Style.struct_content}`}>
                 <div className={Style.struct_info}>
                     {role && (<p className={`${Style.struct_top} ${Style.struct_role}`}>{role}</p>)}
@@ -82,7 +82,7 @@ const StructureItem = ({ id, nom, date, description, edit, role, etat }: ListIte
                     {/* Image */}
                     <div className={`${Style.structure_img_wrapper} border-bottom`}>
                         <img
-                            src="/images/map-replacement-opti.jpg"
+                            src="/images/default.jpg"
                             alt={nom}
                             className="card-img-top"
                         />

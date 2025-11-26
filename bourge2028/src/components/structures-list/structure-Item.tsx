@@ -57,7 +57,7 @@ const StructureItem = ({ id, nom, date, description, edit, role }: ListItemProps
         </div>
       </div>
       <div className={`${Style.struct_card} card-body p-2`}>
-        <img src={"/images/map-replacement-opti.jpg"}/>
+        <img src={"/images/default.jpg"}/>
         <div className={`${Style.struct_content}`}>
           <div className={Style.struct_info}>
             {role && (<p className={`${Style.struct_top} ${Style.struct_role}`}>{role}</p>)}
