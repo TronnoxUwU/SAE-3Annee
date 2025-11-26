@@ -65,11 +65,9 @@ export default function StructureDetailPage() {
       <>
         <Topbar />
         <div className={Style.userPage}>
-          <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+          <div className="d-flex justify-content-center align-items-center" style={{ height: "250px" }}>
             <div className="text-center">
-              <div className="spinner-border text-secondary mb-3" role="status">
-                <span className="visually-hidden">Chargement...</span>
-              </div>
+              <div className="spinner-border text-primary mb-3" />
               <p className="text-muted">Chargement des données...</p>
             </div>
           </div>
