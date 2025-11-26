@@ -14,12 +14,12 @@ export function serializePersonne(personne) {
     role: personne.role,
     dateCreation: personne.dateCreation?.toISOString() ?? null,
 
-    departement: personne.departement
-      ? {
-          id: personne.departement.id,
-          nom: personne.departement.nom,
-        }
-      : null,
+    // departement: personne.departement
+    //   ? {
+    //       id: personne.departement.id,
+    //       nom: personne.departement.nom,
+    //     }
+    //   : null,
 
     // Liste des structures auxquelles la personne appartient
     structures:

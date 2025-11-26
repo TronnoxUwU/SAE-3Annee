@@ -12,7 +12,7 @@ export const deserializePersonne = (
     password,
     dateCreation,
     role,
-    departement,
+    // departement,
     structures,
     redactions,
   } = data;
@@ -29,9 +29,9 @@ export const deserializePersonne = (
     dateCreation: dateCreation ? new Date(dateCreation) : undefined,
     role,
 
-    departement: departement
-      ? { connect: { id: departement } }
-      : undefined,
+    // departement: departement
+    //   ? { connect: { id: departement } }
+    //   : undefined,
 
     structures: structures?.length
       ? { connect: structures.map((s: any) => ({ id: s.id })),}
