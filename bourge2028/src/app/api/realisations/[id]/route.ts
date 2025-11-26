@@ -16,7 +16,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       where: { id: realisationId },
       include: {
         structure: true,
-        cats: true,
+        cats: { include: { categorie: true } },
         projet: {
           include: {
             departement: true,

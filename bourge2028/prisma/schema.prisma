@@ -123,7 +123,7 @@ model RealisationCat {
   id            Int         @id @default(autoincrement())
   realisation   Realisation @relation(fields: [realisationId], references: [id])
   realisationId Int
-  Cat           Categorie   @relation(fields: [categorieId], references: [id])
+  categorie     Categorie   @relation(fields: [categorieId], references: [id])
   categorieId   Int
 
   @@unique([realisationId, categorieId])
