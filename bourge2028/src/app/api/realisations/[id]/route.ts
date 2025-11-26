@@ -24,6 +24,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
         },
         materiaux: true,
         technique: true,
+        articles: true,
       },
     });
 
@@ -62,6 +63,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         },
         materiaux: true,
         technique: true,
+        articles: true,
       },
     });
 
@@ -89,6 +91,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
       prisma.technique.deleteMany({ where: { realisationId } }),
       prisma.projet.deleteMany({ where: { realisationId } }),
       prisma.realisation.delete({ where: { id: realisationId } }),
+      prisma.articles.deleteMany({ where: { realisationId } })
     ]);
 
 

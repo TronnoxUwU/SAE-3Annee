@@ -1,6 +1,9 @@
 "use client";
-
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+const Annuaire = dynamic(() => import("@/app/components/annuaire/Annuaire"), { ssr: false });
+import ApercuArticle from "@/app/components/annuaire/ApercuArticle";
+
 
 export default function ProjetView({ id }) {
   const [data, setData] = useState(null);
@@ -21,11 +24,10 @@ export default function ProjetView({ id }) {
   if (!data) return <div className="text-center mt-5">Chargement...</div>;
 
   const collaborateurs = data.structure || [];
+  const articles = data.articles || [];
 
   return (
     <div style={{ minHeight: "100vh", paddingBottom: 60 }}>
-
-      {/* CONTENU */}
       <div
         className="container mt-5 p-4"
         style={{ background: "white", borderRadius: 12 }}
@@ -51,15 +53,27 @@ export default function ProjetView({ id }) {
           </div>
         </div>
 
-        <h2 className="text-center fw-bold mt-5">A propos de ce projet :</h2>
+        {/* ARTICLES */}
+        {articles.length > 0 && (
+          <>
+            <h2 className="text-center fw-bold mt-5">
+              À propos de ce projet :
+            </h2>
 
-        <h2 className="text-center fw-bold mt-5">Les collaborateurs</h2>
+            <div className="mt-4 row g-3 gap-4">
+                {articles.map((article) => (
+                  <ApercuArticle key={article.id} article={article} />
+                ))}
+            </div>
+          </>
+        )}
+
+        {/* COLLABORATEURS */}
+        {collaborateurs.length > 0 && (
+          <h2 className="text-center fw-bold mt-5">Les collaborateurs</h2>
+        )}
 
         <div className="row mt-4">
-          {collaborateurs.length === 0 && (
-            <p className="text-center text-muted">Aucun collaborateur.</p>
-          )}
-
           {collaborateurs.map((struct) => (
             <div className="col-md-3 mb-3" key={struct.id}>
               <div
@@ -76,7 +90,7 @@ export default function ProjetView({ id }) {
             </div>
           ))}
         </div>
-        
+
       </div>
     </div>
   );

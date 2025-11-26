@@ -15,6 +15,14 @@ export const deserializeRealisation = (r: any) => {
   const catsData = r.categorie?.length
     ? { create: r.categorie.map(deserializeCategorie) }
     : undefined;
+  
+  const articlesData = r.articles?.length
+    ? {
+        connect: r.articles
+          .filter((a: any) => a?.id)
+          .map((a: any) => ({ id: a.id })),
+      }
+    : undefined;
 
   // Projet
   let projetData;
@@ -39,6 +47,7 @@ export const deserializeRealisation = (r: any) => {
     structure: structureData,
     cats: catsData,
     projet: projetData,
+    articles: articlesData,
     materiaux: r.materiaux
       ? { create: { nomMateriau: r.materiaux.nomMateriau } }
       : undefined,
