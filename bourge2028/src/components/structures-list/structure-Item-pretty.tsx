@@ -35,24 +35,24 @@ const StructureItem = ({ id, nom, date, description, edit, role, etat }: ListIte
                 {/* btn acces structure */}
                 <div className="btn-group btn-group-sm" role="group">
 
-                <button
+                <a
                     className={`${Style.btn_crud} btn btn-outline-success btn-sm px-3`}
                     title="Consulter"
-                    onClick={() => {window.location.href = `/structure/${id}`;}}
+                    href={`/structure/${id}`}
                 >
                     Consulter
                     <i className="bi bi-eye fs-4"></i>
-                </button>
+                </a>
                 {
                     edit && (
-                    <button 
+                    <a 
                         className={`${Style.btn_crud} btn btn-outline-primary btn-sm px-3`}
                         title="Modifier"
-                        onClick={() => {window.location.href = `/structure/${id}/edit`;}}
+                        href={`/structure/${id}/edit`}
                     >
                         Modifier
                         <i className="bi bi-pencil fs-5"></i>
-                    </button>
+                    </a>
                     )
                 }
                 
@@ -103,22 +103,32 @@ const StructureItem = ({ id, nom, date, description, edit, role, etat }: ListIte
                             )}
 
                             <div className="text-muted small d-flex align-items-center gap-1">
-                                <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
+                                {/* <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h2A2.75 2.75 0 0119 6.75v8.5A2.75 2.75 0 0116.25 18H3.75A2.75 2.75 0 011 15.25v-8.5A2.75 2.75 0 013.75 4h2V2.75A.75.75 0 015.75 2zm9.5 5a.75.75 0 00-.75.75v1.5a.75.75 0 001.5 0v-1.5a.75.75 0 00-.75-.75zm-7 0a.75.75 0 00-.75.75v1.5a.75.75 0 001.5 0v-1.5a.75.75 0 00-.75-.75z" clipRule="evenodd" />
-                                </svg>
-                                {renderDate(date)}
+                                </svg> */}
+                                <i className="bi bi-calendar me-2"></i>{renderDate(date)}
                             </div>
                         </div>
 
                         {/* Buttons */}
                         <div className="d-flex gap-2">
-                            <button className="btn btn-outline-secondary btn-sm flex-fill">
+                            <a 
+                                className={`${Style.btn_crud} btn btn-outline-success btn-sm flex-fill`}
+                                title="Consulter"
+                                href={`/structure/${id}`}
+                            >
                                 Consulter
-                            </button>
+                                <i className="bi bi-eye fs-4"></i>
+                            </a>
                             {edit && (
-                                <button className="btn btn-outline-secondary btn-sm flex-fill">
+                                <a
+                                    className={`${Style.btn_crud} btn btn-outline-primary btn-sm flex-fill`}
+                                    title="Modifier"
+                                    href={`/structure/${id}/edit`}
+                                >
                                     Modifier
-                                </button>
+                                    <i className="bi bi-pencil fs-5"></i>
+                                </a>
                             )}
                         </div>
                     </div>
