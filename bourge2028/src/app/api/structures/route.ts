@@ -16,8 +16,8 @@ export async function POST(req: Request) {
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
+        personnes: { include: { personne: true } },
         realisations: true,
-        personnes: true,
       },
     });
 

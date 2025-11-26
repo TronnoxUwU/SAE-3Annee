@@ -36,6 +36,7 @@ export default function Page() {
             />
             <Map
               mapFilter={geoFilter}
+              catFilter={contentFilter}
               onMapReady={setMapInstance}
             />
           </div>
