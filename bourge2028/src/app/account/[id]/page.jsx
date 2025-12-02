@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
-import Styles from "./Account.module.css";
+import Styles from "./account.module.css";
 import Topbar from "@/components/Topbar";
 import Structure from "@/components/structures-list/affichage-structure-user";
 import UserInfo from "./components/userinfo";

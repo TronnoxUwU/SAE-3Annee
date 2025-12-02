@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
-import Styles from "../Account.module.css";
+import Styles from "../account.module.css";
 
 export default function UserEdit({ user, onCancel, onSave }) {
   const [isChangingPassword, setIsChangingPassword] = useState(false);

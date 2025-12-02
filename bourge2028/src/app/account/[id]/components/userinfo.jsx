@@ -1,5 +1,5 @@
 import React from "react";
-import Styles from "../Account.module.css";
+import Styles from "../account.module.css";
 
 export default function UserInfo({ user, canEdit, onEdit }) {
   return (
