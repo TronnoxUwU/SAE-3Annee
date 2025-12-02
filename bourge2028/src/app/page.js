@@ -14,8 +14,9 @@ export default function Page() {
   const [mapInstance, setMapInstance] = useState(null);
 
   // Filtres séparés
-  const [contentFilter, setContentFilter] = useState({ categories: [], tags: [] }); // uniquement pour fetch articles
+  const [contentFilter, setContentFilter] = useState({ categories: [] }); // uniquement pour fetch articles
   const [geoFilter, setGeoFilter] = useState(null); // uniquement pour la carte
+  const [departementFilter, setDepartementFilter] = useState({ dep: [] }); // uniquement pour fetch articles
 
   const goToAnnuaire = () => {
     sessionStorage.setItem("fromHome", "true");
@@ -33,9 +34,11 @@ export default function Page() {
               map={mapInstance}
               onFilterChange={setContentFilter}
               onGeoFilterChange={setGeoFilter}
+              onDepFilterChange={setDepartementFilter}
             />
             <Map
               mapFilter={geoFilter}
+              depFilter={departementFilter}
               catFilter={contentFilter}
               onMapReady={setMapInstance}
             />

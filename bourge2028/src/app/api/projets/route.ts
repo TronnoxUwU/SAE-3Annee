@@ -2,15 +2,66 @@ import prisma from "@/lib/prisma";
 import { serializeProjet } from "@/lib/serializers";
 import { deserializeProjet } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 
 /**
  * ----- GET /api/projet -----
  */
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+
+    const categoriesParam = searchParams.get("cats");
+    const departementParam = searchParams.get("departement");
+
+    let categoryIds: number[] | undefined = undefined;
+    let departementIds: number[] | undefined = undefined;
+
+    if (categoriesParam) {
+      categoryIds = categoriesParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
+    }
+    if (departementParam) {
+      departementIds = departementParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
+    }
+
+    const where: Prisma.ProjetWhereInput = {
+      ...(departementIds?.length
+        ? { departementId: { in: departementIds } }
+        : {}),
+
+      ...(categoryIds?.length
+        ? {
+          realisation: {
+            cats: {
+              some: {
+                categorieId: { in: categoryIds }
+              }
+            }
+          }
+        }
+        : {}),
+    };
+
+
     const projets = await prisma.projet.findMany({
-      include: { realisation: true, departement: true },
+      where,
+      include: {
+        realisation: {
+          include: {
+            cats: { include: { categorie: true } },
+            structure: true,
+          },
+        },
+        departement: true,
+      },
     });
+
     return NextResponse.json(projets.map(serializeProjet), { status: 200 });
   } catch (error) {
     console.error("Erreur GET /api/projet :", error);

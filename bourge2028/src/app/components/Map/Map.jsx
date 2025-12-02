@@ -23,7 +23,7 @@ function MapClickHandler({ onMapClick }) {
   return null;
 }
 
-export default function Map({ mapFilter, catFilter, onMapReady }) {
+export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
   const [geojsonData, setGeojsonData] = useState(null);
   const [position, setPosition] = useState(null);
   const [pointsStructure, setPointsStructure] = useState([]);
@@ -71,13 +71,13 @@ export default function Map({ mapFilter, catFilter, onMapReady }) {
       })
       
       .catch((err) => console.error("Erreur chargement structures:", err));
-      fetch("/api/realisations/projets")
+      fetch("/api/projets")
           .then((res) => res.json())
           .then((data) => {
-            const points = data.map((realisation) => ({
-              id: realisation.id,
-              coords: [realisation.projet.latitude, realisation.projet.longitude],
-              label: realisation.projet.nomProjet,
+            const points = data.map((projet) => ({
+              id: projet.id,
+              coords: [projet.latitude, projet.longitude],
+              label: projet.nomProjet,
               type: "projet"
             }));
             setPointsProjet(points);
@@ -87,7 +87,6 @@ export default function Map({ mapFilter, catFilter, onMapReady }) {
 
   useEffect(() => {
     if (!mapFilter) return;
-
     const fetchPosition = async () => {
       try {
         const res = await fetch(
@@ -107,9 +106,10 @@ export default function Map({ mapFilter, catFilter, onMapReady }) {
   }, [mapFilter]);
 
   useEffect(() => {
-    if (!catFilter) return;
-
+    if (!catFilter && !depFilter) return;
     let urlStruct = "/api/structures";
+    console.log(catFilter);
+    console.log(depFilter);
     if (catFilter && catFilter.length > 0) {
       const params = new URLSearchParams();
       params.set(
@@ -117,6 +117,14 @@ export default function Map({ mapFilter, catFilter, onMapReady }) {
         catFilter.map(c => c.id).join(",")
       );
       urlStruct += `?${params.toString()}`;
+    }
+    if (depFilter && depFilter.length > 0) {
+      const params = new URLSearchParams();
+      params.set(
+        "deps",
+        depFilter.map(d => d.code).join(",")
+      );
+      urlStruct += (urlStruct.includes("?") ? "&" : "?") + params.toString();
     }
     fetch(urlStruct)
       .then((res) => res.json())
@@ -130,7 +138,7 @@ export default function Map({ mapFilter, catFilter, onMapReady }) {
         setPointsStructure(points);
       })
       .catch((err) => console.error("Erreur chargement structures filtrées:", err));
-    let urlProjet = "/api/categories/projets";
+    let urlProjet = "/api/projets";
     if (catFilter && catFilter.length > 0) {
       const params = new URLSearchParams();
       params.set(
@@ -139,13 +147,21 @@ export default function Map({ mapFilter, catFilter, onMapReady }) {
       );
       urlProjet += `?${params.toString()}`;
     }
+    if (depFilter && depFilter.length > 0) { 
+      const params = new URLSearchParams();
+      params.set(
+        "deps",
+        depFilter.map(d => d.code).join(",")
+      );
+      urlProjet += (urlProjet.includes("?") ? "&" : "?") + params.toString();
+    }
     fetch(urlProjet)
       .then((res) => res.json())
       .then((data) => {
-        const points = data.map((realisation) => ({
-          id: realisation.id,
-          coords: [realisation.projet.latitude, realisation.projet.longitude],
-          label: realisation.projet.nomProjet,
+        const points = data.map((projet) => ({
+          id: projet.id,
+          coords: [projet.latitude, projet.longitude],
+          label: projet.nomProjet,
           type: "projet"
         }));
         setPointsProjet(points);

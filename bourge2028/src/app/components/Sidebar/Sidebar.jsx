@@ -3,8 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import * as turf from "@turf/turf";
 import axios from "axios";
 import Style from "./Sidebar.module.css";
+import { on } from "events";
 
-export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
+export default function Sidebar({ map, onFilterChange, onGeoFilterChange, onDepFilterChange }) {
   const [open, setOpen] = useState(true);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -14,6 +15,9 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState({});
+
+  const [departements, setDepartements] = useState([]);
+  const [selectedDepartements, setSelectedDepartements] = useState([]);
 
   const resultsRef = useRef(null);
   const searchRef = useRef(null);
@@ -29,6 +33,11 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
       .get("/api/categories")
       .then((res) => setCategories(res.data.filter((c) => c.parentId === null)))
       .catch((err) => console.error("Erreur chargement catégories :", err));
+
+    axios
+      .get("/api/departement")
+      .then((res) => setDepartements(res.data))
+      .catch((err) => console.error("Erreur chargement départements :", err));
 
     fetch("/data/cartes/(initial)region-centre-val-de-loire.geojson")
       .then((res) => res.json())
@@ -192,6 +201,14 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
   }, [selectedCategories, categories, onFilterChange]);
 
   // ------------------------------------------------------------
+  // Construction depFilter
+  // ------------------------------------------------------------
+  useEffect(() => {
+    if (!onDepFilterChange) return;
+    onDepFilterChange(selectedDepartements);
+  }, [selectedDepartements, onDepFilterChange]);
+
+  // ------------------------------------------------------------
   // Rendu récursif
   // ------------------------------------------------------------
   const renderCategory = (cat, level = 0, parentChecked = false) => {
@@ -250,6 +267,43 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
     );
   };
 
+  //------------------------------------------------------------
+  // Rendu département
+  // ------------------------------------------------------------
+  const renderDepartement = (dep) => {
+    const isChecked = selectedDepartements.includes(dep.id);
+    const toggleDepartement = () => {
+      if (isChecked) {
+        setSelectedDepartements((prev) => prev.filter((id) => id !== dep.id));
+      }
+      else {
+        setSelectedDepartements((prev) => [...prev, dep.id]);
+      }
+    };
+
+    return (
+      <li
+        key={dep.id}
+        className={Style.category_item}
+        onClick={toggleDepartement}
+      >
+        <div className={Style.category_label}>
+          <div className={Style.category_left}>
+            <span className={Style.category_text}>{dep.nomDep}</span>
+          </div>
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={() => {
+              toggleDepartement();
+            }}
+            className={Style.checkbox}
+          />
+        </div>
+      </li>
+    );
+  };
+
   // ------------------------------------------------------------
   // Rendu Sidebar
   // ------------------------------------------------------------
@@ -284,6 +338,11 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
 
       <ul className={Style.filter_section}>
         {categories.map((cat) => renderCategory(cat))}
+      </ul>
+
+      <div className={Style.sidebar_header}>Departement</div>
+      <ul className={Style.filter_section}>
+        {departements.map((dep) => (renderDepartement(dep)))}
       </ul>
     </div>
   );
