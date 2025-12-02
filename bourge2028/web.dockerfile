@@ -1,7 +1,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copier fichiers de dépendances
+# Copier les fichiers de dépendances
 COPY package*.json ./
 
 # Installer les dépendances
@@ -10,26 +10,28 @@ RUN npm ci
 # Copier tout le projet
 COPY . .
 
-# Générer Prisma
+# Prisma client
 RUN npx prisma generate
 
-# Build Next.js en mode standalone
+# Build Next.js
 RUN npm run build
 
-# ---------------------- RUNNER ------------------------
+# ------------------ RUNNER -------------------
 FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copier le code standalone + fichiers nécessaires
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./public/_next/static
-COPY --from=builder /app/public ./public
+# Installer seulement les deps prod (plus léger)
+COPY package*.json ./
+RUN npm ci --omit=dev
 
-# Copier Prisma (schema + client généré)
+# Copier le build et le client Prisma
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # USER non-root
 RUN addgroup --system --gid 1001 nodejs && \
@@ -38,5 +40,4 @@ USER nextjs
 
 EXPOSE 3000
 
-# Pas de skip-generate, car déjà fait dans l'étape build
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
