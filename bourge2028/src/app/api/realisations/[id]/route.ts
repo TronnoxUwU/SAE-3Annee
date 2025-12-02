@@ -24,7 +24,19 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
         },
         materiaux: true,
         technique: true,
-        articles: true,
+        articles: {
+          include: {
+            composants: {
+              include: {
+                titre: true,
+                paragraphe: true,
+                image: true,
+                caroussels: { include: { images: true } },
+              },
+            },  // ✅ OBLIGATOIRE
+            documents: true,
+          },
+        },
       },
     });
 

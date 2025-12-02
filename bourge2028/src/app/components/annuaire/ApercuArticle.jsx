@@ -15,6 +15,8 @@ export default function ApercuArticle({ article }) {
   const originalSrc =
     firstImageComponent?.image?.lienImage || "/images/default-article.png";
 
+  console.log(article)
+
   const title =
     article.titre?.length > 30
       ? article.titre.substring(0, 27) + "..."
@@ -43,6 +45,8 @@ export default function ApercuArticle({ article }) {
             reject(new Error("Erreur de chargement"));
           };
         });
+
+        
 
         if (!canceled && result) setImageSrc(url);
       } catch {

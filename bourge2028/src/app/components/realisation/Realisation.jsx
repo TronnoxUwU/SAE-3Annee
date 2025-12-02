@@ -1,7 +1,5 @@
 "use client";
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-const Annuaire = dynamic(() => import("@/app/components/annuaire/Annuaire"), { ssr: false });
 import ApercuArticle from "@/app/components/annuaire/ApercuArticle";
 
 

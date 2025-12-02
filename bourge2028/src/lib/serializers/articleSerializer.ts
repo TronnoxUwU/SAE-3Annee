@@ -1,4 +1,4 @@
-import type { Article, Composant, Document, Realisation } from "@prisma/client";
+import type { Article, Composant, Document } from "@prisma/client";
 import { serializeComposant } from "./composantSerializer";
 import { serializeDocument } from "./documentSerializer";
 

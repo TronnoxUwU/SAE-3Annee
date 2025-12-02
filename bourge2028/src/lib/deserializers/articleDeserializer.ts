@@ -8,6 +8,6 @@ export const deserializeArticle = (data: any) => ({
     create: data.composants.map(deserializeComposant),
   },
   documents: {
-    create: data.documents.map(deserializeDocument),
+    create: data.documents?.map(deserializeDocument),
   },
 });
