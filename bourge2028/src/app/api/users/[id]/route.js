@@ -34,7 +34,6 @@ export async function GET(request, { params }) {
     const personne = await prisma.personne.findUnique({
       where: { id: personneId },
       include: {
-        departement: true,
         structures: {
           include: {
             structure: true
@@ -175,7 +174,6 @@ export async function PUT(request, { params }) {
       where: { id: personneId },
       data: updateData,
       include: {
-        departement: true,
         structures: { include: { structure: true } },
         redactions: {
           include: { article: true, realisation: true },
