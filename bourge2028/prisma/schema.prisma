@@ -103,6 +103,9 @@ model Projet {
   nomProjet     String
   realisation   Realisation @relation(fields: [realisationId], references: [id])
   realisationId Int         @unique
+  adresse       String?
+  latitude     Float?
+  longitude      Float?
 
   departement Departement[]
 }

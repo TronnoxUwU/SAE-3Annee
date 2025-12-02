@@ -20,6 +20,9 @@ export const deserializeProjet = (p: any) => {
     return {
         nomProjet: p.nomProjet,
         realisation: p.realisation?.id ? { connect: { id: p.realisation.id } } : undefined,
+        adresse: p.adresse,
+        latitude: p.latitude,
+        longitude: p.longitude,
         departement: departementData,
     };
 };

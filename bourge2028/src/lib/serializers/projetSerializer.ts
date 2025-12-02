@@ -19,6 +19,9 @@ export const serializeProjet = (
 ) => ({
   id: projet.id,
   nomProjet: projet.nomProjet,
+  adresse: projet.adresse || null,
+  latitude: projet.latitude || null,
+  longitude: projet.longitude || null,
   // Sérialisation sécurisée de la réalisation
   realisation: projet.realisation ? serializeRealisation(projet.realisation) : null,
   // Sérialisation des départements ou tableau vide si aucun
