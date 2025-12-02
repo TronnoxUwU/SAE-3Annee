@@ -26,6 +26,7 @@ export default function AdminCategory() {
     }));
 
     setItems(normalized);
+    setLoading(false);
   }
 
   useEffect(() => { 
@@ -42,9 +43,15 @@ export default function AdminCategory() {
   if (loading) {
     return (
       <>
-        {/* <div className={Style.userPage}> */}
         <div>
-          <p>Chargement...</p>
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="text-center">
+              <div className="spinner-border text-primary mb-3" role="status">
+                <span className="visually-hidden">Chargement...</span>
+              </div>
+              <p className="text-muted">Chargement des données...</p>
+            </div>
+          </div>
         </div>
       </>
     );

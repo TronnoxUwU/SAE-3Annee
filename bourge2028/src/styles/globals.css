@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-text: #292524;
+  --color-border: #d6cfc9;
+  --color-bg-light: #fafaf8;
+  --color-accent: #78716f;
 }
 
 

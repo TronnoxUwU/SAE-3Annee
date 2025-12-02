@@ -7,6 +7,8 @@ interface ListItemProps {
   nom: string;
   date: Date;
   description: string;
+  edit: boolean;
+  role: string;
 }
 
 function renderDate(date){
@@ -15,14 +17,14 @@ function renderDate(date){
   const d = new Date(date);
   if (isNaN(d.getTime())) return "Date invalide";
 
-  return `Cette structure a été fondée le ${d.toLocaleDateString('fr-FR', {
+  return `${d.toLocaleDateString('fr-FR', {
     year: "numeric",
     month: "long",
     day: "numeric"
   })}`;
 }
 
-const StructureItem = ({ id, nom, date, description }: ListItemProps) => {
+const StructureItem = ({ id, nom, date, description, edit, role }: ListItemProps) => {
 
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
@@ -39,22 +41,32 @@ const StructureItem = ({ id, nom, date, description }: ListItemProps) => {
             Consulter
             <i className="bi bi-eye fs-4"></i>
           </button>
-
-          <button 
-              className={`${Style.btn_crud} btn btn-outline-primary btn-sm px-3`}
-              title="Modifier"
-              onClick={() => {window.location.href = `/structure/${id}/edit`;}}
-          >
-            Modifier
-            <i className="bi bi-pencil fs-5"></i>
-          </button>
+          {
+            edit && (
+              <button 
+                className={`${Style.btn_crud} btn btn-outline-primary btn-sm px-3`}
+                title="Modifier"
+                onClick={() => {window.location.href = `/structure/${id}/edit`;}}
+              >
+                Modifier
+                <i className="bi bi-pencil fs-5"></i>
+              </button>
+            )
+          }
+          
         </div>
       </div>
       <div className={`${Style.struct_card} card-body p-2`}>
-        <img src={"/images/map-replacement-opti.jpg"}/>
+        <img src={"/images/default.jpg"}/>
         <div className={`${Style.struct_content}`}>
-          <p className={`${Style.struct_date}`}>{renderDate(date)}</p>
-          <p>{description}</p>
+          <div className={Style.struct_info}>
+            {role && (<p className={`${Style.struct_top} ${Style.struct_role}`}>{role}</p>)}
+            <p className={`${Style.struct_top} ${Style.struct_date}`}>
+              <i className="bi bi-calendar me-2"></i>{renderDate(date)}
+            </p>
+          </div>
+          
+          <p className={Style.struct_desc}>{description}</p>
         </div>
         
       </div>
