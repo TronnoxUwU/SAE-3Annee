@@ -14,6 +14,19 @@ export default function StructureDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  function renderDate(date){
+    if (!date) return "Date de fondation inconnue";
+
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "Date invalide";
+
+    return `${d.toLocaleDateString('fr-FR', {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    })}`;
+  }
+
   useEffect(() => {
     const fetchStructure = async () => {
       try {
@@ -38,13 +51,11 @@ export default function StructureDetailPage() {
     }
   }, [params.id]);
 
-  // Fonction pour vérifier les permissions
   const canEdit = () => {
     if (!session || !structure) return false;
     return session.user.role === "Admin" || session.user.structure === structure.id;
   };
 
-  // Navigation propre vers l'édition
   const handleEdit = () => {
     router.push(`/structure/${params.id}/edit`);
   };
@@ -54,8 +65,11 @@ export default function StructureDetailPage() {
       <>
         <Topbar />
         <div className={Style.userPage}>
-          <div className={Style.loading}>
-            <p>Chargement...</p>
+          <div className="d-flex justify-content-center align-items-center" style={{ height: "250px" }}>
+            <div className="text-center">
+              <div className="spinner-border text-primary mb-3" />
+              <p className="text-muted">Chargement des données...</p>
+            </div>
           </div>
         </div>
       </>
@@ -67,10 +81,10 @@ export default function StructureDetailPage() {
       <>
         <Topbar />
         <div className={Style.userPage}>
-          <h1>Erreur</h1>
+          <h2>Erreur</h2>
           <p>{error}</p>
           <button 
-            className="btn btn-primary"
+            className="btn btn-outline-secondary"
             onClick={() => router.push("/structure")}
           >
             Retour aux structures
@@ -84,109 +98,108 @@ export default function StructureDetailPage() {
     <>
       <Topbar />
       <div className={Style.userPage}>
-        {/* En-tête avec titre et actions */}
         
-        <div className={Style.header}>
-
-
-          <div className={Style.header_top}>
-            <a 
-              className={`${Style.btn_back} btn btn-outline-success`}
-              href="/structure"
-              title="Retour"
-            >
-              <i className="bi bi-arrow-left"></i> Retour
-            </a>
-            {canEdit() && (
+        {/* Navigation */}
+        <div className={Style.navBar}>
+          <a 
+            className={`${Style.btn_back} btn btn-link`}
+            href="/structure"
+            title="Retour"
+          >
+            <i className="bi bi-chevron-left"></i> Retour
+          </a>
+          {canEdit() && (
             <button 
-              className={`${Style.btn_crud} btn btn-outline-primary`}
+              className={`${Style.btn_edit} btn btn-outline-secondary`}
               onClick={handleEdit}
               title="Modifier la structure"
             >
-              <span>Modifier</span>
-              <i className="bi bi-pencil"></i>
+              <i className="bi bi-pencil-square"></i> Modifier
             </button>
           )}
+        </div>
 
+        {/* Hero avec asymétrie */}
+        <div className={Style.heroSection}>
+          <div className={Style.heroContent}>
+            <span className={Style.label}>Structure régionale depuis le {renderDate(structure.dateCreation)}</span>
+            <h2 className={Style.mainTitle}>{structure?.nomStructure || "Structure inconnue"}</h2>
+            
+            {/* {structure?.dateCreation && (
+              <p className={Style.dateInfo}>
+                
+              </p>
+            )} */}
+
+            <p className={Style.description}>
+              {structure?.description || "Aucune description disponible"}
+            </p>
           </div>
 
-            <h1>{structure?.nomStructure || "Structure inconnue"}</h1>
-          
+            <img
+                src="/images/default.jpg"     // A REMPLACER PAR L IMAGE DE LA STRUCTURE
+                alt="representation structure"
+                className={Style.showImage}
+            />
         </div>
 
-        {/* Section Description */}
-        <div className={Style.desc_content}>
-          <h2>Description</h2>
-          {structure?.description ? (
-            <p>{structure.description}</p>
-          ) : (
-            <p className={Style.noData}>Aucune description disponible</p>
-          )}
-          
-          {structure?.dateCreation && (
-            <p className={Style.metaInfo}>
-              <i className="bi bi-calendar"></i>
-              <strong>Date de création :</strong>{" "}
-              {new Date(structure.dateCreation).toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              })}
-            </p>
-          )}
-
-          {/* Départements */}
-          {structure?.departements && structure.departements.length > 0 && (
-            <div className={Style.departements_section}>
-              <h3>Départements</h3>
-              <ul className={Style.loc_list}>
-                {structure.departements.map(item => (
-                  <ListLocalisation 
-                    key={item.id}
-                    id={item.departementId}
-                    nomDepartement={item.nom}
-                  />
-                ))}
-              </ul>
+        {/* Départements */}
+        {structure?.departements && structure.departements.length > 0 && (
+          <div className={Style.departementSection}>
+            <span className={Style.label}>Notre présence dans la région</span>
+            
+            <div className={Style.departementsList}>
+              {structure.departements.map((item, idx) => (
+                <div 
+                  key={item.id} 
+                  className={`${Style.departementItem} `} //${idx % 2 === 1 ? Style.offsetRight : ''}
+                >
+                  {/* <div className={Style.departementDot}></div> */}
+                  <i className="bi bi-pin-map"></i>
+                  <span className={Style.departementName}>
+                    {item.nom}
+                  </span>
+                  <span className={Style.departementNumber}>
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Section Articles */}
+        <div className={Style.articlesSection}>
+          <a href={`/structure/${params.id}/articles`} className={Style.articlesLink}>
+            <div className={Style.articlesContainer}>
+              <div className={Style.articlesContent}>
+                <span className={Style.label}>Ressources</span>
+                <h2 className={Style.articlesTitle}>Nos réalisations</h2>
+                <p className={Style.articlesDescription}>
+                  Explorez notre collection de publications sur nos divers projets.
+                </p>
+              </div>
+
+              <div className={Style.articlesCount}>
+                <div className={Style.countBox}>
+                  <span className={Style.number}>{structure?.articlesCount || 0}</span>
+                  <div className={Style.countLine}></div>
+                  <span className={Style.countLabel}>
+                    {structure?.articlesCount > 1 ? "RESSOURCES" : "RESSOURCE"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
 
-        {/* Section Cartes */}
-        <div className={Style.conteneur}>
-          <a 
-            href={`/structure/${params.id}/articles`} 
-            className={Style.card}
-          >
-            <img src="/images/default-article.png" alt="Articles" />
-            <h2>Articles</h2>
-            <p className={Style.cardCount}>
-              {structure?.articlesCount || 0} article{structure?.articlesCount > 1 ? 's' : ''}
-            </p>
-          </a>
-
-          {/* Décommentez ces cartes si nécessaire */}
-          {/* 
-          <a 
-            href={`/structure/${params.id}/localisations`} 
-            className={Style.card}
-          >
-            <img src="/images/localisation.png" alt="Localisations" />
-            <h2>Localisations</h2>
-            <p className={Style.cardCount}>
-              {structure?.localisationsCount || 0} localisation{structure?.localisationsCount > 1 ? 's' : ''}
-            </p>
-          </a>
-
-          <a 
-            href={`/structure/${params.id}/parametres`} 
-            className={Style.card}
-          >
-            <img src="/images/parametres.png" alt="Paramètres" />
-            <h2>Paramètres</h2>
-            <p>Configuration de la structure</p>
-          </a>
-          */}
+        {/* Footer */}
+        <div className={Style.footer}>
+          <span className={Style.footerLabel}>Bourges 28</span>
+          <span className={Style.footerDate}>
+            Réalisé par Shanka C. Baptiste R. et Tristan C.
+            {/* {new Date().toLocaleDateString('fr-FR')} */}
+          </span>
         </div>
       </div>
     </>

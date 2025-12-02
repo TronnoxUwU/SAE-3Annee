@@ -3,7 +3,7 @@
 
 import AdminSidebar from "../components/Sidebar/admin-sidebar";
 import Topbar from "@/components/Topbar.jsx";
-import AdminStructure from "./components/affichage-structure";
+import AdminStructure from "@/components/structures-list/affichage-structure";
 
 export default function AdminPage() {
 
