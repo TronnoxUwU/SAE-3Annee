@@ -51,7 +51,7 @@ export default function AnnuairePage() {
         setLoading(true);
         setError(null);
 
-        let url = "/api/projets";
+        let url = "/api/articles";
         if (mapFilter) {
           const params = new URLSearchParams(mapFilter).toString();
           url += `?${params}`;
