@@ -58,6 +58,63 @@ export async function GET(
   }
 }
 
+/**
+ * ----- DELETE /api/categories/[id] -----
+ */
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const categoryId = Number(id);
+    
+    if (isNaN(categoryId)) {
+      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+    }
+
+    const existing = await prisma.categorie.findUnique({
+      where: { id: categoryId },
+      include: { children: true },
+    });
+
+    if (!existing) {
+      return NextResponse.json({ error: "Catégorie non trouvée" }, { status: 404 });
+    }
+
+    if (existing.children.length > 0) {
+      return NextResponse.json(
+        { error: "Impossible de supprimer une catégorie ayant des sous-catégories" },
+        { status: 409 }
+      );
+    }
+
+    await prisma.categorie.delete({
+      where: { id: categoryId },
+    });
+
+    return NextResponse.json(
+      { message: "Catégorie supprimée avec succès", id: categoryId },
+      { status: 200 }
+    );
+    
+  } catch (error) {
+    console.error("Erreur DELETE /api/categories/[id] :", error);
+    
+    if (error instanceof Error && error.message.includes("Foreign key constraint")) {
+      return NextResponse.json(
+        { error: "Impossible de supprimer: la catégorie est référencée par d'autres éléments" },
+        { status: 409 }
+      );
+    }
+    
+    return NextResponse.json(
+      { error: "Impossible de supprimer la catégorie" },
+      { status: 500 }
+    );
+  }
+}
+
 
 /**
  * PUT /api/categories/[id]
