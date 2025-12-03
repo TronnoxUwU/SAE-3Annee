@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = "file:./dev.db"
 }
 
@@ -86,11 +86,13 @@ model Role {
 model Realisation {
   id        Int         @id @default(autoincrement())
   nom       String?
+  description       String?
+  dateCreation      DateTime?
   structure Structure[]
 
   // Relations communes
   cats      RealisationCat[]
-  rediger   Rediger[]
+  articles   Article[]
   // relations ISA 1:1
   projet    Projet?
   materiaux Materiau?
@@ -156,9 +158,12 @@ model Categorie {
 model Article {
   id         Int         @id @default(autoincrement())
   titre      String
-  redactions Rediger[]
+
   composants Composant[]
   documents  Document[]
+  redigers Rediger[]
+  realisation Realisation @relation(fields: [realisationId], references: [id], onDelete: Cascade)
+  realisationId Int
 }
 
 model Rediger {
@@ -167,13 +172,10 @@ model Rediger {
   articleId     Int
   personne      Personne    @relation(fields: [personneId], references: [id])
   personneId    Int
-  realisation   Realisation @relation(fields: [realisationId], references: [id])
-  realisationId Int
 
-  dateRedaction DateTime?
-  dateModif     DateTime?
+  dateModif     DateTime
 
-  @@unique([articleId, personneId])
+  @@unique([articleId, personneId, dateModif])
 }
 
 /**

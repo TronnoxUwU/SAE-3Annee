@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "../../styles/apercu_article.module.css";
 
-export default function ApercuArticle({ article }) {
+export default function ApercuRealisation({ article }) {
   const router = useRouter();
   const [imageSrc, setImageSrc] = useState("/images/default-article.png");
 
@@ -18,9 +18,9 @@ export default function ApercuArticle({ article }) {
   console.log(article)
 
   const title =
-    article.titre?.length > 30
-      ? article.titre.substring(0, 27) + "..."
-      : article.titre || "Article sans titre";
+    article.nomProjet?.length > 30
+      ? article.nomProjet.substring(0, 27) + "..."
+      : article.nomProjet || "Projet sans titre";
 
 
   useEffect(() => {
@@ -61,9 +61,9 @@ export default function ApercuArticle({ article }) {
   }, [originalSrc]);
 
   return (
-    <div className={styles.apercuArticle} onClick={() => router.push(`/article/${article.id}`)}>
+    <div className={styles.apercuArticle} onClick={() => router.push(`/annuaires/projets/${article.id}`)}>
       <img src={imageSrc} alt={title} className={styles.apercuArticleImage} />
-      <h2 className={styles.apercuArticleTitle} data-fulltitle={article.titre}>
+      <h2 className={styles.apercuArticleTitle} data-fulltitle={article.apercuArticle}>
         {title}
       </h2>
     </div>

@@ -31,6 +31,7 @@ export const Editor: React.FC = () => {
   const handleSave = async(titre: string) => {
     const json = {
       titre: titre,
+      realisationId: 0,
       composants: blocks.map((b, index) => {
         const position = index + 1;
 

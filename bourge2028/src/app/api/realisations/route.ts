@@ -42,6 +42,7 @@ export async function GET(req: Request) {
         },
         materiaux: true,
         technique: true,
+        articles: true,
       },
     });
 
@@ -80,6 +81,9 @@ export async function POST(req: Request) {
           materiaux: true,
           technique: true,
         },
+        materiaux: true,
+        technique: true,
+        articles: true,
       },
     });
 
