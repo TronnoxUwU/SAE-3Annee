@@ -41,8 +41,7 @@ export async function GET(request, { params }) {
         },
         redactions: {
           include: {
-            article: true,
-            realisation: true
+            article: true
           }
         }
       }
