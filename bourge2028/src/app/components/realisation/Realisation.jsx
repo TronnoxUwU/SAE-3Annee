@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import ApercuArticle from "@/app/components/annuaire/ApercuArticle";
 
 
 export default function ProjetView({ id }) {
   const [data, setData] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function load() {
@@ -12,6 +14,10 @@ export default function ProjetView({ id }) {
         const res = await fetch(`http://localhost:3000/api/realisations/${id}`);
         const json = await res.json();
         setData(json);
+        if (res.status === 404) {
+          router.push("/404"); // ou router.replace("/404")
+          return;
+        }
       } catch (err) {
         console.error("Erreur fetch:", err);
       }
