@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const categoriesParam = searchParams.get("cats");
-    const departementParam = searchParams.get("departement");
+    const departementParam = searchParams.get("deps");
 
     let categoryIds: number[] | undefined = undefined;
     let departementIds: number[] | undefined = undefined;
@@ -32,7 +32,13 @@ export async function GET(req: Request) {
 
     const where: Prisma.ProjetWhereInput = {
       ...(departementIds?.length
-        ? { departementId: { in: departementIds } }
+        ? {
+          departements: {
+            some: {
+              departementId: { in: departementIds }
+            }
+          }
+        }
         : {}),
 
       ...(categoryIds?.length
@@ -48,7 +54,6 @@ export async function GET(req: Request) {
         : {}),
     };
 
-
     const projets = await prisma.projet.findMany({
       where,
       include: {
@@ -58,7 +63,9 @@ export async function GET(req: Request) {
             structure: true,
           },
         },
-        departement: true,
+        departements: {
+          include: { departement: true }
+        },
       },
     });
 
@@ -79,7 +86,17 @@ export async function POST(req: Request) {
 
     const newProjet = await prisma.projet.create({
       data: projetData,
-      include: { realisation: true, departement: true },
+      include: { 
+        realisation: {
+          include: {
+            cats: { include: { categorie: true } },
+            structure: true,
+          },
+        },
+        departements: { 
+          include: { departement: true } 
+        }
+      },
     });
 
     return NextResponse.json(serializeProjet(newProjet), { status: 201 });

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import "./styles/home.css";
 
@@ -16,7 +16,7 @@ export default function Page() {
   // Filtres séparés
   const [contentFilter, setContentFilter] = useState({ categories: [] }); // uniquement pour fetch articles
   const [geoFilter, setGeoFilter] = useState(null); // uniquement pour la carte
-  const [departementFilter, setDepartementFilter] = useState({ dep: [] }); // uniquement pour fetch articles
+  const [departementFilter, setDepartementFilter] = useState([]);
 
   const goToAnnuaire = () => {
     sessionStorage.setItem("fromHome", "true");
@@ -33,8 +33,8 @@ export default function Page() {
             <Sidebar
               map={mapInstance}
               onFilterChange={setContentFilter}
-              onGeoFilterChange={setGeoFilter}
               onDepFilterChange={setDepartementFilter}
+              onGeoFilterChange={setGeoFilter}
             />
             <Map
               mapFilter={geoFilter}

@@ -38,7 +38,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const categoriesParam = searchParams.get("cats");
-    const departementParam = searchParams.get("departement");
+    const departementParam = searchParams.get("deps");
 
     let categoryIds: number[] | undefined = undefined;
     let departementIds: number[] | undefined = undefined;

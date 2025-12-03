@@ -17,7 +17,7 @@ model Structure {
   id           Int            @id @default(autoincrement())
   nomStructure String?
   description  String?
-  adresse     String?
+  adresse      String?
   lienPhoto    String?
   dateCreation DateTime?
   // departementId Int?
@@ -40,11 +40,21 @@ model Situer {
   @@unique([structureId, departementId])
 }
 
+model ProjetDepartement {
+  id            Int         @id @default(autoincrement())
+  projet        Projet      @relation(fields: [projetId], references: [id])
+  projetId      Int
+  departement   Departement @relation(fields: [departementId], references: [id])
+  departementId Int
+
+  @@unique([projetId, departementId])
+}
+
 model Departement {
-  id         Int      @id @default(autoincrement())
+  id         Int                 @id @default(autoincrement())
   nomDep     String
   structures Situer[]
-  projets    Projet[]
+  projets    ProjetDepartement[]
 }
 
 model Personne {
@@ -104,10 +114,10 @@ model Projet {
   realisation   Realisation @relation(fields: [realisationId], references: [id])
   realisationId Int         @unique
   adresse       String?
-  latitude     Float?
-  longitude      Float?
+  latitude      Float?
+  longitude     Float?
 
-  departement Departement[]
+  departements ProjetDepartement[] 
 }
 
 model Materiau {
