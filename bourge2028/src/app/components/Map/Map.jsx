@@ -69,20 +69,20 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
         }));
         setPointsStructure(points);
       })
-      
+
       .catch((err) => console.error("Erreur chargement structures:", err));
-      fetch("/api/projets")
-          .then((res) => res.json())
-          .then((data) => {
-            const points = data.map((projet) => ({
-              id: projet.id,
-              coords: [projet.latitude, projet.longitude],
-              label: projet.nomProjet,
-              type: "projet"
-            }));
-            setPointsProjet(points);
-          })
-          .catch((err) => console.error("Erreur chargement projets filtrés:", err));
+    fetch("/api/projets")
+      .then((res) => res.json())
+      .then((data) => {
+        const points = data.map((projet) => ({
+          id: projet.id,
+          coords: [projet.latitude, projet.longitude],
+          label: projet.nomProjet,
+          type: "projet"
+        }));
+        setPointsProjet(points);
+      })
+      .catch((err) => console.error("Erreur chargement projets filtrés:", err));
   }, []);
 
   useEffect(() => {
@@ -107,25 +107,21 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
 
   useEffect(() => {
     if (!catFilter && !depFilter) return;
+
     let urlStruct = "/api/structures";
-    console.log(catFilter);
-    console.log(depFilter);
+
     if (catFilter && catFilter.length > 0) {
       const params = new URLSearchParams();
-      params.set(
-        "cats",
-        catFilter.map(c => c.id).join(",")
-      );
+      params.set("cats", catFilter.map(c => c.id).join(","));
       urlStruct += `?${params.toString()}`;
     }
+
     if (depFilter && depFilter.length > 0) {
       const params = new URLSearchParams();
-      params.set(
-        "deps",
-        depFilter.map(d => d.code).join(",")
-      );
+      params.set("deps", depFilter.map(d => d.id).join(","));
       urlStruct += (urlStruct.includes("?") ? "&" : "?") + params.toString();
     }
+
     fetch(urlStruct)
       .then((res) => res.json())
       .then((data) => {
@@ -136,25 +132,22 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
           type: "structure"
         }));
         setPointsStructure(points);
-      })
-      .catch((err) => console.error("Erreur chargement structures filtrées:", err));
+      });
+
     let urlProjet = "/api/projets";
+
     if (catFilter && catFilter.length > 0) {
       const params = new URLSearchParams();
-      params.set(
-        "cats",
-        catFilter.map(c => c.id).join(",")
-      );
+      params.set("cats", catFilter.map(c => c.id).join(","));
       urlProjet += `?${params.toString()}`;
     }
-    if (depFilter && depFilter.length > 0) { 
+
+    if (depFilter && depFilter.length > 0) {
       const params = new URLSearchParams();
-      params.set(
-        "deps",
-        depFilter.map(d => d.code).join(",")
-      );
+      params.set("deps", depFilter.map(d => d.id).join(","));
       urlProjet += (urlProjet.includes("?") ? "&" : "?") + params.toString();
     }
+
     fetch(urlProjet)
       .then((res) => res.json())
       .then((data) => {
@@ -165,9 +158,10 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
           type: "projet"
         }));
         setPointsProjet(points);
-      })
-      .catch((err) => console.error("Erreur chargement projets filtrés:", err));
-  }, [catFilter]);
+      });
+
+  }, [catFilter, depFilter]);
+
 
   return (
     <div className="map" style={{ height: "100vh", width: "100%" }}>

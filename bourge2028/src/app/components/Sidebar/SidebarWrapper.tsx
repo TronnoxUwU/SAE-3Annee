@@ -9,9 +9,15 @@ interface SidebarWrapperProps {
   map: any;
   onFilterChange?: (filter: string) => void;
   onGeoFilterChange?: (geoFilter: string) => void;
+  onDepFilterChange?: (departements: any[]) => void;
 }
 
-export default function SidebarWrapper({ map, onFilterChange, onGeoFilterChange }: SidebarWrapperProps) {
+export default function SidebarWrapper({ 
+  map, 
+  onFilterChange, 
+  onGeoFilterChange,
+  onDepFilterChange 
+}: SidebarWrapperProps) {
   const [isClient, setIsClient] = useState(false);
   const [shouldLoadFull, setShouldLoadFull] = useState(false);
 
@@ -46,7 +52,12 @@ export default function SidebarWrapper({ map, onFilterChange, onGeoFilterChange 
 
   return (
     <Suspense fallback={<SidebarSkeleton onFilterChange={onFilterChange} />}>
-      <Sidebar map={map} onFilterChange={onFilterChange} onGeoFilterChange={onGeoFilterChange}/>
+      <Sidebar 
+        map={map} 
+        onFilterChange={onFilterChange} 
+        onGeoFilterChange={onGeoFilterChange}
+        onDepFilterChange={onDepFilterChange} 
+      />
     </Suspense>
   );
 }
