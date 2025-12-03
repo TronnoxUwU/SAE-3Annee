@@ -75,20 +75,13 @@ export async function DELETE(
 
     const existing = await prisma.categorie.findUnique({
       where: { id: categoryId },
-      include: { children: true },
     });
 
     if (!existing) {
       return NextResponse.json({ error: "Catégorie non trouvée" }, { status: 404 });
     }
 
-    if (existing.children.length > 0) {
-      return NextResponse.json(
-        { error: "Impossible de supprimer une catégorie ayant des sous-catégories" },
-        { status: 409 }
-      );
-    }
-
+    // Suppression en cascade (gérée par Prisma si configuré dans le schema)
     await prisma.categorie.delete({
       where: { id: categoryId },
     });
