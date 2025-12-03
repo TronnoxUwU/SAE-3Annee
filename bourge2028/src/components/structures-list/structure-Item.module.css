@@ -1,0 +1,106 @@
+/* override */
+
+.override_list {
+    padding-left: 0;
+}
+
+/* Module */
+
+.item_bloc {
+    box-shadow: 0 20px 60px rgba(69, 69, 69, 0.3);
+    margin-bottom: 5vh;
+}
+
+.struct_header {
+    background-color: rgb(231, 209, 246);
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn_crud {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn_crud i { margin-left: 6px;}
+
+.struct_card {
+    display: flex;
+}
+
+.struct_card img {
+    min-width: 12vw;
+    max-width: 12vw;
+    min-height: 8vw;
+    max-height: 8vw;
+
+    object-fit: cover;
+}
+
+
+.struct_content {
+    width: 100%;
+    margin-left: 2vw;
+}
+
+.struct_info {
+    display: flex;
+    justify-content: space-between;
+    gap: 5%;
+}
+.struct_top {
+    padding: 0.5em;
+    border-radius: 1em;
+    text-align: center;
+}
+.struct_date {
+    background-color: rgb(218, 218, 218);
+    flex-basis: 50%;
+}
+.struct_role {
+    background-color: rgb(202, 207, 255);
+    flex-basis: 100%;
+}
+.struct_desc {
+    max-width: 30vw;
+}
+
+/* affichage gallerie pretty */
+
+
+
+.structure_img_wrapper {
+    height: 200px;
+    background: linear-gradient(135deg, #e9d5ff, #fce7f3, #dbeafe);
+    overflow: hidden;
+}
+
+.structure_img_wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.structure_title {
+    border-left: 4px solid #c084fc;
+    padding-left: 8px;
+}
+
+.grid_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.structure_card {
+    width: 400px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    transition: box-shadow 0.2s ease;
+}
+
+.structure_card:hover {
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.12);
+}

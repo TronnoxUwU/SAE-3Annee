@@ -5,13 +5,14 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = "file:./dev.db"
 }
 
 generator client {
   provider = "prisma-client-js"
 }
+
 
 model Structure {
   id           Int       @id @default(autoincrement())
@@ -125,7 +126,7 @@ model RealisationCat {
   id            Int         @id @default(autoincrement())
   realisation   Realisation @relation(fields: [realisationId], references: [id])
   realisationId Int
-  Cat           Categorie   @relation(fields: [categorieId], references: [id])
+  categorie     Categorie   @relation(fields: [categorieId], references: [id])
   categorieId   Int
 
   @@unique([realisationId, categorieId])

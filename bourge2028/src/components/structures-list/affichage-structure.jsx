@@ -1,15 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname  } from "next/navigation";
 import StructureItem from "./structure-Item";
 import tempStyle from "./structure-Item.module.css"
+import { useSession } from 'next-auth/react';
 
-export default function AdminStructure() {
+
+
+export default function Structure() {
   const router = useRouter();
+  const pathname = usePathname()
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { data: session } = useSession();
+
+
 
   async function loadCategories() {
     const res = await fetch("/api/structures");
@@ -24,6 +31,7 @@ export default function AdminStructure() {
 
   useEffect(() => { 
     try {
+
       setLoading(true);
       loadCategories(); 
     } catch (err) {
@@ -37,7 +45,14 @@ export default function AdminStructure() {
       <>
         {/* <div className={Style.userPage}> */}
         <div>
-          <p>Chargement...</p>
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="text-center">
+              <div className="spinner-border text-primary mb-3" role="status">
+                <span className="visually-hidden">Chargement...</span>
+              </div>
+              <p className="text-muted">Chargement des données...</p>
+            </div>
+          </div>
         </div>
       </>
     );
@@ -59,8 +74,19 @@ export default function AdminStructure() {
     }
 
   return (
+    
     <ul className={`${tempStyle.override_list}`}>
       {items.map(item => {
+
+      var canEdit = session?.user?.role === "Admin";
+      if(!canEdit) {
+        item.personnes.map(p => {canEdit = (p.role==="Createur" && p.personneId === session?.user?.id)})
+      }
+      var str_role;
+      if(pathname.includes("account/") && pathname!==`account/${session?.user?.id}`) {
+        item.personnes.map(p => {str_role = `Cette personne est ${p.role} de cette structure`})
+      }
+
         return (
           <StructureItem
             key={item.id}
@@ -68,6 +94,8 @@ export default function AdminStructure() {
             nom={item.nomStructure}
             date={item.dateCreation}
             description={item.description}
+            edit={canEdit}
+            role={str_role}
           />
         );
       })}

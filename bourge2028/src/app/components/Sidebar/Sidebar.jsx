@@ -188,7 +188,7 @@ export default function Sidebar({ map, onFilterChange, onGeoFilterChange }) {
     };
 
     traverse(categories);
-    onFilterChange({ categories: categoriesList });
+    onFilterChange(categoriesList);
   }, [selectedCategories, categories, onFilterChange]);
 
   // ------------------------------------------------------------

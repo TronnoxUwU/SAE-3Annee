@@ -1,4 +1,4 @@
-import { Article, Categorie, Materiau, Projet, Realisation, Structure, Technique } from "@prisma/client";
+import { Article, Categorie, Materiau, Projet, Realisation, RealisationCat, Structure, Technique } from "@prisma/client";
 import { serializeStructure } from "./structureSerializer";
 import { serializeCategorie } from "./categorieSerializer";
 import { serializeMateriau } from "./materiauSerializer";
@@ -10,7 +10,7 @@ export const serializeRealisation = (
     realisation: Realisation & {
         structure: Structure[];
         articles?: Article[];
-        cats: Categorie[];
+        cats?: (RealisationCat & { categorie: Categorie })[];
         projet?: Projet | null;
         materiaux?: Materiau | null;
         technique?: Technique | null;
@@ -22,7 +22,8 @@ export const serializeRealisation = (
     dateCreation: realisation.dateCreation ?? null,
     structure: realisation.structure?.map(serializeStructure) ?? [],
     articles: realisation.articles?.map(serializeArticle) ?? [],
-    cats: realisation.cats?.map(serializeCategorie) ?? [],
+    cats:
+        realisation.cats?.map(sc => serializeCategorie(sc.categorie)) ?? [],
 
     projet: realisation.projet ? serializeProjet(realisation.projet) : null,
     materiaux: realisation.materiaux ? serializeMateriau(realisation.materiaux) : null,

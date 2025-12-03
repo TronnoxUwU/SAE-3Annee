@@ -2,19 +2,22 @@
 // import "./styles/admin.css";
 
 import Topbar from "@/components/Topbar.jsx";
-import Structure from "./components/affichage-structure";
+import Sidebar from "../components/Sidebar/Sidebar";
+import Structure from "@/components/structures-list/affichage-structure-pretty";
+import Style from "./page.module.css";
 
 export default function AdminPage() {
 
   return (
     <>
-      <Topbar title="Bourges 2028 - Structures"/>
+      <Topbar title="Bourges 2028 - Structures" fixed/>
 
-      <div className="container">
+      <div>
+      <Sidebar map={null} onFilterChange={null} onGeoFilterChange={null} />
 
-        <main className="main">
+        <main className={Style.main}>
           <div className="top-content">
-            <h2>Voici les structures présentes sur la plateforme</h2>
+            <h2 className={Style.titre_stylee}>Voici les structures présentes sur la plateforme</h2>
           </div>
 
           <Structure />

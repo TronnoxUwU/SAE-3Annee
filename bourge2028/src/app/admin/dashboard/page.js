@@ -1,4 +1,4 @@
-import DashboardServer from "./components/dashboard";
+import DashboardClient from "./components/dashboard";
 import Topbar from "@/components/Topbar.jsx";
 import AdminSidebar from "../components/Sidebar/admin-sidebar";
 
@@ -13,7 +13,7 @@ export default function DashboardPage() {
     <div className="admin-content">
       <AdminSidebar />
       <main className={Style.dashboard}>
-          <DashboardServer />
+          <DashboardClient />
       </main>
     </div>
     </>
