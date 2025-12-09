@@ -14,7 +14,17 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
     const projet = await prisma.projet.findUnique({
       where: { id: projetId },
-      include: { realisation: true, departement: true },
+      include: { 
+        realisation: {
+          include: {
+            cats: { include: { categorie: true } },
+            structure: true,
+          },
+        },
+        departements: { 
+          include: { departement: true } 
+        }
+      },
     });
 
     if (!projet) return NextResponse.json({ error: "Projet introuvable" }, { status: 404 });
@@ -31,7 +41,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
  */
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-
     const tmp = await params;
     const projetId = Number(tmp.id);
     if (isNaN(projetId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });
@@ -42,7 +51,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const updated = await prisma.projet.update({
       where: { id: projetId },
       data: projetData,
-      include: { realisation: true, departement: true },
+      include: { 
+        realisation: {
+          include: {
+            cats: { include: { categorie: true } },
+            structure: true,
+          },
+        },
+        departements: { 
+          include: { departement: true } 
+        }
+      },
     });
 
     return NextResponse.json(serializeProjet(updated), { status: 200 });
@@ -57,7 +76,6 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
  */
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-
     const tmp = await params;
     const projetId = Number(tmp.id);
     if (isNaN(projetId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 });

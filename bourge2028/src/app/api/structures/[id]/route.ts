@@ -41,16 +41,11 @@ export async function GET(
     );
   }
 }
-
-/**
- * PUT /api/structures/[id]
- */
 export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-
     const { id } = await context.params;
     const body = await req.json();
     const data = deserializeStructure(body);
@@ -61,8 +56,8 @@ export async function PUT(
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
+        personnes: { include: { personne: true } },
         realisations: true,
-        personnes: true,
       },
     });
 

@@ -2,15 +2,73 @@ import prisma from "@/lib/prisma";
 import { serializeProjet } from "@/lib/serializers";
 import { deserializeProjet } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 
 /**
  * ----- GET /api/projet -----
  */
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+
+    const categoriesParam = searchParams.get("cats");
+    const departementParam = searchParams.get("deps");
+
+    let categoryIds: number[] | undefined = undefined;
+    let departementIds: number[] | undefined = undefined;
+
+    if (categoriesParam) {
+      categoryIds = categoriesParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
+    }
+    if (departementParam) {
+      departementIds = departementParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
+    }
+
+    const where: Prisma.ProjetWhereInput = {
+      ...(departementIds?.length
+        ? {
+          departements: {
+            some: {
+              departementId: { in: departementIds }
+            }
+          }
+        }
+        : {}),
+
+      ...(categoryIds?.length
+        ? {
+          realisation: {
+            cats: {
+              some: {
+                categorieId: { in: categoryIds }
+              }
+            }
+          }
+        }
+        : {}),
+    };
+
     const projets = await prisma.projet.findMany({
-      include: { realisation: true, departement: true },
+      where,
+      include: {
+        realisation: {
+          include: {
+            cats: { include: { categorie: true } },
+            structure: true,
+          },
+        },
+        departements: {
+          include: { departement: true }
+        },
+      },
     });
+
     return NextResponse.json(projets.map(serializeProjet), { status: 200 });
   } catch (error) {
     console.error("Erreur GET /api/projet :", error);
@@ -28,7 +86,17 @@ export async function POST(req: Request) {
 
     const newProjet = await prisma.projet.create({
       data: projetData,
-      include: { realisation: true, departement: true },
+      include: { 
+        realisation: {
+          include: {
+            cats: { include: { categorie: true } },
+            structure: true,
+          },
+        },
+        departements: { 
+          include: { departement: true } 
+        }
+      },
     });
 
     return NextResponse.json(serializeProjet(newProjet), { status: 201 });

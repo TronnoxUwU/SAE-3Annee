@@ -20,6 +20,7 @@ export const serializeStructure = (
 ) => ({
   id: structure.id,
   nomStructure: structure.nomStructure ?? null,
+  adresse: structure.adresse ?? null,
   dateCreation: structure.dateCreation ?? null,
   description: structure.description ?? null,
 
@@ -30,6 +31,9 @@ export const serializeStructure = (
 
   cats:
     structure.cats?.map(sc => serializeCategorie(sc.categorie)) ?? [],
+
+  latitude: structure.latitude ?? null,
+  longitude: structure.longitude ?? null,
 
   personnes: structure.personnes?.map(p => ({
     id: p.id,
