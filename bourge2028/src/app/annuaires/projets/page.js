@@ -19,7 +19,7 @@ export default function AnnuairePage() {
   const [mounted, setMounted] = useState(false);
 
   // États data
-  const [catFilter, setcatFilter] = useState(null);
+  const [mapFilter, setMapFilter] = useState(null);
   const [geoFilter, setGeoFilter] = useState(null);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,15 +50,11 @@ export default function AnnuairePage() {
       try {
         setLoading(true);
         setError(null);
-        let url = "/api/articles";
-        if (catFilter && catFilter.length > 0) {
-          console.log("Filtres mis à jour :", catFilter);
-          const params = new URLSearchParams();
-          params.set(
-            "cats",
-            catFilter.map(c => c.id).join(",")
-          );
-          url += `?${params.toString()}`;
+
+        let url = "/api/projets";
+        if (mapFilter) {
+          const params = new URLSearchParams(mapFilter).toString();
+          url += `?${params}`;
         }
 
         const res = await fetch(url);
@@ -75,8 +71,14 @@ export default function AnnuairePage() {
     }
 
     fetchArticles();
-  }, [catFilter]);
+  }, [mapFilter]);
 
+  // 🔹 Log des changements de filtres
+  useEffect(() => {
+    if (mapFilter) {
+      console.log("Filtres mis à jour :", mapFilter);
+    }
+  }, [mapFilter]);
 
   const handleClose = () => {
     setAnimate(true);
@@ -89,12 +91,12 @@ export default function AnnuairePage() {
       <Topbar fixed />
 
       {/* Sidebar gère le filtre de la carte */}
-      <Sidebar map={null} onFilterChange={setcatFilter} onGeoFilterChange={setGeoFilter} />
+      <Sidebar map={null} onFilterChange={setMapFilter} onGeoFilterChange={setGeoFilter} />
 
       {/* Carte principale */}
       <div className="map-wrapper">
         <div className="map-inner">
-          <Map catFilter={geoFilter} onMapReady={() => { }} />
+          <Map mapFilter={geoFilter} onMapReady={() => { }} />
         </div>
       </div>
 
@@ -105,14 +107,7 @@ export default function AnnuairePage() {
             }`}
         >
           {loading ? (
-          <div className="d-flex justify-content-center align-items-center">
-            <div className="text-center">
-              <div className="spinner-border text-primary mb-3" role="status">
-                <span className="visually-hidden">Chargement...</span>
-              </div>
-              <p className="text-muted">Chargement des données...</p>
-            </div>
-          </div>
+            <p>Chargement...</p>
           ) : error ? (
             <p>{error}</p>
           ) : (
