@@ -194,31 +194,36 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
             }}
           />
         )}
-        {pointsStructure.map(p => (
-          <Marker
-            key={p.id}
-            position={p.coords}
-            icon={selectedPoint?.id === p.id ? structIconSelected : structIcon}
-            eventHandlers={{
-              click: () => setSelectedPoint(p)
-            }}
-          />
-        ))}
-        {pointsProjet.map(p => (
-          <Marker
-            key={p.id}
-            position={p.coords}
-            icon={selectedPoint?.id === p.id ? realisationIconSelected : realisationIcon}
-            eventHandlers={{
-              click: () => setSelectedPoint(p)
-            }}
-          />
-        ))}
+        {pointsStructure.map(p => {
+          if (!p.coords || p.coords.includes(null)) return null
 
+          return (
+            <Marker
+              key={p.id}
+              position={p.coords}
+              icon={selectedPoint?.id === p.id ? structIconSelected : structIcon}
+              eventHandlers={{
+                click: () => setSelectedPoint(p)
+              }}
+            />
+          )
+        })}
 
+        {pointsProjet.map(p => {
+          if (!p.coords || p.coords.includes(null)) return null
+          return (
+            <Marker
+              key={p.id}
+              position={p.coords}
+              icon={selectedPoint?.id === p.id ? realisationIconSelected : realisationIcon}
+              eventHandlers={{
+                click: () => setSelectedPoint(p)
+              }}
+            />
+          )
+        })}
         {position && <ChangeView center={position} zoom={12} />}
       </MapContainer>
-
       {selectedPoint && (
         <ApercuPoint
           id={selectedPoint.id}
