@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+  <!-- ombre -->
+  <ellipse cx="32" cy="54" rx="12" ry="4" fill="#000" opacity="0.12"/>
+  <!-- corps du pin -->
+  <path d="M32 6
+           C22 6,14 14,14 24
+           C14 36,32 58,32 58
+           C32 58,50 36,50 24
+           C50 14,42 6,32 6 Z"
+        fill="#FFD43B" stroke="#B88600" stroke-width="2"/>
+  <!-- cercle intérieur (centre) -->
+  <circle cx="32" cy="24" r="8" fill="#FFF" opacity="0.95" stroke="#E6C44A" stroke-width="1"/>
+</svg>

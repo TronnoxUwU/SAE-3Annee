@@ -9,7 +9,10 @@ export const deserializeStructure = (
     dateCreation,
     description,
     departements,
+    adresse,
     cats,
+    latitude,
+    longitude,
     personnes,
     realisations,
   } = data;
@@ -20,6 +23,7 @@ export const deserializeStructure = (
     nomStructure,
     dateCreation: dateCreation ? new Date(dateCreation) : undefined,
     description,
+    adresse,
 
     departements: departements?.length
     //   ? { connect: { id: departementId } }
@@ -29,6 +33,9 @@ export const deserializeStructure = (
     cats:{
       create: cats.map(deserializeCategorie),
     },
+
+    latitude: latitude,
+    longitude: longitude,
 
     personnes: personnes?.length
       ? { connect: personnes.map((p: any) => ({ id: p.id })),}

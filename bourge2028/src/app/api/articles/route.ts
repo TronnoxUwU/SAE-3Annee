@@ -49,6 +49,7 @@ export async function GET() {
           },
         },
         documents: true, // ✅ relation directe, plus de "contenir"
+        realisation: true
       },
       orderBy: {
         id: "asc",

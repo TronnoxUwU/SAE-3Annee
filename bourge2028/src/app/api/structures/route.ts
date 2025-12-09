@@ -1,6 +1,7 @@
 import { deserializeStructure } from "@/lib/deserializers";
 import prisma from "@/lib/prisma";
 import { serializeStructure } from "@/lib/serializers";
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 /**
@@ -16,8 +17,8 @@ export async function POST(req: Request) {
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
+        personnes: { include: { personne: true } },
         realisations: true,
-        personnes: true,
       },
     });
 
@@ -37,8 +38,10 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const categoriesParam = searchParams.get("cats");
+    const departementParam = searchParams.get("deps");
 
     let categoryIds: number[] | undefined = undefined;
+    let departementIds: number[] | undefined = undefined;
 
     if (categoriesParam) {
       categoryIds = categoriesParam
@@ -46,29 +49,33 @@ export async function GET(req: Request) {
         .map(id => Number(id))
         .filter(n => !isNaN(n));
     }
+    if (departementParam) {
+      departementIds = departementParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
+    }
 
+    const where: Prisma.StructureWhereInput = {
+      ...(departementIds?.length
+        ? { departements: { some: { departementId: { in: departementIds } } } }
+        : {}),
+      ...(categoryIds?.length
+        ? { cats: { some: { categorieId: { in: categoryIds } } } }
+        : {}),
+    };
 
     const structures = await prisma.structure.findMany({
-      where: categoryIds && categoryIds.length > 0
-        ? {
-          cats: {
-            some: {
-              categorieId: { in: categoryIds }
-            }
-          }
-        }
-        : undefined,
-
+      where,
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
         realisations: true,
         personnes: true,
       },
-      orderBy: {
-        id: "asc",
-      },
+      orderBy: { id: "asc" },
     });
+
     const serialized = structures.map(serializeStructure);
 
     return NextResponse.json(serialized, { status: 200 });

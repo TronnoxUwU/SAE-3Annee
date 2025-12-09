@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { serializeRealisation } from "@/lib/serializers";
 import { deserializeRealisation } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 
 /**
  * ----- GET /api/realisation -----
@@ -12,8 +13,10 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const categoriesParam = searchParams.get("cats");
+    const departementParam = searchParams.get("departement");
 
     let categoryIds: number[] | undefined = undefined;
+    let departementIds: number[] | undefined = undefined;
 
     if (categoriesParam) {
       categoryIds = categoriesParam
@@ -21,17 +24,24 @@ export async function GET(req: Request) {
         .map(id => Number(id))
         .filter(n => !isNaN(n));
     }
+    if (departementParam) {
+      departementIds = departementParam
+        .split(",")
+        .map(id => Number(id))
+        .filter(n => !isNaN(n));
+    }
+
+    const where: Prisma.RealisationWhereInput = {
+      ...(departementIds?.length
+        ? { departements: { some: { departementId: { in: departementIds } } } }
+        : {}),
+      ...(categoryIds?.length
+        ? { cats: { some: { categorieId: { in: categoryIds } } } }
+        : {}),
+    };
 
     const realisations = await prisma.realisation.findMany({
-      where: categoryIds && categoryIds.length > 0
-        ? {
-          cats: {
-            some: {
-              categorieId: { in: categoryIds }
-            }
-          }
-        }
-        : undefined,
+      where,
       include: {
         structure: true,
         cats: { include: { categorie: true } },
@@ -42,6 +52,7 @@ export async function GET(req: Request) {
         },
         materiaux: true,
         technique: true,
+        articles: true,
       },
     });
 
@@ -80,6 +91,9 @@ export async function POST(req: Request) {
           materiaux: true,
           technique: true,
         },
+        materiaux: true,
+        technique: true,
+        articles: true,
       },
     });
 
