@@ -138,7 +138,7 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
                     </a>
                   </li>
                 )}
-                {session && session.user.structure && (
+                {session && session.user.structure != null && (
                   <li>
                     <a href={`/structure/${session.user.structure}`}>
                       Ma structure
