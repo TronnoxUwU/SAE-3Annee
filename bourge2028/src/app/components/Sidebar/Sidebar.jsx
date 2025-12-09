@@ -62,14 +62,14 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
   const handleSearch = (e) => {
     const value = e.target.value;
     setQuery(value);
-
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     if (!value || !provider) {
       setResults([]);
       return;
     }
-
-    searchTimeout.current = setTimeout(() => recherche(provider, value), 300);
+    // Ajouter ", France" ou ", Centre" pour améliorer la précision
+    const enhancedQuery = `${value}, Centre-Val de Loire, France`;
+    searchTimeout.current = setTimeout(() => recherche(provider, enhancedQuery), 300);
   };
 
   async function recherche(provider, value) {
@@ -91,7 +91,7 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
     map.setView([result.y, result.x], 14);
     setResults([]);
     setQuery(result.label);
-    onGeoFilterChange && onGeoFilterChange({ lat: result.y, lng: result.x, radius: 10 });
+    // onGeoFilterChange && onGeoFilterChange({ lat: result.y, lng: result.x, radius: 10 });
   };
 
   // ------------------- NAVIGATION CLAVIER -------------------
