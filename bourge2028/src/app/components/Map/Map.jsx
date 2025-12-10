@@ -80,6 +80,34 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
   }, [mapFilter]);
 
   useEffect(() => {
+    if (!catFilter && !depFilter) return;
+
+    let urlStruct = "/api/structures";
+
+    if (catFilter && catFilter.length > 0) {
+      const params = new URLSearchParams();
+      params.set("cats", catFilter.map(c => c.id).join(","));
+      urlStruct += `?${params.toString()}`;
+    }
+
+    if (depFilter && depFilter.length > 0) {
+      const params = new URLSearchParams();
+      params.set("deps", depFilter.map(d => d.id).join(","));
+      urlStruct += (urlStruct.includes("?") ? "&" : "?") + params.toString();
+    }
+
+    fetch(urlStruct)
+      .then((res) => res.json())
+      .then((data) => {
+        const points = data.map((structure) => ({
+          id: structure.id,
+          coords: [structure.latitude, structure.longitude],
+          label: structure.nomStructure,
+          type: "structure"
+        }));
+        setPointsStructure(points);
+      });
+
     let urlProjet = "/api/projets";
 
     if (catFilter && catFilter.length > 0) {
