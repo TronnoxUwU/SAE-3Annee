@@ -57,32 +57,6 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
       .then((res) => res.json())
       .then((data) => setGeojsonData(data))
       .catch((err) => console.error("Erreur chargement GeoJSON:", err));
-
-    fetch("/api/structures")
-      .then((res) => res.json())
-      .then((data) => {
-        const points = data.map((structure) => ({
-          id: structure.id,
-          coords: [structure.latitude, structure.longitude],
-          label: structure.nomStructure,
-          type: "structure"
-        }));
-        setPointsStructure(points);
-      })
-
-      .catch((err) => console.error("Erreur chargement structures:", err));
-    fetch("/api/projets")
-      .then((res) => res.json())
-      .then((data) => {
-        const points = data.map((projet) => ({
-          id: projet.id,
-          coords: [projet.latitude, projet.longitude],
-          label: projet.nomProjet,
-          type: "projet"
-        }));
-        setPointsProjet(points);
-      })
-      .catch((err) => console.error("Erreur chargement projets filtrés:", err));
   }, []);
 
   useEffect(() => {
@@ -106,34 +80,6 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
   }, [mapFilter]);
 
   useEffect(() => {
-    if (!catFilter && !depFilter) return;
-
-    let urlStruct = "/api/structures";
-
-    if (catFilter && catFilter.length > 0) {
-      const params = new URLSearchParams();
-      params.set("cats", catFilter.map(c => c.id).join(","));
-      urlStruct += `?${params.toString()}`;
-    }
-
-    if (depFilter && depFilter.length > 0) {
-      const params = new URLSearchParams();
-      params.set("deps", depFilter.map(d => d.id).join(","));
-      urlStruct += (urlStruct.includes("?") ? "&" : "?") + params.toString();
-    }
-
-    fetch(urlStruct)
-      .then((res) => res.json())
-      .then((data) => {
-        const points = data.map((structure) => ({
-          id: structure.id,
-          coords: [structure.latitude, structure.longitude],
-          label: structure.nomStructure,
-          type: "structure"
-        }));
-        setPointsStructure(points);
-      });
-
     let urlProjet = "/api/projets";
 
     if (catFilter && catFilter.length > 0) {
