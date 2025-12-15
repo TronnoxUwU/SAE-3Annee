@@ -71,8 +71,7 @@ function LoginModalContent() {
                 type="button"
                 className={Style.login_switch}
                 onClick={() => {
-                  setShowLogin(false);
-                  setShowRegister(true);
+                  router.push("/inscription");
                 }}
               >
                 Créer un compte
@@ -99,14 +98,14 @@ function LoginModalContent() {
         )}
       </Modal>
 
-      <RegisterModal
+      {/* <RegisterModal
         isOpen={showRegister}
         onClose={() => setShowRegister(false)}
         onSwitchToLogin={() => {
           setShowRegister(false);
           setShowLogin(true);
         }}
-      />
+      /> */}
 
       <ForgotPasswordModal
         isOpen={showForgot}
