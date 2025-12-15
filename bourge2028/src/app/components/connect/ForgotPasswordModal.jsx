@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Modal from "@/components/Modal";
-import Style from "./connect.module.css";
+import Style from "@/app/styles/connect.module.css";
 
 export default function ForgotPasswordModal({ isOpen, onClose, onSwitchToLogin }) {
   const [email, setEmail] = useState("");

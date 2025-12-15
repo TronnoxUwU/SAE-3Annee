@@ -1,0 +1,99 @@
+.connect_form {
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.connect_form input {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.connect_form button {
+    padding: 0.5rem;
+    background-color: goldenrod;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.login_switch {
+  margin-top: 1em;
+}
+
+
+.connect_form button:hover {
+    background-color: rgb(204, 155, 30);
+}
+
+.connect_error {
+    color: red;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* Pop-up de succès */
+.popup_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.popup_content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    animation: slideUp 0.3s ease-in-out;
+}
+
+.popup_icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.popup_content h3 {
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.popup_content p {
+    margin: 0;
+    color: #7f8c8d;
+    font-size: 1rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

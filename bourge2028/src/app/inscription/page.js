@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Style from "../components/connect/connect.module.css";
+import Style from "@/app/styles/connect.module.css";
 
 function RegisterPageContent({ onSwitchToLogin }) {
     const router = useRouter();
@@ -14,6 +14,7 @@ function RegisterPageContent({ onSwitchToLogin }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -33,14 +34,13 @@ function RegisterPageContent({ onSwitchToLogin }) {
         const data = await res.json();
         if (res.ok) {
             setMessage("✅ Compte créé, vous pouvez maintenant vous connecter");
-            // Redirection vers la page de login ou callback après un délai
+            setShowSuccessPopup(true);
+            
+            // Redirection après 5 secondes
             setTimeout(() => {
-                if (onSwitchToLogin) {
-                    onSwitchToLogin();
-                } else {
-                    router.push("/");
-                }
-            }, 1500);
+                setShowSuccessPopup(false);
+                router.push("/?showLogin=true");
+            }, 5000);
         } else {
             setMessage(`❌ ${data.error}`);
         }
@@ -51,7 +51,7 @@ function RegisterPageContent({ onSwitchToLogin }) {
         if (onSwitchToLogin) {
             onSwitchToLogin();
         } else {
-            router.push("/login");
+            router.push("/");
         }
     };
 
@@ -107,9 +107,21 @@ function RegisterPageContent({ onSwitchToLogin }) {
                     </a>
                 </form>
 
-
-                {message && <p className={Style.connect_message}>{message}</p>}
+                {message && !showSuccessPopup && (
+                    <p className={Style.connect_message}>{message}</p>
+                )}
             </div>
+
+            {/* Pop-up de succès */}
+            {showSuccessPopup && (
+                <div className={Style.popup_overlay}>
+                    <div className={Style.popup_content}>
+                        <div className={Style.popup_icon}>✅</div>
+                        <h3>Compte créé avec succès !</h3>
+                        <p>Vous allez être redirigé vers la page de connexion...</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
