@@ -9,7 +9,7 @@ interface SidebarWrapperProps {
   map: any;
   onFilterChange?: (filter: string) => void;
   onDepFilterChange?: (departements: any[]) => void;
-  structSearch?: string;
+  onSearchStructChange?: string;
   isAnnuaire?: boolean;
 }
 
@@ -17,7 +17,7 @@ export default function SidebarWrapper({
   map, 
   onFilterChange, 
   onDepFilterChange ,
-  structSearch,
+  onSearchStructChange,
   isAnnuaire
 }: SidebarWrapperProps) {
   const [isClient, setIsClient] = useState(false);
@@ -58,7 +58,7 @@ export default function SidebarWrapper({
         map={map} 
         onFilterChange={onFilterChange} 
         onDepFilterChange={onDepFilterChange} 
-        structSearch={structSearch}
+        onSearchStructChange={onSearchStructChange}
         isAnnuaire={isAnnuaire}
       />
     </Suspense>

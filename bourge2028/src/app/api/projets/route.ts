@@ -14,7 +14,6 @@ export async function GET(req: Request) {
     const categoriesParam = searchParams.get("cats");
     const departementParam = searchParams.get("deps");
     const searchParam = searchParams.get("search")?.toLowerCase();
-
     let categoryIds: number[] | undefined = undefined;
     let departementIds: number[] | undefined = undefined;
 

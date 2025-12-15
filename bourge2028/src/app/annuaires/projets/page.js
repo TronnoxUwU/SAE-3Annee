@@ -22,7 +22,7 @@ export default function AnnuairePage() {
   const [mapInstance, setMapInstance] = useState(null);
   const [depFilter, setDepFilter] = useState([]);
   const [catFilter, setCatFilter] = useState({ categories: [] });
-  const [structSearch, setStructSearch] = useState("");
+  const [searchStruct, setSearchStruct] = useState(""); 
 
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,28 +56,21 @@ export default function AnnuairePage() {
 
         const params = new URLSearchParams();
 
-        if (catFilter && catFilter.length > 0) {
-          params.set(
-            "cats",
-            catFilter.map(c => c.id).join(",")
-          );
+        if (catFilter?.length > 0) {
+          params.set("cats", catFilter.map(c => c.id).join(","));
         }
 
-        if (depFilter && depFilter.length > 0) {
-          params.set(
-            "deps",
-            depFilter.map(d => d.id).join(",")
-          );
+        if (depFilter?.length > 0) {
+          params.set("deps", depFilter.map(d => d.id).join(","));
         }
 
-        if (structSearch && structSearch.trim() !== "") {
-          params.set("search", structSearch.trim());
+        if (searchStruct && searchStruct.trim() !== "") {
+          params.set("search", searchStruct.trim());
         }
 
-        const url =
-          params.toString().length > 0
-            ? `/api/projets?${params.toString()}`
-            : "/api/projets";
+        const url = params.toString().length > 0
+          ? `/api/projets?${params.toString()}`
+          : "/api/projets";
 
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Erreur ${res.status}`);
@@ -91,10 +84,10 @@ export default function AnnuairePage() {
         setLoading(false);
       }
     }
-    console.log("Fetching articles with:", { catFilter, depFilter, structSearch });
-    fetchArticles();
-  }, [catFilter, depFilter, structSearch]);
 
+    console.log("Fetching articles with:", { catFilter, depFilter, searchStruct });
+    fetchArticles();
+  }, [catFilter, depFilter, searchStruct]);
 
   const handleClose = () => {
     setAnimate(true);
@@ -111,7 +104,7 @@ export default function AnnuairePage() {
         map={mapInstance}
         onFilterChange={setCatFilter}
         onDepFilterChange={setDepFilter}
-        structSearch={setStructSearch}
+        onSearchStructChange={setSearchStruct}
         isAnnuaire={true}
       />
       {/* Carte principale */}
