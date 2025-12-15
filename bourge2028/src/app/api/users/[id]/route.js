@@ -175,7 +175,7 @@ export async function PUT(request, { params }) {
       include: {
         structures: { include: { structure: true } },
         redactions: {
-          include: { article: true, realisation: true },
+          include: { article: true },
         },
       },
     });

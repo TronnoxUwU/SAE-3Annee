@@ -24,6 +24,10 @@ model Structure {
   // departementId Int?
   longitude    Float?
   latitude     Float?
+
+
+  waiting          Boolean
+
   // relations
   departements Situer[]
   personnes    Appartenir[] // Appartenir (avec role)
@@ -279,6 +283,7 @@ model Carte {
   titre            String?
   descriptionCarte String?
   lienCarte        String
+  waiting          Boolean
 
   categories Categorie[]
 }

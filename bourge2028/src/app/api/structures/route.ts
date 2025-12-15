@@ -13,7 +13,10 @@ export async function POST(req: Request) {
     const data = deserializeStructure(body);
 
     const structure = await prisma.structure.create({
-      data,
+      data: {
+        ...data,
+        waiting: true, // 🔴 mise en attente
+      },
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
@@ -30,6 +33,7 @@ export async function POST(req: Request) {
 }
 
 
+
 /**
  * GET /api/structures
  */
@@ -39,29 +43,45 @@ export async function GET(req: Request) {
 
     const categoriesParam = searchParams.get("cats");
     const departementParam = searchParams.get("deps");
+    const waitingParam = searchParams.get("waiting");
 
-    let categoryIds: number[] | undefined = undefined;
-    let departementIds: number[] | undefined = undefined;
+    let categoryIds: number[] | undefined;
+    let departementIds: number[] | undefined;
+    let waiting: boolean | undefined;
 
     if (categoriesParam) {
       categoryIds = categoriesParam
         .split(",")
-        .map(id => Number(id))
-        .filter(n => !isNaN(n));
-    }
-    if (departementParam) {
-      departementIds = departementParam
-        .split(",")
-        .map(id => Number(id))
+        .map(Number)
         .filter(n => !isNaN(n));
     }
 
+    if (departementParam) {
+      departementIds = departementParam
+        .split(",")
+        .map(Number)
+        .filter(n => !isNaN(n));
+    }
+
+    if (waitingParam !== null) {
+      waiting = waitingParam === "true";
+    }
+
     const where: Prisma.StructureWhereInput = {
+      ...(waiting !== undefined ? { waiting } : {}),
       ...(departementIds?.length
-        ? { departements: { some: { departementId: { in: departementIds } } } }
+        ? {
+            departements: {
+              some: { departementId: { in: departementIds } },
+            },
+          }
         : {}),
       ...(categoryIds?.length
-        ? { cats: { some: { categorieId: { in: categoryIds } } } }
+        ? {
+            cats: {
+              some: { categorieId: { in: categoryIds } },
+            },
+          }
         : {}),
     };
 
@@ -71,14 +91,19 @@ export async function GET(req: Request) {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
         realisations: true,
-        personnes: true,
+        personnes: {
+          include: {
+            personne: true,
+          },
+        },
       },
       orderBy: { id: "asc" },
     });
 
-    const serialized = structures.map(serializeStructure);
-
-    return NextResponse.json(serialized, { status: 200 });
+    return NextResponse.json(
+      structures.map(serializeStructure),
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Erreur GET /api/structures :", error);
     return NextResponse.json(

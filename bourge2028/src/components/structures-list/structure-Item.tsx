@@ -9,7 +9,11 @@ interface ListItemProps {
   description: string;
   edit: boolean;
   role: string;
+  validate?: boolean;
+  onValidate?: (id: number) => void;
+  onRefuse?: (id: number) => void;
 }
+
 
 function renderDate(date){
   if (!date) return "Date de fondation inconnue";
@@ -24,38 +28,67 @@ function renderDate(date){
   })}`;
 }
 
-const StructureItem = ({ id, nom, date, description, edit, role }: ListItemProps) => {
+const StructureItem = ({ id, nom, date, description, edit, role, validate, onValidate, onRefuse }: ListItemProps) => {
 
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
       <div className={`${Style.struct_header} card-header fs-2`}>
         {nom}
-        {/* btn acces structure */}
-        <div className="btn-group btn-group-sm" role="group">
 
-          <button
+        <div>
+          <div className="btn-group btn-group-sm me-4" role="group">
+            {/* VALIDATION */}
+            {validate && (
+              <button
+                className={`${Style.btn_crud} btn btn-outline-warning text-dark btn-sm px-3`}
+                title="Valider la structure"
+                onClick={() => onValidate?.(id)}
+              >
+                Valider
+                <i className="bi bi-check-lg fs-5"></i>
+              </button>
+            )}
+
+            {/* REFUS */}
+            {validate && (
+              <button
+                className={`${Style.btn_crud} btn btn-outline-danger text-dark btn-sm px-3`}
+                title="Refuser la structure"
+                onClick={() => onRefuse?.(id)}
+              >
+                Refuser
+                <i className="bi bi-x-lg fs-6"></i>
+              </button>
+            )}
+          </div>
+
+          {/* btn acces structure */}
+          <div className="btn-group btn-group-sm" role="group">
+
+            <button
               className={`${Style.btn_crud} btn btn-outline-success btn-sm px-3`}
               title="Consulter"
-              onClick={() => {window.location.href = `/structure/${id}`;}}
-          >
-            Consulter
-            <i className="bi bi-eye fs-4"></i>
-          </button>
-          {
-            edit && (
+              onClick={() => { window.location.href = `/structure/${id}`; }}
+            >
+              Consulter
+              <i className="bi bi-eye fs-4"></i>
+            </button>
+
+            {edit && (
               <button 
                 className={`${Style.btn_crud} btn btn-outline-primary btn-sm px-3`}
                 title="Modifier"
-                onClick={() => {window.location.href = `/structure/${id}/edit`;}}
+                onClick={() => { window.location.href = `/structure/${id}/edit`; }}
               >
                 Modifier
                 <i className="bi bi-pencil fs-5"></i>
               </button>
-            )
-          }
-          
+            )}
+
+          </div>
         </div>
       </div>
+
       <div className={`${Style.struct_card} card-body p-2`}>
         <img src={"/images/default.jpg"}/>
         <div className={`${Style.struct_content}`}>

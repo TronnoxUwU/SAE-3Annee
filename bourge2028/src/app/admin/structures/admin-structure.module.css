@@ -1,0 +1,17 @@
+.admin_top_content {
+  background: linear-gradient(135deg, #e9d5ff, #dbeafe);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.admin_top_content h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.admin_top_content p {
+  color: #374151;
+  max-width: 700px;
+}

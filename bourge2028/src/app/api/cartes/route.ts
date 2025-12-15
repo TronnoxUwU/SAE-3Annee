@@ -8,46 +8,60 @@ const prisma = new PrismaClient();
 
 /**
  * GET /api/cartes
- * Récupère toutes les cartes (avec leurs catégories)
  */
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const categoriesParam = searchParams.get("cats");
 
-    let categoryIds: number[] | undefined = undefined;
+    const categoriesParam = searchParams.get("cats");
+    const waitingParam = searchParams.get("waiting");
+
+    let categoryIds: number[] | undefined;
+    let waiting: boolean | undefined;
 
     if (categoriesParam) {
       categoryIds = categoriesParam
         .split(",")
-        .map(id => Number(id))
+        .map(Number)
         .filter(n => !isNaN(n));
     }
-    // 🔹 Récupère toutes les cartes
-    const cartes = await prisma.carte.findMany({
-      where: categoryIds && categoryIds.length > 0
+
+    if (waitingParam !== null) {
+      waiting = waitingParam === "true";
+    }
+
+    const where: Prisma.CarteWhereInput = {
+      ...(waiting !== undefined ? { waiting } : {}),
+      ...(categoryIds?.length
         ? {
-          categories: {
-            some: {
-              id: { in: categoryIds }
-            }
+            categories: {
+              some: {
+                id: { in: categoryIds },
+              },
+            },
           }
-        }
-        : undefined,
+        : {}),
+    };
+
+    const cartes = await prisma.carte.findMany({
+      where,
       include: { categories: true },
       orderBy: { id: "desc" },
     });
 
-    return NextResponse.json(cartes.map(serializeCarte));
+    return NextResponse.json(cartes.map(serializeCarte), { status: 200 });
   } catch (error) {
-    console.error("Erreur GET /cartes :", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    console.error("Erreur GET /api/cartes :", error);
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
   }
 }
 
+
 /**
  * POST /api/cartes
- * Crée une nouvelle carte
  */
 export async function POST(req: Request) {
   try {
@@ -55,13 +69,22 @@ export async function POST(req: Request) {
     const data = deserializeCarte(body) as Prisma.CarteCreateInput;
 
     const newCarte = await prisma.carte.create({
-      data,
+      data: {
+        ...data,
+        waiting: true, // 🔴 forçage métier
+      },
       include: { categories: true },
     });
 
-    return NextResponse.json(serializeCarte(newCarte), { status: 201 });
+    return NextResponse.json(
+      serializeCarte(newCarte),
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Erreur POST /cartes :", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    console.error("Erreur POST /api/cartes :", error);
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
   }
 }

@@ -9,19 +9,27 @@ import { deserializeStructure } from "@/lib/deserializers";
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
-  
 ) {
   try {
-    const tmp = await params;
-    const id = Number(tmp.id);
+    const { id } = await params;
+    const structureId = Number(id);
+
+    if (isNaN(structureId)) {
+      return NextResponse.json(
+        { error: "ID invalide" },
+        { status: 400 }
+      );
+    }
 
     const structure = await prisma.structure.findUnique({
-      where: { id: Number(id) },
+      where: { id: structureId },
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
         realisations: true,
-        personnes: true,
+        personnes: {
+          include: { personne: true },
+        },
       },
     });
 
@@ -32,7 +40,10 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(serializeStructure(structure), { status: 200 });
+    return NextResponse.json(
+      serializeStructure(structure),
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Erreur GET /api/structures/[id] :", error);
     return NextResponse.json(
@@ -41,32 +52,60 @@ export async function GET(
     );
   }
 }
+
+
+
+/**
+ * PUT /api/structures/[id]
+ */
 export async function PUT(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = await params;
+    const structureId = Number(id);
+
+    if (isNaN(structureId)) {
+      return NextResponse.json(
+        { error: "ID invalide" },
+        { status: 400 }
+      );
+    }
+
     const body = await req.json();
     const data = deserializeStructure(body);
 
+    // 🔒 Sécurité : empêcher modification du waiting via cette route
+    delete (data as any).waiting;
+
     const structure = await prisma.structure.update({
-      where: { id: Number(id) },
+      where: { id: structureId },
       data,
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
-        personnes: { include: { personne: true } },
         realisations: true,
+        personnes: {
+          include: { personne: true },
+        },
       },
     });
 
-    return NextResponse.json(serializeStructure(structure), { status: 200 });
+    return NextResponse.json(
+      serializeStructure(structure),
+      { status: 200 }
+    );
   } catch (error: any) {
     console.error("Erreur PUT /api/structures/[id] :", error);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+
+    return NextResponse.json(
+      { error: error.message ?? "Erreur lors de la mise à jour" },
+      { status: 400 }
+    );
   }
 }
+
 
 /**
  * DELETE /api/structures/[id]
