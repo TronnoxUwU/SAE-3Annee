@@ -170,7 +170,10 @@ export default function StructureDetailPage() {
 
         {/* Section Articles */}
         <div className={Style.articlesSection}>
-          <a href={`/structure/${params.id}/articles`} className={Style.articlesLink}>
+          <a
+            href={`/structure/${params.id}/articles`}
+            className={Style.articlesLink}
+          >
             <div className={Style.articlesContainer}>
               <div className={Style.articlesContent}>
                 <span className={Style.label}>Ressources</span>
@@ -179,6 +182,20 @@ export default function StructureDetailPage() {
                   Explorez notre collection de publications sur nos divers projets.
                 </p>
               </div>
+
+              {canEdit() && (
+                <button
+                  className={Style.addArticleBtn}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleEdit();
+                  }}
+                  title="Ajouter une réalisation"
+                >
+                  <i className="bi bi-journal-plus"></i>
+                </button>
+              )}
 
               <div className={Style.articlesCount}>
                 <div className={Style.countBox}>
@@ -192,6 +209,7 @@ export default function StructureDetailPage() {
             </div>
           </a>
         </div>
+
 
         {/* Footer */}
         <div className={Style.footer}>
