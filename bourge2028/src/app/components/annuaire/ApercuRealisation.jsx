@@ -15,7 +15,6 @@ export default function ApercuRealisation({ article }) {
   const originalSrc =
     firstImageComponent?.image?.lienImage || "/images/default-article.png";
 
-  console.log(article)
 
   const title =
     article.nomProjet?.length > 30

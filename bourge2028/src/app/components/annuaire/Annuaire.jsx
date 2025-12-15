@@ -20,7 +20,6 @@ export default function Annuaire({ articles }) {
     </div>
   }
   if (articles[0].realisation) {
-      console.log(articles[0].realisation)
     return <div className={styles.annuaire}>
       {articles.map((article) => (
         <ApercuRealisation key={article.id} article={article} />
