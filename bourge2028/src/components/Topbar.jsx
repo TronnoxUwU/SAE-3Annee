@@ -29,7 +29,6 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
         if (!response.ok) throw new Error("Utilisateur non trouvé");
         const data = await response.json();
         setUserData(data);
-        console.log(data)
       } catch (error) {
         console.error("Erreur lors du chargement utilisateur :", error);
       }
