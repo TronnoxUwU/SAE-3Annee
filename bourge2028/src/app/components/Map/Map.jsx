@@ -100,7 +100,7 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
       .then((res) => res.json())
       .then((data) => {
         const points = data.map((structure) => ({
-          id: structure.id,
+          id: "struct_"+structure.id,
           coords: [structure.latitude, structure.longitude],
           label: structure.nomStructure,
           type: "structure"
@@ -126,7 +126,7 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
       .then((res) => res.json())
       .then((data) => {
         const points = data.map((projet) => ({
-          id: projet.id,
+          id: "projet_"+projet.id,
           coords: [projet.latitude, projet.longitude],
           label: projet.nomProjet,
           type: "projet"
