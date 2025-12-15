@@ -22,7 +22,7 @@ export default function AnnuairePage() {
   const [mapInstance, setMapInstance] = useState(null);
   const [depFilter, setDepFilter] = useState([]);
   const [catFilter, setCatFilter] = useState({ categories: [] });
-  const [geoFilter, setGeoFilter] = useState(null);
+  const [structSearch, setStructSearch] = useState("");
 
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,21 +54,30 @@ export default function AnnuairePage() {
         setLoading(true);
         setError(null);
 
-        let url = "/api/projets";
+        const params = new URLSearchParams();
+
         if (catFilter && catFilter.length > 0) {
-          const params = new URLSearchParams();
           params.set(
             "cats",
             catFilter.map(c => c.id).join(",")
           );
-          url += (url.includes("?") ? "&" : "?") + params.toString();
         }
 
         if (depFilter && depFilter.length > 0) {
-          const params = new URLSearchParams();
-          params.set("deps", depFilter.map(d => d.id).join(","));
-          url += (url.includes("?") ? "&" : "?") + params.toString();
+          params.set(
+            "deps",
+            depFilter.map(d => d.id).join(",")
+          );
         }
+
+        if (structSearch && structSearch.trim() !== "") {
+          params.set("search", structSearch.trim());
+        }
+
+        const url =
+          params.toString().length > 0
+            ? `/api/projets?${params.toString()}`
+            : "/api/projets";
 
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Erreur ${res.status}`);
@@ -82,9 +91,10 @@ export default function AnnuairePage() {
         setLoading(false);
       }
     }
-
+    console.log("Fetching articles with:", { catFilter, depFilter, structSearch });
     fetchArticles();
-  }, [catFilter, depFilter]);
+  }, [catFilter, depFilter, structSearch]);
+
 
   const handleClose = () => {
     setAnimate(true);
@@ -101,13 +111,13 @@ export default function AnnuairePage() {
         map={mapInstance}
         onFilterChange={setCatFilter}
         onDepFilterChange={setDepFilter}
-        onGeoFilterChange={setGeoFilter}
+        structSearch={setStructSearch}
+        isAnnuaire={true}
       />
       {/* Carte principale */}
       <div className="map-wrapper">
         <div className="map-inner">
           <Map
-            mapFilter={geoFilter}
             depFilter={depFilter}
             catFilter={catFilter}
             onMapReady={setMapInstance}

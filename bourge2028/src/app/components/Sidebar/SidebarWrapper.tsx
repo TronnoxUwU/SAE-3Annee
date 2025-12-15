@@ -8,15 +8,17 @@ const Sidebar = lazy(() => import("./Sidebar.jsx"));
 interface SidebarWrapperProps {
   map: any;
   onFilterChange?: (filter: string) => void;
-  onGeoFilterChange?: (geoFilter: string) => void;
   onDepFilterChange?: (departements: any[]) => void;
+  structSearch?: string;
+  isAnnuaire?: boolean;
 }
 
 export default function SidebarWrapper({ 
   map, 
   onFilterChange, 
-  onGeoFilterChange,
-  onDepFilterChange 
+  onDepFilterChange ,
+  structSearch,
+  isAnnuaire
 }: SidebarWrapperProps) {
   const [isClient, setIsClient] = useState(false);
   const [shouldLoadFull, setShouldLoadFull] = useState(false);
@@ -55,8 +57,9 @@ export default function SidebarWrapper({
       <Sidebar 
         map={map} 
         onFilterChange={onFilterChange} 
-        onGeoFilterChange={onGeoFilterChange}
         onDepFilterChange={onDepFilterChange} 
+        structSearch={structSearch}
+        isAnnuaire={isAnnuaire}
       />
     </Suspense>
   );

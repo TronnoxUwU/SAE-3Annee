@@ -4,7 +4,7 @@ import * as turf from "@turf/turf";
 import axios from "axios";
 import Style from "./Sidebar.module.css";
 
-export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoFilterChange }) {
+export default function Sidebar({ map, onFilterChange, onDepFilterChange, structSearch, isAnnuaire }) {
   const [open, setOpen] = useState(true);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -21,6 +21,10 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
   const resultsRef = useRef(null);
   const searchRef = useRef(null);
   const searchTimeout = useRef(null);
+
+  const [structQuery, setStructQuery] = useState("");
+  const [structResults, setStructResults] = useState([]);
+  const [searchStruct, setSearchStruct] = useState("");
 
   // ------------------- INITIALISATION -------------------
   useEffect(() => {
@@ -97,35 +101,63 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
   // ------------------- NAVIGATION CLAVIER -------------------
   useEffect(() => {
     let selectedIndex = -1;
+
+    const getActiveResults = () =>
+      isAnnuaire ? structResults : results;
+
     const highlightResult = (index) => {
-      const lis = resultsRef.current?.querySelectorAll(`.${Style.search_results_item}`);
+      const lis = resultsRef.current?.querySelectorAll(
+        `.${Style.search_results_item}`
+      );
       if (!lis) return;
-      lis.forEach((li, i) => li.classList.toggle(Style.search_results_item_highlight, i === index));
+      lis.forEach((li, i) =>
+        li.classList.toggle(
+          Style.search_results_item_highlight,
+          i === index
+        )
+      );
     };
 
     const handleKeyDown = (e) => {
-      if (results.length === 0) return;
+      const activeResults = getActiveResults();
+      if (activeResults.length === 0) return;
+
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        selectedIndex = (selectedIndex + 1) % results.length;
+        selectedIndex = (selectedIndex + 1) % activeResults.length;
         highlightResult(selectedIndex);
-      } else if (e.key === "ArrowUp") {
+      }
+
+      if (e.key === "ArrowUp") {
         e.preventDefault();
-        selectedIndex = (selectedIndex - 1 + results.length) % results.length;
+        selectedIndex =
+          (selectedIndex - 1 + activeResults.length) %
+          activeResults.length;
         highlightResult(selectedIndex);
-      } else if (e.key === "Enter") {
+      }
+
+      if (e.key === "Enter") {
         e.preventDefault();
-        const result = results[selectedIndex >= 0 ? selectedIndex : 0];
-        handleResultClick(result);
-        setResults([]);
+        const result =
+          activeResults[selectedIndex >= 0 ? selectedIndex : 0];
+
+        if (isAnnuaire) {
+          handleStructResultClick(result);
+        } else {
+          handleResultClick(result);
+        }
+
         selectedIndex = -1;
       }
     };
 
     const inputEl = searchRef.current?.querySelector("input");
     if (inputEl) inputEl.addEventListener("keydown", handleKeyDown);
-    return () => inputEl?.removeEventListener("keydown", handleKeyDown);
-  }, [results]);
+
+    return () =>
+      inputEl?.removeEventListener("keydown", handleKeyDown);
+  }, [results, structResults, isAnnuaire]);
+
 
   // ------------------- GESTION CATEGORIES -------------------
   const getAllChildrenIds = (cat) => {
@@ -215,29 +247,75 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
     );
   };
 
+  // ------------------- Recherche structures annuaire -------------------
+  const handleStructSearch = (e) => {
+    const value = e.target.value;
+    setStructQuery(value);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    if (!value) {
+      setStructResults([]);
+      return;
+    }
+    searchTimeout.current = setTimeout(() => fetchStructs(value), 300);
+  };
+
+  const fetchStructs = async (value) => {
+    try {
+      const res = await fetch(`/api/structures?search=${encodeURIComponent(value)}`);
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+      const data = await res.json();
+      setStructResults(data);
+    } catch (err) {
+      console.error("Erreur de recherche de structures :", err);
+    }
+  };
+
+  const handleStructResultClick = (result) => {
+    setStructResults([]);
+    setStructQuery(result.nomStructure);
+    setSearchStruct(result.nomStructure);
+  };
+
   // ------------------- RENDU SIDEBAR -------------------
   return (
-    <div className={`${Style.sidebar} ${open ? "" : "collapsed"}`}>
-      <div className={Style.sidebar_search} ref={searchRef}>
-        <input type="text" placeholder="Rechercher un lieu..." value={query} onChange={handleSearch} />
-        {results.length > 0 && (
-          <ul className={Style.search_results} ref={resultsRef}>
-            {results.map((r, i) => (
-              <li key={i} className={Style.search_results_item} onClick={() => handleResultClick(r)}>
-                {r.label}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    <div className={`${Style.sidebar}`}>
+      {!isAnnuaire ?
+        <div className={Style.sidebar_search} ref={searchRef}>
+          <input type="text" placeholder="Rechercher un lieu..." value={query} onChange={handleSearch} />
+          {results.length > 0 && (
+            <ul className={Style.search_results} ref={resultsRef}>
+              {results.map((r, i) => (
+                <li key={i} className={Style.search_results_item} onClick={() => handleResultClick(r)}>
+                  {r.label}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        :
+        <div className={Style.sidebar_search} ref={searchRef}>
+          <input type="text" placeholder="Recherche de structure..." value={structQuery} onChange={handleStructSearch} />
+          {structResults.length > 0 && (
+            <ul className={Style.search_results} ref={resultsRef}>
+              {structResults.map((r, i) => (
+                <li key={i} className={Style.search_results_item} onClick={() => handleStructResultClick(r)}>
+                  {r.nomStructure}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      }
 
-      <div className={Style.sidebar_header}>
-        {open && <span>Filtres</span>}
-        <button onClick={() => setOpen(!open)}>{open ? "<" : ">"}</button>
-      </div>
+
 
       <ul className={Style.filter_section}>
-        {categories.map(cat => renderCategory(cat))}
+        {categories.length > 0 && (
+          <>
+            <li className={Style.section_title}>Filtres</li>
+            {categories.map(cat => renderCategory(cat))}
+          </>
+        )}
         {departements.length > 0 && (
           <>
             <li className={Style.section_title}>Départements</li>

@@ -13,6 +13,7 @@ export async function GET(req: Request) {
 
     const categoriesParam = searchParams.get("cats");
     const departementParam = searchParams.get("deps");
+    const searchParam = searchParams.get("search")?.toLowerCase();
 
     let categoryIds: number[] | undefined = undefined;
     let departementIds: number[] | undefined = undefined;
@@ -30,29 +31,40 @@ export async function GET(req: Request) {
         .filter(n => !isNaN(n));
     }
 
-    const where: Prisma.ProjetWhereInput = {
-      ...(departementIds?.length
-        ? {
-          departements: {
-            some: {
-              departementId: { in: departementIds }
-            }
-          }
-        }
-        : {}),
+    const realisationWhere: Prisma.RealisationWhereInput = {};
 
-      ...(categoryIds?.length
-        ? {
-          realisation: {
-            cats: {
-              some: {
-                categorieId: { in: categoryIds }
-              }
-            }
+    if (categoryIds?.length) {
+      realisationWhere.cats = {
+        some: {
+          categorieId: { in: categoryIds }
+        }
+      };
+    }
+
+    if (searchParam) {
+      realisationWhere.structure = {
+        some:{
+          nomStructSearch: {
+            contains: searchParam
           }
         }
-        : {}),
-    };
+      };
+    }
+
+    const where: Prisma.ProjetWhereInput = {};
+
+    if (departementIds?.length) {
+      where.departements = {
+        some: {
+          departementId: { in: departementIds }
+        }
+      };
+    }
+
+    if (Object.keys(realisationWhere).length) {
+      where.realisation = realisationWhere;
+    }
+
 
     const projets = await prisma.projet.findMany({
       where,
@@ -86,15 +98,15 @@ export async function POST(req: Request) {
 
     const newProjet = await prisma.projet.create({
       data: projetData,
-      include: { 
+      include: {
         realisation: {
           include: {
             cats: { include: { categorie: true } },
             structure: true,
           },
         },
-        departements: { 
-          include: { departement: true } 
+        departements: {
+          include: { departement: true }
         }
       },
     });
