@@ -6,6 +6,7 @@ export const deserializeStructure = (
 ): Prisma.StructureCreateInput | Prisma.StructureUpdateInput => {
   const {
     nomStructure,
+    nomStructSearch,
     dateCreation,
     description,
     departements,
@@ -21,6 +22,7 @@ export const deserializeStructure = (
 
   const deserialized: Prisma.StructureCreateInput = {
     nomStructure,
+    nomStructSearch: nomStructure.toLowerCase(),
     dateCreation: dateCreation ? new Date(dateCreation) : undefined,
     description,
     adresse,

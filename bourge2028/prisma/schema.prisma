@@ -17,6 +17,7 @@ generator client {
 model Structure {
   id           Int            @id @default(autoincrement())
   nomStructure String?
+  nomStructSearch String?
   description  String?
   adresse      String?
   lienPhoto    String?
