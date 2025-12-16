@@ -3,14 +3,17 @@
 import { useEffect, useState } from "react";
 import Style from "./carte-Item.module.css";
 
-const CarteItem = ({
-  id,
-  titre,
-  descriptionCarte,
-  lienCarte,
-  validate = false,
-  onValidate,
-}) => {
+interface CarteItemProps {
+  id: number;
+  titre?: string;
+  descriptionCarte?: string;
+  lienCarte?: string;
+  validate?: boolean;
+  onValidate?: (id: number) => void;
+  onRefuse?: (id: number) => void;
+}
+
+const CarteItem = ({id, titre, descriptionCarte, lienCarte, validate = false, onValidate, onRefuse}: CarteItemProps) => {
   const [imageSrc, setImageSrc] = useState("/images/default-article.png");
 
   const originalSrc = "/images/default-article.png";

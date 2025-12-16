@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CarteItem from "./carte-Item";
+import CarteItem from "./carte-item";
 
 export default function AdminCarteWaiting() {
   const [cartes, setCartes] = useState([]);
@@ -20,6 +20,11 @@ export default function AdminCarteWaiting() {
 
   async function validateCarte(id) {
     await fetch(`/api/cartes/${id}/validate`, { method: "PATCH" });
+    setCartes(cartes.filter(c => c.id !== id));
+  }
+  
+  async function refuseCarte(id) {
+    await fetch(`/api/cartes/${id}`, { method: "DELETE" });
     setCartes(cartes.filter(c => c.id !== id));
   }
 
@@ -78,6 +83,7 @@ export default function AdminCarteWaiting() {
           categories={carte.categories}
           validate
           onValidate={validateCarte}
+          onRefuse={refuseCarte}
         />
       ))}
     </ul>

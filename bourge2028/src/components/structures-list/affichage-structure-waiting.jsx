@@ -33,12 +33,19 @@ export default function Structure() {
     }
 
 
-  async function validateStructure(id) {
-    await fetch(`/api/structures/${id}/validate`, {
-      method: "PATCH",
-    });
-    setItems(items.filter(s => s.id !== id));
-  }
+    async function validateStructure(id) {
+        await fetch(`/api/structures/${id}/validate`, {
+        method: "PATCH",
+        });
+        setItems(items.filter(s => s.id !== id));
+    }
+    
+    async function refuseStructure(id) {
+        await fetch(`/api/structures/${id}`, {
+        method: "DELETE",
+        });
+        setItems(items.filter(s => s.id !== id));
+    }
 
     useEffect(() => {
     const fetchData = async () => {
@@ -88,6 +95,12 @@ export default function Structure() {
       );
     }
 
+    
+  if (items.length === 0) {
+    return <p>Aucune structure en attente de validation.</p>;
+  }
+
+
   return (
     
     <ul className={`${tempStyle.override_list}`}>
@@ -113,6 +126,7 @@ export default function Structure() {
             role={str_role}
             validate
             onValidate={validateStructure}
+            onRefuse={refuseStructure}
           />
         );
       })}

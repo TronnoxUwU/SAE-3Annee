@@ -1,23 +1,6 @@
 import { useState } from 'react';
 import Style from "./structure-Item.module.css"
 
-interface Category {
-  id: number;
-  nom: string;
-}
-
-interface ListItemProps {
-  id: number;
-  nom: string;
-  date: Date;
-  description: string;
-  categories: Category[];
-  edit: boolean;
-  role: string;
-  validate?: boolean;
-  onValidate?: (id: number) => void;
-  onRefuse?: (id: number) => void;
-}
 
 const PASTEL_COLORS = [
   "#E9D5FF", // violet
@@ -29,10 +12,6 @@ const PASTEL_COLORS = [
   "#E0F2FE", // cyan
   "#F1F5F9", // gris clair
 ];
-
-
-
-
 
 function getPastelColor(seed: string | number) {
   let hash = 0;
@@ -56,6 +35,25 @@ function renderDate(date){
     month: "long",
     day: "numeric"
   })}`;
+}
+
+
+interface Category {
+  id: number;
+  nom: string;
+}
+
+interface ListItemProps {
+  id: number;
+  nom: string;
+  date: Date;
+  description: string;
+  categories: Category[];
+  edit: boolean;
+  role: string;
+  validate?: boolean;
+  onValidate?: (id: number) => void;
+  onRefuse?: (id: number) => void;
 }
 
 const StructureItem = ({ id, nom, date, description, categories, edit, role, validate, onValidate, onRefuse }: ListItemProps) => {
