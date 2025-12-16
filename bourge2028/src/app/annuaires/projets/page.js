@@ -85,7 +85,6 @@ export default function AnnuairePage() {
       }
     }
 
-    console.log("Fetching articles with:", { catFilter, depFilter, searchStruct });
     fetchArticles();
   }, [catFilter, depFilter, searchStruct]);
 

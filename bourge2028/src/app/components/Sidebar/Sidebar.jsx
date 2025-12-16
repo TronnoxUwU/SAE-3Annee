@@ -102,10 +102,21 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
 
   const fetchStructs = async (value) => {
     try {
-      const res = await fetch(`/api/structures?search=${encodeURIComponent(value)}`);
+      const res = await fetch(`/api/projets?search=${encodeURIComponent(value)}`);
       if (!res.ok) throw new Error(`Erreur ${res.status}`);
       const data = await res.json();
-      setStructResults(data);
+      const infoResults = new Set();
+      data.forEach(proj => {
+        if (proj.nomProjet.toLowerCase().includes(value.toLowerCase())) {
+          infoResults.add(proj.nomProjet);
+        }
+        proj.realisation.structure.forEach(struct => {
+          if (struct.nomStructure.toLowerCase().includes(value.toLowerCase())) {
+            infoResults.add(struct.nomStructure);
+          }
+        });
+      });
+      setStructResults(Array.from(infoResults));
     } catch (err) {
       console.error("Erreur de recherche de structures :", err);
     }
@@ -113,7 +124,7 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
 
   const handleStructResultClick = (result) => {
     setStructQuery(result.nomStructure);
-    onSearchStructChange(result.nomStructure); 
+    onSearchStructChange(result.nomStructure);
     setStructResults([]);
   };
 
@@ -159,19 +170,19 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
 
   // ------------------- CLIC HORS RESULTATS -------------------
   useEffect(() => {
-  const handleClickOutside = (e) => {
-    if (
-      searchRef.current && 
-      !searchRef.current.contains(e.target)
-    ) {
-      setResults([]);
-      setStructResults([]);
-    }
-  };
+    const handleClickOutside = (e) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(datae.target)
+      ) {
+        setResults([]);
+        setStructResults([]);
+      }
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // ------------------- GESTION CATEGORIES -------------------
   const getAllChildrenIds = (cat) => cat.children?.flatMap(c => [c.id, ...getAllChildrenIds(c)]) || [];
@@ -257,7 +268,7 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
       <div className={Style.sidebar_search} ref={searchRef}>
         <input
           type="text"
-          placeholder={isAnnuaire ? "Recherche de structure..." : "Rechercher un lieu..."}
+          placeholder={isAnnuaire ? "Recherche de structure ou projet..." : "Rechercher un lieu..."}
           value={isAnnuaire ? structQuery : query}
           onChange={isAnnuaire ? handleStructSearch : handleSearch}
         />
@@ -265,7 +276,7 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
           <ul className={Style.search_results} ref={resultsRef}>
             {structResults.map((r, i) => (
               <li key={i} className={Style.search_results_item} onClick={() => handleStructResultClick(r)}>
-                {r.nomStructure}
+                {r}
               </li>
             ))}
           </ul>

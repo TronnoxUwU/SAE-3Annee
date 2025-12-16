@@ -115,14 +115,14 @@ model Realisation {
 }
 
 model Projet {
-  id            Int         @id @default(autoincrement())
-  nomProjet     String
+  id              Int         @id @default(autoincrement())
+  nomProjet       String
   nomProjetSearch String?
-  realisation   Realisation @relation(fields: [realisationId], references: [id])
-  realisationId Int         @unique
-  adresse       String?
-  latitude      Float?
-  longitude     Float?
+  realisation     Realisation @relation(fields: [realisationId], references: [id])
+  realisationId   Int         @unique
+  adresse         String?
+  latitude        Float?
+  longitude       Float?
 
   departements ProjetDepartement[]
 }
