@@ -69,3 +69,54 @@
 .apercuArticleTitle:hover::after {
   opacity: 1;
 }
+
+.apercuArticle {
+  position: relative;
+}
+
+.actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+
+  display: flex;
+  gap: 6px;
+}
+
+.editButton,
+.deleteButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  color: white;
+}
+
+.editButton {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.editButton:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.deleteButton {
+  background: rgba(220, 53, 69, 0.85); /* bootstrap danger */
+}
+
+.deleteButton:hover {
+  background: rgb(220, 53, 69);
+}
+
+.editButton i,
+.deleteButton i {
+  font-size: 16px;
+}
+

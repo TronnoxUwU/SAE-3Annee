@@ -1,15 +1,46 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import ApercuArticle from "@/app/components/annuaire/ApercuArticle";
 import { match } from "assert";
 import { useSession } from "next-auth/react";
-
+import StructureItem from "@/components/structures-list/structure-Item-pretty";
 
 export default function ProjetView({ id, type }) {
   const [data, setData] = useState(null);
   const router = useRouter();
   const { data: session } = useSession();
+  const pathname = usePathname();
+
+  const handleDeleteArticle = async (articleId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/articles/${articleId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Erreur lors de la suppression");
+      }
+
+      // Mise à jour du state local (sans reload)
+      setData((prev) => ({
+        ...prev,
+        realisation: {
+          ...prev.realisation,
+          articles: prev.realisation.articles.filter(
+            (article) => article.id !== articleId
+          ),
+        },
+      }));
+    } catch (err) {
+      console.error(err);
+      alert("Impossible de supprimer l’article");
+    }
+  };
+
 
   useEffect(() => {
     async function load() {
@@ -55,7 +86,12 @@ export default function ProjetView({ id, type }) {
   const collaborateurs = data.realisation.structure || [];
   const articles = data.realisation.articles || [];
 
-  console.log(articles)
+  let str_role = null;
+  if (pathname.includes("account/") && pathname !== `account/${session?.user?.id}`) {
+    const r = item.personnes?.find(p => p.personneId !== session?.user?.id);
+    if (r) str_role = `Cette personne est ${r.role} de cette structure`;
+  }
+
 
   return (
     <div style={{ minHeight: "100vh", paddingBottom: 60 }}>
@@ -93,7 +129,7 @@ export default function ProjetView({ id, type }) {
 
             <div className="mt-4 row g-3 gap-4">
                 {articles.map((article) => (
-                  <ApercuArticle key={article.id} article={article} />
+                  <ApercuArticle key={article.id} article={article} editable={canEdit()} onDelete={handleDeleteArticle}/>
                 ))}
 
             {canEdit() && (
@@ -139,21 +175,19 @@ export default function ProjetView({ id, type }) {
           <h2 className="text-center fw-bold mt-5">Les collaborateurs</h2>
         )}
 
+
         <div className="row mt-4">
           {collaborateurs.map((struct) => (
-            <div className="col-md-3 mb-3" key={struct.id}>
-              <div
-                className="d-flex justify-content-center align-items-center text-white"
-                style={{
-                  background: "#222",
-                  height: 120,
-                  borderRadius: 20,
-                  fontSize: 18,
-                }}
-              >
-                {struct.nomStructure}
-              </div>
-            </div>
+              <StructureItem
+                key={struct.id}
+                id={struct.id}
+                nom={struct.nomStructure}
+                date={struct.dateCreation}
+                description={struct.description}
+                edit={canEdit}
+                role={str_role}
+                etat={"galerie"}
+              />
           ))}
         </div>
 
