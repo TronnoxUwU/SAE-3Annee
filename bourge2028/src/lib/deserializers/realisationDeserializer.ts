@@ -1,5 +1,8 @@
 import { deserializeCategorie } from "./categorieDeserializer";
 import { deserializeStructure } from "./structureDeserializer";
+import { deserializeProjet } from "./projetDeserializer";
+import { deserializeTechnique } from "./techniqueDeserializer";
+import { deserializeMateriau } from "./materiauDeserializer";
 
 export const deserializeRealisation = (r: any) => {
   if (!r) return {};
@@ -24,21 +27,20 @@ export const deserializeRealisation = (r: any) => {
       }
     : undefined;
 
-  // Projet
-  let projetData;
-  if (r.projet) {
-    const departementsConnect =
-      r.projet.departement?.map((dep: any) => ({ id: dep.id })) ?? [];
+  // Projet - utilise le deserializer dédié
+  const projetData = r.projet 
+    ? { create: deserializeProjet(r.projet) }
+    : undefined;
 
-    projetData = {
-      create: {
-        nomProjet: r.projet.nomProjet,
-        departement: departementsConnect.length
-          ? { connect: departementsConnect }
-          : undefined,
-      },
-    };
-  }
+  // Matériau - utilise le deserializer dédié
+  const materiauxData = r.materiaux
+    ? { create: deserializeMateriau(r.materiaux) }
+    : undefined;
+
+  // Technique - utilise le deserializer dédié
+  const techniqueData = r.technique
+    ? { create: deserializeTechnique(r.technique) }
+    : undefined;
 
   return {
     nom: r.nom,
@@ -48,11 +50,7 @@ export const deserializeRealisation = (r: any) => {
     cats: catsData,
     projet: projetData,
     articles: articlesData,
-    materiaux: r.materiaux
-      ? { create: { nomMateriau: r.materiaux.nomMateriau } }
-      : undefined,
-    technique: r.technique
-      ? { create: { nomTechnique: r.technique.nomTechnique } }
-      : undefined,
+    materiaux: materiauxData,
+    technique: techniqueData,
   };
 };

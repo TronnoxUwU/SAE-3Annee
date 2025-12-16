@@ -1,6 +1,5 @@
 // serializeProjet.ts
 import { Departement, Projet, Realisation, ProjetDepartement } from "@prisma/client";
-import { serializeDepartement } from "./departementSerializer";
 import { serializeRealisation } from "./realisationSerializer";
 
 // Typage pour Realisation avec ses relations incluses

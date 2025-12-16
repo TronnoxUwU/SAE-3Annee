@@ -60,6 +60,10 @@ export default function StructureDetailPage() {
     router.push(`/structure/${params.id}/edit`);
   };
 
+  const handleAdd = () => {
+    router.push(`${params.id}/realisations/creation`);
+  };
+
   if (loading) {
     return (
       <>
@@ -189,7 +193,7 @@ export default function StructureDetailPage() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleEdit();
+                    handleAdd();
                   }}
                   title="Ajouter une réalisation"
                 >
