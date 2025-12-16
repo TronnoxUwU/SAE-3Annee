@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter,useParams } from "next/navigation";
 import Topbar from "@/components/Topbar.jsx";
 import Style from "./page.module.css";
 
 export default function CreatePage() {
   const router = useRouter();
+  const params = useParams();
   const [type, setType] = useState("projet");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -14,7 +15,7 @@ export default function CreatePage() {
   const [formData, setFormData] = useState({
     nomRealisation: "",
     description: "",
-    structureId: "",
+    structure: [],
     departementIds: [],
     adresse: "",
     latitude: "",
@@ -41,7 +42,7 @@ export default function CreatePage() {
         nom: formData.nomRealisation,
         dateCreation: new Date(),
         description: formData.description || null,
-        structureId: formData.structureId || null,
+        structure: [{ id: Number(params.id) }],
         type,
       };
 
@@ -64,8 +65,6 @@ export default function CreatePage() {
         };
       }
 
-      console.log("📤 Payload envoyé:", payload);
-
       const res = await fetch("/api/realisations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -84,9 +83,9 @@ export default function CreatePage() {
       if (type === "projet") {
         router.push(`/annuaires/projets/${result.projet?.id}`);
       } else if (type === "materiau") {
-        router.push(`/materiaux/${result.materiaux?.id}`);
+        router.push(`/annuaires/materiaux/${result.materiaux?.id}`);
       } else if (type === "technique") {
-        router.push(`/techniques/${result.technique?.id}`);
+        router.push(`/annuaires/techniques/${result.technique?.id}`);
       }
 
     } catch (err) {

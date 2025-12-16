@@ -7,11 +7,15 @@ import { deserializeMateriau } from "./materiauDeserializer";
 export const deserializeRealisation = (r: any) => {
   if (!r) return {};
 
-  // Structure : si tableau, créer, sinon connect
+  // Structure : toujours connecter des structures existantes
   const structureData = r.structure
     ? Array.isArray(r.structure)
-      ? { create: r.structure.map(deserializeStructure) }
-      : { connect: { id: r.structure.id } }
+      ? {
+          connect: r.structure.map((s: any) => ({
+            id: typeof s === 'object' ? s.id : s
+          }))
+        }
+      : { connect: { id: typeof r.structure === 'object' ? r.structure.id : r.structure } }
     : undefined;
 
   // Categorie
