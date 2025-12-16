@@ -10,6 +10,7 @@ export default function StructureDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
+  console.log(session)
   const [structure, setStructure] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

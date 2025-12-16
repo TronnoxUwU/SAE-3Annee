@@ -2,8 +2,9 @@
 import { Editor } from "@/app/components/article/zoneEdition";
 import "@/app/components/article/global.css";
 
-export default function EditorPage() {
+export default async function Page({ params }) {
+  const id = await params
   return (
-        <Editor />
+    <Editor realisation={id.id}/>
   );
 }

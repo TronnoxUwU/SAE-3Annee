@@ -17,7 +17,11 @@ interface Block {
   };
 }
 
-export const Editor: React.FC = () => {
+interface EditorProps {
+  realisation: number | string;
+}
+
+export const Editor: React.FC<EditorProps> = (realisation) => {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [draggedBlockId, setDraggedBlockId] = useState<string | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -31,7 +35,7 @@ export const Editor: React.FC = () => {
   const handleSave = async(titre: string) => {
     const json = {
       titre: titre,
-      realisationId: 0,
+      realisationId: Number(realisation.realisation),
       composants: blocks.map((b, index) => {
         const position = index + 1;
 

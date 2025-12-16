@@ -61,6 +61,7 @@ export async function GET(req: Request) {
           include: {
             cats: { include: { categorie: true } },
             structure: true,
+            articles: true,
           },
         },
         departements: {
