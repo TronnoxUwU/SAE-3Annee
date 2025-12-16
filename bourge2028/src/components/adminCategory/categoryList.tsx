@@ -33,7 +33,7 @@ export default function AdminCategory() {
     try {
       setLoading(true);
       loadCategories();
-      setLoading(false); 
+      // setLoading(false); 
     } catch (err) {
       setError(err.message);
     }

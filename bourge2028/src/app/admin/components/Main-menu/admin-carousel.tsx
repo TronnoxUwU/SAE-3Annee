@@ -1,31 +1,23 @@
-"use client"
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
-
 import Style from "./admin-carousel.module.css";
 
-export default function AdminMenu() {
+const links = [
+  { label: "Dashboard", path: "/admin/dashboard", icon: "bi-speedometer2", desc: "Statistiques & trafic" },
+  { label: "Catégories", path: "/admin/categories", icon: "bi-tags", desc: "Gestion des catégories" },
+  { label: "Structures", path: "/admin/structures", icon: "bi-building", desc: "Structures du site" },
+  { label: "Validation", path: "/admin/waiting", icon: "bi-hourglass-split", desc: "Contenus en attente" },
+];
 
-    const pathname = usePathname();
-    const menuItems = [
-        { name: "Acceuil admin", path: "/admin", image: "/images/admin.png"},
-        { name: "Dashboard", path: "/admin/dashboard", image: "/images/data.png" },
-        { name: "Catégories", path: "/admin/categories", image: "/images/categorie.png" },
-        { name: "Structures", path: "/admin/structures", image: "/images/structure.png" },
-    ];
-
-    return (
-        <div className={Style.admin_menu}>
-            {menuItems.map((item) => (
-              item.image && (
-                <a key={item.path} href={item.path} className={Style.content_bloc}>
-                  <p>{item.name}</p>
-                  <img src={item.image} alt={item.name} />
-                </a>
-              )
-            ))}
-          </div>
-    );
+export default function AdminQuickLinks() {
+  return (
+    <section className={Style.links_grid}>
+      {links.map(link => (
+        <Link key={link.path} href={link.path} className={Style.card}>
+          <i className={`bi ${link.icon}`}></i>
+          <h3>{link.label}</h3>
+          <p>{link.desc}</p>
+        </Link>
+      ))}
+    </section>
+  );
 }

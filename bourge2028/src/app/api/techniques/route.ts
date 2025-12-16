@@ -4,7 +4,7 @@ import { deserializeTechnique } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
 
 /**
- * ----- GET /api/technique -----
+ * ----- GET /api/techniques -----
  * Récupère toutes les techniques
  */
 export async function GET() {
@@ -21,7 +21,7 @@ export async function GET() {
 }
 
 /**
- * ----- POST /api/technique -----
+ * ----- POST /api/techniques -----
  * Crée une nouvelle technique
  */
 export async function POST(req: Request) {
