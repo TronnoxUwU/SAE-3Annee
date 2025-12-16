@@ -2,7 +2,8 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Style from "@/app/styles/connect.module.css";
+import Style from "@/app/styles/register.module.css";
+import Topbar from "@/components/Topbar";
 
 function RegisterPageContent({ onSwitchToLogin }) {
     const router = useRouter();
@@ -35,7 +36,7 @@ function RegisterPageContent({ onSwitchToLogin }) {
         if (res.ok) {
             setMessage("✅ Compte créé, vous pouvez maintenant vous connecter");
             setShowSuccessPopup(true);
-            
+
             // Redirection après 5 secondes
             setTimeout(() => {
                 setShowSuccessPopup(false);
@@ -46,82 +47,80 @@ function RegisterPageContent({ onSwitchToLogin }) {
         }
     }
 
-    const handleBackToLogin = (e) => {
-        e.preventDefault();
-        if (onSwitchToLogin) {
-            onSwitchToLogin();
-        } else {
-            router.push("/");
-        }
-    };
+    function handleSwitchToLogin() {
+        router.push("/?showLogin=true");
+    }
+
 
     return (
-        <div className={Style.connect_container}>
-            <div className={Style.connect_wrapper}>
-                <h2>Créer un compte</h2>
-                <form onSubmit={handleSubmit} className={Style.connect_form}>
-                    <input
-                        type="text"
-                        placeholder="Identifiant"
-                        value={identifiant}
-                        onChange={(e) => setIdentifiant(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Nom"
-                        value={nom}
-                        onChange={(e) => setNom(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Prénom"
-                        value={prenom}
-                        onChange={(e) => setPrenom(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Mot de passe"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <button type="submit">Créer un compte</button>
+        <div>
+            <Topbar />
+            <div className={Style.connect_container}>
+                <div className={Style.connect_wrapper}>
+                    <h2>Créer un compte</h2>
+                    <form onSubmit={handleSubmit} className={Style.connect_form}>
+                        <input
+                            type="text"
+                            placeholder="Identifiant"
+                            value={identifiant}
+                            onChange={(e) => setIdentifiant(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="Nom"
+                            value={nom}
+                            onChange={(e) => setNom(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="Prénom"
+                            value={prenom}
+                            onChange={(e) => setPrenom(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Mot de passe"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        <button type="submit">Créer un compte</button>
 
-                    <a href="/">
                         <button
                             type="button"
                             className={Style.login_switch}
+                            onClick={handleSwitchToLogin}
                         >
                             Retourner à la carte
                         </button>
-                    </a>
-                </form>
+                    </form>
 
-                {message && !showSuccessPopup && (
-                    <p className={Style.connect_message}>{message}</p>
+                    {message && !showSuccessPopup && (
+                        <p className={Style.connect_message}>{message}</p>
+                    )}
+                </div>
+
+                {/* Pop-up de succès */}
+                {showSuccessPopup && (
+                    <div className={Style.popup_overlay}>
+                        <div className={Style.popup_content}>
+                            <div className={Style.popup_icon}>✅</div>
+                            <h3>Compte créé avec succès !</h3>
+                            <p>Vous allez être redirigé vers la page de connexion...</p>
+                        </div>
+                    </div>
                 )}
             </div>
-
-            {/* Pop-up de succès */}
-            {showSuccessPopup && (
-                <div className={Style.popup_overlay}>
-                    <div className={Style.popup_content}>
-                        <div className={Style.popup_icon}>✅</div>
-                        <h3>Compte créé avec succès !</h3>
-                        <p>Vous allez être redirigé vers la page de connexion...</p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
