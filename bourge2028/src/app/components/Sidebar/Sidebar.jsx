@@ -4,7 +4,7 @@ import * as turf from "@turf/turf";
 import axios from "axios";
 import Style from "./Sidebar.module.css";
 
-export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoFilterChange }) {
+export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSearchStructChange, isAnnuaire }) {
   const [open, setOpen] = useState(true);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -18,14 +18,15 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
   const [departements, setDepartements] = useState([]);
   const [selectedDepartements, setSelectedDepartements] = useState([]);
 
+  const [structQuery, setStructQuery] = useState("");
+  const [structResults, setStructResults] = useState([]);
+
   const resultsRef = useRef(null);
   const searchRef = useRef(null);
   const searchTimeout = useRef(null);
 
   // ------------------- INITIALISATION -------------------
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
     axios.get("/api/categories")
       .then(res => setCategories(res.data.filter(c => c.parentId === null)))
       .catch(err => console.error("Erreur chargement catégories :", err));
@@ -67,9 +68,7 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
       setResults([]);
       return;
     }
-    // Ajouter ", France" ou ", Centre" pour améliorer la précision
-    const enhancedQuery = `${value}, Centre-Val de Loire, France`;
-    searchTimeout.current = setTimeout(() => recherche(provider, enhancedQuery), 300);
+    searchTimeout.current = setTimeout(() => recherche(provider, `${value}, Centre-Val de Loire, France`), 300);
   };
 
   async function recherche(provider, value) {
@@ -91,12 +90,50 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
     map.setView([result.y, result.x], 14);
     setResults([]);
     setQuery(result.label);
-    // onGeoFilterChange && onGeoFilterChange({ lat: result.y, lng: result.x, radius: 10 });
+  };
+
+  // ------------------- RECHERCHE STRUCTURES -------------------
+  const handleStructSearch = (e) => {
+    const value = e.target.value;
+    setStructQuery(value);
+    onSearchStructChange(value);
+    fetchStructs(value);
+  };
+
+  const fetchStructs = async (value) => {
+    try {
+      const res = await fetch(`/api/projets?search=${encodeURIComponent(value)}`);
+      if (!res.ok) throw new Error(`Erreur ${res.status}`);
+      const data = await res.json();
+      const infoResults = new Set();
+      data.forEach(proj => {
+        if (proj.nomProjet.toLowerCase().includes(value.toLowerCase())) {
+          infoResults.add(proj.nomProjet);
+        }
+        proj.realisation.structure.forEach(struct => {
+          if (struct.nomStructure.toLowerCase().includes(value.toLowerCase())) {
+            infoResults.add(struct.nomStructure);
+          }
+        });
+      });
+      setStructResults(Array.from(infoResults));
+    } catch (err) {
+      console.error("Erreur de recherche de structures :", err);
+    }
+  };
+
+  const handleStructResultClick = (result) => {
+    setStructQuery(result.nomStructure);
+    onSearchStructChange(result.nomStructure);
+    setStructResults([]);
   };
 
   // ------------------- NAVIGATION CLAVIER -------------------
   useEffect(() => {
     let selectedIndex = -1;
+
+    const getActiveResults = () => isAnnuaire ? structResults : results;
+
     const highlightResult = (index) => {
       const lis = resultsRef.current?.querySelectorAll(`.${Style.search_results_item}`);
       if (!lis) return;
@@ -104,34 +141,51 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
     };
 
     const handleKeyDown = (e) => {
-      if (results.length === 0) return;
+      const activeResults = getActiveResults();
+      if (!activeResults.length) return;
+
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        selectedIndex = (selectedIndex + 1) % results.length;
+        selectedIndex = (selectedIndex + 1) % activeResults.length;
         highlightResult(selectedIndex);
-      } else if (e.key === "ArrowUp") {
+      }
+      if (e.key === "ArrowUp") {
         e.preventDefault();
-        selectedIndex = (selectedIndex - 1 + results.length) % results.length;
+        selectedIndex = (selectedIndex - 1 + activeResults.length) % activeResults.length;
         highlightResult(selectedIndex);
-      } else if (e.key === "Enter") {
+      }
+      if (e.key === "Enter") {
         e.preventDefault();
-        const result = results[selectedIndex >= 0 ? selectedIndex : 0];
-        handleResultClick(result);
-        setResults([]);
+        const result = activeResults[selectedIndex >= 0 ? selectedIndex : 0];
+        if (isAnnuaire) handleStructResultClick(result);
+        else handleResultClick(result);
         selectedIndex = -1;
       }
     };
 
     const inputEl = searchRef.current?.querySelector("input");
-    if (inputEl) inputEl.addEventListener("keydown", handleKeyDown);
+    inputEl?.addEventListener("keydown", handleKeyDown);
     return () => inputEl?.removeEventListener("keydown", handleKeyDown);
-  }, [results]);
+  }, [results, structResults, isAnnuaire]);
+
+  // ------------------- CLIC HORS RESULTATS -------------------
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(datae.target)
+      ) {
+        setResults([]);
+        setStructResults([]);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // ------------------- GESTION CATEGORIES -------------------
-  const getAllChildrenIds = (cat) => {
-    if (!cat.children) return [];
-    return cat.children.flatMap(child => [child.id, ...getAllChildrenIds(child)]);
-  };
+  const getAllChildrenIds = (cat) => cat.children?.flatMap(c => [c.id, ...getAllChildrenIds(c)]) || [];
 
   const handleCategoryToggle = (cat) => {
     const allIds = [cat.id, ...getAllChildrenIds(cat)];
@@ -143,33 +197,24 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
 
   useEffect(() => {
     if (!onFilterChange) return;
-    const categoriesList = [];
-    const traverse = (cats) => {
-      cats.forEach(cat => {
-        if (selectedCategories.includes(cat.id)) categoriesList.push(cat);
-        if (cat.children?.length) traverse(cat.children);
-      });
-    };
+    const selectedCats = [];
+    const traverse = (cats) => cats.forEach(cat => {
+      if (selectedCategories.includes(cat.id)) selectedCats.push(cat);
+      if (cat.children?.length) traverse(cat.children);
+    });
     traverse(categories);
-    onFilterChange(categoriesList);
+    onFilterChange(selectedCats);
   }, [selectedCategories, categories, onFilterChange]);
 
   // ------------------- GESTION DEPARTEMENTS -------------------
   const handleDepartementToggle = (dep) => {
-    setSelectedDepartements(prev => {
-      const exists = prev.some(d => d.id === dep.id);
-      const newSelection = exists
-        ? prev.filter(d => d.id !== dep.id)
-        : [...prev, dep];
-      return newSelection;
-    });
+    setSelectedDepartements(prev => prev.some(d => d.id === dep.id) ? prev.filter(d => d.id !== dep.id) : [...prev, dep]);
   };
 
   useEffect(() => {
-    if (onDepFilterChange) {
-      onDepFilterChange(selectedDepartements);
-    }
+    onDepFilterChange?.(selectedDepartements);
   }, [selectedDepartements]);
+
   // ------------------- RENDU CATEGORIES -------------------
   const renderCategory = (cat, level = 0, parentChecked = false) => {
     const isExpanded = expanded[cat.id];
@@ -189,7 +234,6 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
           </div>
           <input type="checkbox" className={Style.checkbox} checked={isChecked || isLocked} readOnly />
         </div>
-
         {cat.children?.length > 0 && isExpanded && (
           <ul className={Style.category_tree}>
             {cat.children.map(child => renderCategory(child, level + 1, isChecked || isLocked))}
@@ -207,7 +251,7 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
         <div className={Style.category_label} style={{ cursor: "pointer" }}
           onClick={() => handleDepartementToggle(dep)}>
           <div className={Style.category_left}>
-            <span className={Style.category_text}>{dep.nomDep || dep.nom}</span>
+            <span className={Style.category_text}>{dep.nomDep}</span>
           </div>
           <input type="checkbox" className={Style.checkbox} checked={isChecked} readOnly />
         </div>
@@ -217,10 +261,24 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
 
   // ------------------- RENDU SIDEBAR -------------------
   return (
-    <div className={`${Style.sidebar} ${open ? "" : "collapsed"}`}>
+    <div className={Style.sidebar}>
       <div className={Style.sidebar_search} ref={searchRef}>
-        <input type="text" placeholder="Rechercher un lieu..." value={query} onChange={handleSearch} />
-        {results.length > 0 && (
+        <input
+          type="text"
+          placeholder={isAnnuaire ? "Recherche de structure ou projet..." : "Rechercher un lieu..."}
+          value={isAnnuaire ? structQuery : query}
+          onChange={isAnnuaire ? handleStructSearch : handleSearch}
+        />
+        {isAnnuaire && structResults.length > 0 && (
+          <ul className={Style.search_results} ref={resultsRef}>
+            {structResults.map((r, i) => (
+              <li key={i} className={Style.search_results_item} onClick={() => handleStructResultClick(r)}>
+                {r}
+              </li>
+            ))}
+          </ul>
+        )}
+        {!isAnnuaire && results.length > 0 && (
           <ul className={Style.search_results} ref={resultsRef}>
             {results.map((r, i) => (
               <li key={i} className={Style.search_results_item} onClick={() => handleResultClick(r)}>
@@ -231,13 +289,13 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onGeoF
         )}
       </div>
 
-      <div className={Style.sidebar_header}>
-        {open && <span>Filtres</span>}
-        <button onClick={() => setOpen(!open)}>{open ? "<" : ">"}</button>
-      </div>
-
       <ul className={Style.filter_section}>
-        {categories.map(cat => renderCategory(cat))}
+        {categories.length > 0 && (
+          <>
+            <li className={Style.section_title}>Filtres</li>
+            {categories.map(cat => renderCategory(cat))}
+          </>
+        )}
         {departements.length > 0 && (
           <>
             <li className={Style.section_title}>Départements</li>

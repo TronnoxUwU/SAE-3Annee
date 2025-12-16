@@ -39,29 +39,48 @@ export async function GET(req: Request) {
 
     const categoriesParam = searchParams.get("cats");
     const departementParam = searchParams.get("deps");
+    const searchParam = searchParams.get("search")?.toLowerCase();
 
-    let categoryIds: number[] | undefined = undefined;
-    let departementIds: number[] | undefined = undefined;
+    let categoryIds: number[] | undefined;
+    let departementIds: number[] | undefined;
 
     if (categoriesParam) {
       categoryIds = categoriesParam
         .split(",")
-        .map(id => Number(id))
+        .map(Number)
         .filter(n => !isNaN(n));
     }
+
     if (departementParam) {
       departementIds = departementParam
         .split(",")
-        .map(id => Number(id))
+        .map(Number)
         .filter(n => !isNaN(n));
     }
 
     const where: Prisma.StructureWhereInput = {
       ...(departementIds?.length
-        ? { departements: { some: { departementId: { in: departementIds } } } }
+        ? {
+            departements: {
+              some: { departementId: { in: departementIds } },
+            },
+          }
         : {}),
+
       ...(categoryIds?.length
-        ? { cats: { some: { categorieId: { in: categoryIds } } } }
+        ? {
+            cats: {
+              some: { categorieId: { in: categoryIds } },
+            },
+          }
+        : {}),
+
+      ...(searchParam
+        ? {
+            nomStructSearch: {
+              contains: searchParam,
+            },
+          }
         : {}),
     };
 
@@ -76,9 +95,10 @@ export async function GET(req: Request) {
       orderBy: { id: "asc" },
     });
 
-    const serialized = structures.map(serializeStructure);
-
-    return NextResponse.json(serialized, { status: 200 });
+    return NextResponse.json(
+      structures.map(serializeStructure),
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Erreur GET /api/structures :", error);
     return NextResponse.json(

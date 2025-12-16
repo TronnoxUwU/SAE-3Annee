@@ -19,8 +19,11 @@ export default function AnnuairePage() {
   const [mounted, setMounted] = useState(false);
 
   // États data
-  const [mapFilter, setMapFilter] = useState(null);
-  const [geoFilter, setGeoFilter] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
+  const [depFilter, setDepFilter] = useState([]);
+  const [catFilter, setCatFilter] = useState({ categories: [] });
+  const [searchStruct, setSearchStruct] = useState(""); 
+
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,11 +54,23 @@ export default function AnnuairePage() {
         setLoading(true);
         setError(null);
 
-        let url = "/api/projets";
-        if (mapFilter) {
-          const params = new URLSearchParams(mapFilter).toString();
-          url += `?${params}`;
+        const params = new URLSearchParams();
+
+        if (catFilter?.length > 0) {
+          params.set("cats", catFilter.map(c => c.id).join(","));
         }
+
+        if (depFilter?.length > 0) {
+          params.set("deps", depFilter.map(d => d.id).join(","));
+        }
+
+        if (searchStruct && searchStruct.trim() !== "") {
+          params.set("search", searchStruct.trim());
+        }
+
+        const url = params.toString().length > 0
+          ? `/api/projets?${params.toString()}`
+          : "/api/projets";
 
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Erreur ${res.status}`);
@@ -71,14 +86,7 @@ export default function AnnuairePage() {
     }
 
     fetchArticles();
-  }, [mapFilter]);
-
-  // 🔹 Log des changements de filtres
-  useEffect(() => {
-    if (mapFilter) {
-      console.log("Filtres mis à jour :", mapFilter);
-    }
-  }, [mapFilter]);
+  }, [catFilter, depFilter, searchStruct]);
 
   const handleClose = () => {
     setAnimate(true);
@@ -91,12 +99,21 @@ export default function AnnuairePage() {
       <Topbar fixed />
 
       {/* Sidebar gère le filtre de la carte */}
-      <Sidebar map={null} onFilterChange={setMapFilter} onGeoFilterChange={setGeoFilter} />
-
+      <Sidebar
+        map={mapInstance}
+        onFilterChange={setCatFilter}
+        onDepFilterChange={setDepFilter}
+        onSearchStructChange={setSearchStruct}
+        isAnnuaire={true}
+      />
       {/* Carte principale */}
       <div className="map-wrapper">
         <div className="map-inner">
-          <Map mapFilter={geoFilter} onMapReady={() => { }} />
+          <Map
+            depFilter={depFilter}
+            catFilter={catFilter}
+            onMapReady={setMapInstance}
+          />
         </div>
       </div>
 

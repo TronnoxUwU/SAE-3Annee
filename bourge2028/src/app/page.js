@@ -34,7 +34,7 @@ export default function Page() {
               map={mapInstance}
               onFilterChange={setContentFilter}
               onDepFilterChange={setDepartementFilter}
-              onGeoFilterChange={setGeoFilter}
+              isAnnuaire={false}
             />
             <Map
               mapFilter={geoFilter}
