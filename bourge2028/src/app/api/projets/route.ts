@@ -14,22 +14,25 @@ export async function GET(req: Request) {
     const categoriesParam = searchParams.get("cats");
     const departementParam = searchParams.get("deps");
     const searchParam = searchParams.get("search")?.toLowerCase();
-    let categoryIds: number[] | undefined = undefined;
-    let departementIds: number[] | undefined = undefined;
+
+    let categoryIds: number[] | undefined;
+    let departementIds: number[] | undefined;
 
     if (categoriesParam) {
       categoryIds = categoriesParam
         .split(",")
-        .map(id => Number(id))
-        .filter(n => !isNaN(n));
-    }
-    if (departementParam) {
-      departementIds = departementParam
-        .split(",")
-        .map(id => Number(id))
+        .map(Number)
         .filter(n => !isNaN(n));
     }
 
+    if (departementParam) {
+      departementIds = departementParam
+        .split(",")
+        .map(Number)
+        .filter(n => !isNaN(n));
+    }
+
+    // --- Filtres Realisation (cats uniquement)
     const realisationWhere: Prisma.RealisationWhereInput = {};
 
     if (categoryIds?.length) {
@@ -40,16 +43,7 @@ export async function GET(req: Request) {
       };
     }
 
-    if (searchParam) {
-      realisationWhere.structure = {
-        some:{
-          nomStructSearch: {
-            contains: searchParam
-          }
-        }
-      };
-    }
-
+    // --- Filtres Projet
     const where: Prisma.ProjetWhereInput = {};
 
     if (departementIds?.length) {
@@ -64,6 +58,27 @@ export async function GET(req: Request) {
       where.realisation = realisationWhere;
     }
 
+    // --- Recherche texte (structure OU projet)
+    if (searchParam) {
+      where.OR = [
+        {
+          nomProjetSearch: {
+            contains: searchParam,
+          }
+        },
+        {
+          realisation: {
+            structure: {
+              some: {
+                nomStructSearch: {
+                  contains: searchParam,
+                }
+              }
+            }
+          }
+        }
+      ];
+    }
 
     const projets = await prisma.projet.findMany({
       where,
@@ -83,7 +98,10 @@ export async function GET(req: Request) {
     return NextResponse.json(projets.map(serializeProjet), { status: 200 });
   } catch (error) {
     console.error("Erreur GET /api/projet :", error);
-    return NextResponse.json({ error: "Impossible de récupérer les projets" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Impossible de récupérer les projets" },
+      { status: 500 }
+    );
   }
 }
 
