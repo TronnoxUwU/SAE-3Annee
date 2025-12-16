@@ -6,7 +6,7 @@ import { sendMail } from "@/lib/mail";
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
-
+    console.log("Forgot password request for email:", email);
     if (!email) {
       return NextResponse.json(
         { error: "Email manquant" },
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.Personne.findUnique({
       where: { email },
     });
 
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     if (user) {
       const token = crypto.randomBytes(32).toString("hex");
 
-      await prisma.user.update({
+      await prisma.Personne.update({
         where: { id: user.id },
         data: {
           resetToken: token,

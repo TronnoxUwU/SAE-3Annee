@@ -13,7 +13,7 @@ export async function POST(req) {
     }
 
     // Vérifie le token
-    const personne = await prisma.personne.findFirst({
+    const personne = await prisma.Personne.findFirst({
       where: {
         resetToken: token,
         resetTokenExpires: {
@@ -33,7 +33,7 @@ export async function POST(req) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Mise à jour
-    await prisma.personne.update({
+    await prisma.Personne.update({
       where: { id: personne.id },
       data: {
         password: hashedPassword,
