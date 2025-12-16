@@ -1,39 +1,56 @@
-// /app/api/forgot-password/route.js
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken";
+import prisma from "@/lib/prisma";
+import crypto from "crypto";
+import { sendMail } from "@/lib/mail";
 
-export async function POST(req) {
-  const { email } = await req.json();
+export async function POST(req: Request) {
+  try {
+    const { email } = await req.json();
 
-  const user = await prisma.Personne.findUnique({ where: { email } });
+    if (!email) {
+      return NextResponse.json(
+        { error: "Email manquant" },
+        { status: 400 }
+      );
+    }
 
-  if (!user) {
-    return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    // IMPORTANT : on ne révèle RIEN
+    if (user) {
+      const token = crypto.randomBytes(32).toString("hex");
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken: token,
+          resetTokenExpires: new Date(Date.now() + 1000 * 60 * 60),
+        },
+      });
+
+      const resetUrl =
+        `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
+
+      await sendMail(
+        email,
+        "Réinitialisation du mot de passe",
+        `
+        <p>Tu as demandé à réinitialiser ton mot de passe.</p>
+        <p>Clique ici :</p>
+        <a href="${resetUrl}">Réinitialiser mon mot de passe</a>
+        <p>Si ce n’était pas toi, ignore ce mail.</p>
+        `
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return NextResponse.json(
+      { error: "Erreur serveur" },
+      { status: 500 }
+    );
   }
-
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password/${token}`;
-
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  await transporter.sendMail({
-    from: `"Support" <${process.env.EMAIL_USER}>`,
-    to: email,
-    subject: "Réinitialisation du mot de passe",
-    text: `Bonjour,\n\n
-    Voici votre lien de réinitialisation : ${resetLink} \n\n
-    Ce lien expirera dans une heure.\n\n
-    Si vous n'avez pas demandé cette réinitialisation, veuillez ignorer cet email.\n\n
-    Merci. \n\n
-    L'équipe de support.`,
-  });
-
-  return NextResponse.json({ success: true });
 }

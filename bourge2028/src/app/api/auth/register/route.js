@@ -42,6 +42,16 @@ export async function POST(req) {
       },
     });
 
+    await sendMail(
+      email,
+      "Compte créé",
+      `
+  <p>Votre compte a été créé avec succès.</p>
+  <p>Si vous n’êtes pas à l’origine de cette action, ignorez ce message.</p>
+  `
+    );
+
+
     return new Response(
       JSON.stringify({
         message: "Compte créé",
