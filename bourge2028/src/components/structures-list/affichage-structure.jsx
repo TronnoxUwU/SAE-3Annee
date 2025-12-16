@@ -94,6 +94,7 @@ export default function Structure() {
             nom={item.nomStructure}
             date={item.dateCreation}
             description={item.description}
+            categories={item.cats}
             edit={canEdit}
             role={str_role}
           />

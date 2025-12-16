@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import Style from "./structure-Item.module.css"
 
+interface Category {
+  id: number;
+  nom: string;
+}
 
 interface ListItemProps {
   id: number;
   nom: string;
   date: Date;
   description: string;
+  categories: Category[];
   edit: boolean;
   role: string;
   validate?: boolean;
@@ -14,6 +19,31 @@ interface ListItemProps {
   onRefuse?: (id: number) => void;
 }
 
+const PASTEL_COLORS = [
+  "#E9D5FF", // violet
+  "#FCE7F3", // rose
+  "#DBEAFE", // bleu
+  "#DCFCE7", // vert
+  "#FEF3C7", // jaune
+  "#FFE4E6", // rouge clair
+  "#E0F2FE", // cyan
+  "#F1F5F9", // gris clair
+];
+
+
+
+
+
+function getPastelColor(seed: string | number) {
+  let hash = 0;
+  const str = seed.toString();
+
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return PASTEL_COLORS[Math.abs(hash) % PASTEL_COLORS.length];
+}
 
 function renderDate(date){
   if (!date) return "Date de fondation inconnue";
@@ -28,7 +58,7 @@ function renderDate(date){
   })}`;
 }
 
-const StructureItem = ({ id, nom, date, description, edit, role, validate, onValidate, onRefuse }: ListItemProps) => {
+const StructureItem = ({ id, nom, date, description, categories, edit, role, validate, onValidate, onRefuse }: ListItemProps) => {
 
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
@@ -101,6 +131,27 @@ const StructureItem = ({ id, nom, date, description, edit, role, validate, onVal
           
           <p className={Style.struct_desc}>{description}</p>
         </div>
+        <div className={Style.struct_category}>
+          {categories && categories.length > 0 ? (
+            categories.map(cat => (
+              <span
+                key={cat.id}
+                className={Style.struct_category_badge}
+                style={{
+                  backgroundColor: getPastelColor(cat.id),
+                }}
+              >
+                {cat.nom}
+              </span>
+            ))
+          ) : (
+            <span className={Style.struct_category_empty}>
+              Aucune catégorie
+            </span>
+          )}
+        </div>
+
+
         
       </div>
     </li>

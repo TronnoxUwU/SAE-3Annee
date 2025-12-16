@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import Style from "./listItem.module.css";
 import CatCrudModal from "./CRUDmodal";
+import { children } from 'cheerio/dist/commonjs/api/traversing';
 
 interface ListItemProps {
   id: number;
   nom: string;
   parent: number | null;
   childrens: any[];
+  countStructure: number | 0;
   onAdd: Function;
   onUpdate: Function;
   onDelete: Function;
 }
 
-const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: ListItemProps) => {
+const ListItem = ({ id, nom, parent, childrens, countStructure, onAdd, onUpdate, onDelete }: ListItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [typeCrud, setTypeCrud] = useState("");
@@ -21,22 +23,29 @@ const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: Lis
 
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
-      <div className="d-flex align-items-center p-2">
+      <div className={`${Style.item_bloc_content} p-2`}>
         {/* Collapse */}
-        {hasChildren ? (
-          <button
-            className="btn btn-link btn-sm p-0 me-2 text-decoration-none"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-expanded={isOpen}
-          >
-            <i className={`bi bi-chevron-${isOpen ? 'down' : 'right'} fs-4`}></i>
-          </button>
-        ) : (
-          <span className="me-2" style={{ width: '20px', display: 'inline-block' }}></span>
-        )}
+        <div className={`d-flex align-items-center ${Style.item_bloc_left}`}>
+          {hasChildren ? (
+            <button
+              className="btn btn-link btn-sm p-0 me-2 text-decoration-none"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-expanded={isOpen}
+            >
+              <i className={`bi bi-chevron-${isOpen ? 'down' : 'right'} fs-4`}></i>
+            </button>
+          ) : (
+            <span className="me-2" style={{ width: '20px', display: 'inline-block' }}></span>
+          )}
 
-        {/* Nom catégorie */}
-        <span className={`flex-grow-1 ${Style.item_title}`}>{nom}</span>
+          {/* Nom catégorie */}
+          <span className={`flex-grow-1 ${Style.item_title}`}>{nom}</span>
+
+        </div>
+
+        <div className={Style.item_value_s}>
+          <p>Nombre de structures liées : {countStructure}</p>
+        </div>
 
         {/* Boutons CRUD */}
         <div className="btn-group btn-group-sm" role="group">
@@ -89,6 +98,7 @@ const ListItem = ({ id, nom, parent, childrens, onAdd, onUpdate, onDelete }: Lis
                 nom={child.nom}
                 parent={child.parentId}
                 childrens={child.children || []}
+                countStructure={child.totalStructures}
                 onAdd={onAdd}
                 onUpdate={onUpdate}
                 onDelete={onDelete}

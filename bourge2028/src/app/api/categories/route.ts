@@ -38,14 +38,14 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     const allCategories = await prisma.categorie.findMany({
-      include: { parent: true },
+      include: { parent: true, structures: true },
       orderBy: { id: "asc" },
     });
 
     // Créer un map id => category
     const map = new Map<number, any>();
     allCategories.forEach(cat => {
-      map.set(cat.id, { ...serializeCategorie(cat), children: [] });
+      map.set(cat.id, { ...serializeCategorie(cat), structures: cat.structures || [], children: [] });
     });
 
     const tree: any[] = [];
@@ -62,7 +62,29 @@ export async function GET() {
       }
     });
 
-    return NextResponse.json(tree, { status: 200 });
+
+    // Fonctions pour enrichir les catégories avec le count des structures liées
+    function countStructuresRecursive(cat: any): number {
+      let count = cat.structures.length;
+
+      for (const child of cat.children || []) {
+        count += countStructuresRecursive(child);
+      }
+
+      return count;
+    }
+    function enrichCategory(cat: any): any {
+      return {
+        ...cat,
+        totalStructures: countStructuresRecursive(cat),
+        children: cat.children.map(enrichCategory),
+      };
+    }
+
+
+
+    const enrichedTree = tree.map(enrichCategory);
+    return NextResponse.json(enrichedTree, { status: 200 });
   } catch (error) {
     console.error("Erreur GET /api/categories :", error);
     return NextResponse.json(
@@ -71,3 +93,7 @@ export async function GET() {
     );
   }
 }
+
+
+
+

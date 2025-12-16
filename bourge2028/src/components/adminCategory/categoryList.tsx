@@ -157,6 +157,7 @@ export default function AdminCategory() {
               nom={item.nom}
               parent={item.parentId}
               childrens={item.children || []}
+              countStructure={item.totalStructures}
               onAdd={handleAdd}
               onUpdate={handleUpdate}
               onDelete={handleDelete}

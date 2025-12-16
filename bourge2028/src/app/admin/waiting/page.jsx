@@ -7,7 +7,7 @@ import style from "./admin-waiting.module.css";
 export default function AdminWaitingPage() {
   return (
     <div className="admin-container">
-      <Topbar title="Bourges 2028 - Validation" />
+      <Topbar title="Bourges 2028 - Administration" />
 
       <div className="admin-content">
         <AdminSidebar />
