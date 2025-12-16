@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { sendMail } from "@/lib/mail";
 
 export async function POST(req) {
   try {
