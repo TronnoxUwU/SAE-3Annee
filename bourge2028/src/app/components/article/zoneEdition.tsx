@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect  } from "react";
 import { Palette } from "./palette";
 import { Titre } from "./blocks/titre";
 import { Paragraphe, ParagrapheHandle } from "./blocks/paragraphe";
 import { Image } from "./blocks/image";
 import { Sidebar } from "./sideEdition";
 import { SavePopup } from "./savepopup";
+import { useRouter } from "next/navigation";
 
 interface Block {
   id: string;
@@ -17,83 +18,145 @@ interface Block {
   };
 }
 
-export const Editor: React.FC = () => {
+interface EditorProps {
+  realisation: number | string;
+  article?: any;
+}
+
+export const Editor: React.FC<EditorProps> = ({realisation, article}) => {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [draggedBlockId, setDraggedBlockId] = useState<string | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [articleTitle, setArticleTitle] = useState<string>("");
+  const router = useRouter();
 
   // 👉 Nouveau : on garde une référence sur CHAQUE paragraphe
   const paragraphRefs = useRef<Record<string, ParagrapheHandle | null>>({});
 
-  const handleSave = async(titre: string) => {
-    const json = {
-      titre: titre,
-      realisationId: 0,
-      composants: blocks.map((b, index) => {
-        const position = index + 1;
-
-        if (b.type === "heading") {
-          return {
-            type: "titre",
-            positionComposant: position,
-            titre: {
-              niveauTitre: Number(b.options?.headingLevel?.replace("h", "")) || 2,
-              texteTitre: b.content,
-            },
-          };
+useEffect(() => {
+    const loadArticle = async () => {
+      if (realisation === -1 && article) {
+        try {
+          const data = article;
+          
+          // Charger le titre
+          setArticleTitle(data.titre || "");
+          
+          // Charger les composants
+          const loadedBlocks = data.composants?.map((comp: any) => {
+            if (comp.type === "titre") {
+              return {
+                id: Date.now().toString() + Math.random(),
+                type: "heading",
+                content: comp.titre.texteTitre,
+                options: { headingLevel: `h${comp.titre.niveauTitre}` as any }
+              };
+            }
+            
+            if (comp.type === "paragraphe") {
+              return {
+                id: Date.now().toString() + Math.random(),
+                type: "paragraph",
+                content: comp.paragraphe.texteParagraphe
+              };
+            }
+            
+            if (comp.type === "image") {
+              return {
+                id: Date.now().toString() + Math.random(),
+                type: "image",
+                content: comp.image.lienImage
+              };
+            }
+            
+            return null;
+          }).filter(Boolean) || [];
+          
+          setBlocks(loadedBlocks);
+        } catch (error) {
+          console.error("❌ Erreur lors du chargement de l'article :", error);
         }
-
-        if (b.type === "image") {
-          return {
-            type: "image",
-            positionComposant: position,
-            image: {
-              lienImage: b.content || "",
-              titreImage: "",
-            },
-          };
-        }
-
-        if (b.type === "paragraph") {
-          return {
-            type: "paragraphe",
-            positionComposant: position,
-            paragraphe: {
-              texteParagraphe: b.content,
-            },
-          };
-        }
-
-        return null;
-      }).filter(Boolean),
+      }
     };
-
-    console.log("📝 Article sauvegardé :", JSON.stringify(json, null, 2));
     
-    try {
-      const response = await fetch("/api/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(json),
-      });
+    loadArticle();
+  }, [realisation, article]);
 
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP : ${response.status}`);
+const handleSave = async (titre: string) => {
+  console.log(titre)
+  const json = {
+    titre: titre,
+    realisationId: realisation === -1 ? null : Number(realisation),
+    composants: blocks.map((b, index) => {
+      const position = index + 1;
+
+      if (b.type === "heading") {
+        return {
+          type: "titre",
+          positionComposant: position,
+          titre: {
+            niveauTitre: Number(b.options?.headingLevel?.replace("h", "")) || 2,
+            texteTitre: b.content,
+          },
+        };
       }
 
-      const result = await response.json();
-      console.log("✅ Article sauvegardé avec succès :", result);
-      alert(`Article "${titre}" sauvegardé avec succès !`); // ✅ Affiche le titre dans l'alert
-    } catch (error) {
-      console.error("❌ Erreur lors de la sauvegarde :", error);
-      alert("Erreur lors de la sauvegarde !");
-    }
+      if (b.type === "image") {
+        return {
+          type: "image",
+          positionComposant: position,
+          image: {
+            lienImage: b.content || "",
+            titreImage: "",
+          },
+        };
+      }
+
+      if (b.type === "paragraph") {
+        return {
+          type: "paragraphe",
+          positionComposant: position,
+          paragraphe: {
+            texteParagraphe: b.content,
+          },
+        };
+      }
+
+      return null;
+    }).filter(Boolean),
   };
+
+  console.log("📝 Article sauvegardé :", JSON.stringify(json, null, 2));
+  
+  try {
+    // ✅ PUT pour modification, POST pour création
+    const method = realisation === -1 ? "PUT" : "POST";
+    const url = realisation === -1 ? `/api/articles/${article.id}` : "/api/articles";
+    
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(json),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP : ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("✅ Article sauvegardé avec succès :", result);
+    alert(`Article "${titre}" ${realisation === -1 ? 'modifié' : 'créé'} avec succès !`);
+    router.push(`/article/${article.id}`)
+  } catch (error) {
+    console.error("❌ Erreur lors de la sauvegarde :", error);
+    alert("Erreur lors de la sauvegarde !");
+  }
+};
 
 
   const addBlockAt = (type: string, index: number) => {
@@ -308,6 +371,7 @@ export const Editor: React.FC = () => {
         isOpen={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}
         onSave={handleSave}
+        initialTitle={articleTitle}
       />
     </div>
   );

@@ -7,7 +7,7 @@ export default async function Page({ params }) {
   return (
     <div>
         <Topbar title="Bourges 2028 - Projet"/>
-        <ProjetView id={id} />
+        <ProjetView id={id} type="projet"/>
     </div>
   );
 }

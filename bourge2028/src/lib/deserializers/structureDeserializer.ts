@@ -34,9 +34,11 @@ export const deserializeStructure = (
       ? { connect: departements.map((d: any) => ({ id: d.id })),}
       : undefined,
 
-    cats:{
-      create: cats.map(deserializeCategorie),
-    },
+    cats: cats?.length
+      ? {
+          create: cats.map(deserializeCategorie),
+        }
+      : undefined,
 
     latitude: latitude,
     longitude: longitude,
