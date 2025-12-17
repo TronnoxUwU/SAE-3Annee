@@ -55,3 +55,52 @@
 .stat_card div span {
     margin-right: 12px;
 }
+
+
+.page_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.page_list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+
+  background-color: rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s ease;
+}
+
+.page_list li:hover {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+.page_list li span {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #333;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page_list li strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111;
+
+  background-color: #e9eef3;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+
+  min-width: 2.2rem;
+  text-align: center;
+}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import Style from "./admin-carousel.module.css";
 
 const links = [
-  { label: "Dashboard", path: "/admin/dashboard", icon: "bi-speedometer2", desc: "Statistiques & trafic" },
+  { label: "Statistiques", path: "/admin/dashboard", icon: "bi-speedometer2", desc: "Statistiques & trafic du site" },
   { label: "Catégories", path: "/admin/categories", icon: "bi-tags", desc: "Gestion des catégories" },
   { label: "Structures", path: "/admin/structures", icon: "bi-building", desc: "Structures du site" },
   { label: "Validation", path: "/admin/waiting", icon: "bi-hourglass-split", desc: "Contenus en attente" },
