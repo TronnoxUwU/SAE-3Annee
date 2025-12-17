@@ -18,27 +18,49 @@ export default function Structure() {
 
 
 
-  async function loadCategories() {
-    const res = await fetch("/api/structures?waiting=false");
-    if (!res.ok) {
-      throw new Error("Structures non trouvées");
-    }
-    const data = await res.json();
-    console.log(data);
-    setItems(data);
-    setLoading(false);
-  }
-
-  useEffect(() => { 
+    async function loadCategories() {
     try {
+        const res = await fetch("/api/structures?waiting=true");
+        if (!res.ok) throw new Error("Structures non trouvées");
 
-      setLoading(true);
-      loadCategories(); 
+        const data = await res.json();
+        setItems(data);
     } catch (err) {
-      setError(err.message);
+        setError(err.message);
+    } finally {
+        setLoading(false);
+    }
     }
 
-  }, []);
+
+    async function validateStructure(id) {
+        await fetch(`/api/structures/${id}/validate`, {
+        method: "PATCH",
+        });
+        setItems(items.filter(s => s.id !== id));
+    }
+    
+    async function refuseStructure(id) {
+        await fetch(`/api/structures/${id}`, {
+        method: "DELETE",
+        });
+        setItems(items.filter(s => s.id !== id));
+    }
+
+    useEffect(() => {
+    const fetchData = async () => {
+        try {
+        setLoading(true);
+        await loadCategories();
+        } catch (err) {
+        setError(err.message);
+        setLoading(false);
+        }
+    };
+
+    fetchData();
+    }, []);
+
 
   if (loading) {
     return (
@@ -73,6 +95,12 @@ export default function Structure() {
       );
     }
 
+    
+  if (items.length === 0) {
+    return <p>Aucune structure en attente de validation.</p>;
+  }
+
+
   return (
     
     <ul className={`${tempStyle.override_list}`}>
@@ -86,7 +114,7 @@ export default function Structure() {
       if(pathname.includes("account/") && pathname!==`account/${session?.user?.id}`) {
         item.personnes.map(p => {str_role = `Cette personne est ${p.role} de cette structure`})
       }
-
+      
         return (
           <StructureItem
             key={item.id}
@@ -94,9 +122,11 @@ export default function Structure() {
             nom={item.nomStructure}
             date={item.dateCreation}
             description={item.description}
-            categories={item.cats}
             edit={canEdit}
             role={str_role}
+            validate
+            onValidate={validateStructure}
+            onRefuse={refuseStructure}
           />
         );
       })}

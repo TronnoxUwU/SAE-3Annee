@@ -33,7 +33,7 @@ export default function AdminCategory() {
     try {
       setLoading(true);
       loadCategories();
-      setLoading(false); 
+      // setLoading(false); 
     } catch (err) {
       setError(err.message);
     }
@@ -71,6 +71,10 @@ export default function AdminCategory() {
         </>
       );
     }
+
+  if (items.length === 0) {
+      return <p>Aucune catégorie disponible, veuillez en créer.</p>;
+  }
 
   // ------------------------------------------------------------
   // ADD
@@ -157,6 +161,7 @@ export default function AdminCategory() {
               nom={item.nom}
               parent={item.parentId}
               childrens={item.children || []}
+              countStructure={item.totalStructures}
               onAdd={handleAdd}
               onUpdate={handleUpdate}
               onDelete={handleDelete}

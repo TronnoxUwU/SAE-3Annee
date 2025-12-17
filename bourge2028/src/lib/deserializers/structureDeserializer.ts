@@ -11,6 +11,7 @@ export const deserializeStructure = (
     description,
     departements,
     adresse,
+    waiting,
     cats,
     latitude,
     longitude,
@@ -26,6 +27,7 @@ export const deserializeStructure = (
     dateCreation: dateCreation ? new Date(dateCreation) : undefined,
     description,
     adresse,
+    waiting,
 
     departements: departements?.length
     //   ? { connect: { id: departementId } }
