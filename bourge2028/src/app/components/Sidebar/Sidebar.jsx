@@ -173,7 +173,7 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
     const handleClickOutside = (e) => {
       if (
         searchRef.current &&
-        !searchRef.current.contains(datae.target)
+        !searchRef.current.contains(e.target)
       ) {
         setResults([]);
         setStructResults([]);
