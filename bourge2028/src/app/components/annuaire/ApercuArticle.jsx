@@ -71,7 +71,7 @@ export default function ApercuArticle({ article, editable, onDelete }) {
             className={styles.editButton}
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/article/edit/${article.id}`);
+              router.push(`/article/${article.id}/edit`);
             }}
             aria-label="Éditer l’article"
           >
