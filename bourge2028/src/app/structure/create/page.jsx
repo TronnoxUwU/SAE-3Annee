@@ -4,8 +4,29 @@ import Topbar from '@/components/Topbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 export default function StructureForm() {
+    const { data: session } = useSession();
+    const [userData, setUserData] = useState(null);
+
+
+    useEffect(() => {
+
+        async function fetchUser() {
+            try {
+                const response = await fetch(`/api/users/${session.user?.id}`);
+                if (!response.ok) throw new Error("Utilisateur non trouvé");
+                const data = await response.json();
+                setUserData(data);
+            } catch (error) {
+                console.error("Erreur lors du chargement utilisateur :", error);
+            }
+        }
+
+        if (session?.user?.id) fetchUser();
+    }, []);
+
     const [formData, setFormData] = useState({
         nomStructure: '',
         description: '',
@@ -14,7 +35,7 @@ export default function StructureForm() {
         latitude: '',
         lienPhoto: '',
         departements: [],
-        categories: []
+        categories: [],
     });
 
     const [departementsDisponibles, setDepartementsDisponibles] = useState([]);
@@ -36,6 +57,7 @@ export default function StructureForm() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        console.log(userData);
     };
 
     const toggleDep = (dept) => {
@@ -116,6 +138,10 @@ export default function StructureForm() {
                 })),
                 // cats: juste renvoyer ce qui est dans formData.categories
                 cats: formData.categories || [],
+                personnes: [{
+                    personneId: session.user.id,
+                    role: 'Proprietaire'
+                }]
             };
 
             const response = await fetch('/api/structures', {
@@ -217,7 +243,7 @@ export default function StructureForm() {
                         </div>
 
                         <div className="mb-3">
-                            <label className="form-label">Catégories</label>
+                            <label className="form-label"><i className="bi bi-funnel"></i>Catégories</label>
                             {categoriesDisponibles.map(cat => renderCategory(cat))}
                         </div>
 

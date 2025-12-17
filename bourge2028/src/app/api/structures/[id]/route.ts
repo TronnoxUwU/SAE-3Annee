@@ -116,10 +116,10 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-        const tmp = await context.params;
+    const { id } = await context.params;
 
     const deleted = await prisma.structure.delete({
-      where: { id: Number(tmp.id) },
+      where: { id: Number(id) },
     });
 
     return NextResponse.json(

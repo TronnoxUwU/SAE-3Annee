@@ -9,7 +9,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-
     const {
       nomStructure,
       description,
@@ -18,10 +17,23 @@ export async function POST(req: Request) {
       latitude,
       lienPhoto,
       departements = [],
-      cats = []
+      cats = [],
+      personnes = [] // Contient session.user.id
     } = body;
 
-    // Création de la structure
+    if (!nomStructure) {
+      return NextResponse.json({ error: "Le nom de la structure est requis." }, { status: 400 });
+    }
+
+    // Récupérer le rôle "Proprietaire" dans la table Role
+    const proprietaireRole = await prisma.role.findUnique({
+      where: { nom: "Proprietaire" },
+    });
+    if (!proprietaireRole) {
+      return NextResponse.json({ error: "Le rôle 'Proprietaire' n'existe pas." }, { status: 500 });
+    }
+
+    // Création de la structure avec relations
     const structure = await prisma.structure.create({
       data: {
         nomStructure,
@@ -34,26 +46,34 @@ export async function POST(req: Request) {
         dateCreation: new Date(),
         waiting: true,
 
-        // relations Situer
+        // Relations Situer
         departements: {
           create: departements.map((d: any) => ({
-            departement: { connect: { id: d.id } }
-          }))
+            departement: { connect: { id: d.id } },
+          })),
         },
 
-        // relations StructureCat
+        // Relations StructureCat
         cats: {
           create: cats.map((c: any) => ({
-            categorie: { connect: { id: c.id } }
-          }))
-        }
+            categorie: { connect: { id: c.id } },
+          })),
+        },
+
+        // Relation Appartenir : ajouter la personne créant la structure avec le rôle "Proprietaire"
+        personnes: {
+          create: personnes.map((p: any) => ({
+            personne: { connect: { id: p.personneId } },
+            role: { connect: { id: proprietaireRole.id } },
+          })),
+        },
       },
       include: {
         departements: { include: { departement: true } },
         cats: { include: { categorie: true } },
-        personnes: { include: { personne: true } },
-        realisations: true
-      }
+        personnes: { include: { personne: true, role: true } },
+        realisations: true,
+      },
     });
 
     return NextResponse.json(structure, { status: 201 });
@@ -62,8 +82,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
-
-
 
 
 /**
