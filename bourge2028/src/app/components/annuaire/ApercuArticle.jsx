@@ -15,7 +15,6 @@ export default function ApercuArticle({ article }) {
   const originalSrc =
     firstImageComponent?.image?.lienImage || "/images/default-article.png";
 
-  console.log(article)
 
   const title =
     article.titre?.length > 30

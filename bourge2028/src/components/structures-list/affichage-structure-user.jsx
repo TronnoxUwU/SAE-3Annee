@@ -20,7 +20,6 @@ export default function Structure({userId}) {
 
 
   async function loadCategories() {
-    console.log(userId)
     const res = await fetch(`/api/users/${userId}`);
     if (!res.ok) {
       throw new Error("Utilisateur non trouvée");

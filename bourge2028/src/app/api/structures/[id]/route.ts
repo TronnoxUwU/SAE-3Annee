@@ -20,6 +20,7 @@ export async function GET(
         { status: 400 }
       );
     }
+    console.log("Fetching structure with ID:", structureId);  
 
     const structure = await prisma.structure.findUnique({
       where: { id: structureId },
@@ -115,8 +116,10 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+        const tmp = await context.params;
+
     const deleted = await prisma.structure.delete({
-      where: { id: Number(await context.params) },
+      where: { id: Number(tmp.id) },
     });
 
     return NextResponse.json(
