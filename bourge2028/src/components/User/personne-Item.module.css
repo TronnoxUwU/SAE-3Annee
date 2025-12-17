@@ -1,0 +1,175 @@
+/* =======================
+   Override liste
+======================= */
+
+.override_list {
+    padding-left: 0;
+}
+
+/* =======================
+   Carte personne
+======================= */
+
+.item_bloc {
+    box-shadow: 0 20px 60px rgba(69, 69, 69, 0.3);
+    margin-bottom: 5vh;
+}
+
+/* Header */
+
+.person_header {
+    /* background-color: rgb(209, 227, 246); */
+    background-color: rgb(244, 246, 209);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Boutons */
+
+.btn_crud {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn_crud i {
+    margin-left: 6px;
+}
+
+/* =======================
+   Corps de carte
+======================= */
+
+.person_card {
+    display: flex;
+}
+
+/* Image profil */
+/* 
+.person_card img {
+    min-width: 10vw;
+    max-width: 10vw;
+    min-height: 10vw;
+    max-height: 10vw;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 1vw;
+} */
+.avatar {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid #667eea;
+  box-shadow: 0 5px 15px rgba(69, 69, 69, 0.2);
+}
+
+.defaultAvatar {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Contenu */
+
+.person_content {
+    width: 65%;
+    margin-left: 2vw;
+}
+
+/* Infos top */
+
+.person_info {
+    display: flex;
+    justify-content: space-between;
+    gap: 5%;
+}
+.person_info p {
+    padding: 0.25em;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.person_top {
+    padding: 0.5em;
+    border-radius: 1em;
+    text-align: center;
+}
+
+/* Rôle */
+
+.person_role {
+    background-color: rgb(202, 207, 255);
+    flex-basis: 50%;
+}
+
+/* Date création */
+
+.person_date {
+    background-color: rgb(218, 218, 218);
+    flex-basis: 50%;
+}
+
+
+
+
+/* Description */
+
+.person_desc {
+    max-width: 35vw;
+    margin-top: 0.5em;
+    font-style: italic;
+}
+
+/* =======================
+   Contact
+======================= */
+
+.person_contact {
+    margin-bottom: 0.5em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+}
+
+.person_contact p {
+    margin: 0;
+    color: black;
+    font-weight: bold;
+}
+
+/* =======================
+   Responsive (optionnel)
+======================= */
+
+@media (max-width: 768px) {
+    .person_card {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .person_card img {
+        min-width: 120px;
+        max-width: 120px;
+        min-height: 120px;
+        max-height: 120px;
+        margin-bottom: 1em;
+    }
+
+    .person_content {
+        width: 90%;
+        margin-left: 0;
+    }
+
+    .person_desc {
+        max-width: 100%;
+    }
+}
