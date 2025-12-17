@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import * as turf from "@turf/turf";
 import axios from "axios";
 import Style from "./Sidebar.module.css";
@@ -24,6 +26,15 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
   const resultsRef = useRef(null);
   const searchRef = useRef(null);
   const searchTimeout = useRef(null);
+  
+  const pathname = usePathname(); // ✅ Pour détecter l'annuaire actif
+
+  // ✅ Navigation entre annuaires
+  const annuaires = [
+    { name: "Projets", path: "/annuaires/projets", icon: "📁" },
+    { name: "Cartes", path: "/annuaires/cartes", icon: "🗺️" },
+    { name: "Techniques", path: "/annuaires/techniques", icon: "⚙️" },
+  ];
 
   // ------------------- INITIALISATION -------------------
   useEffect(() => {
@@ -306,6 +317,30 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
           </>
         )}
       </ul>
+      {/* ✅ NAVIGATION ANNUAIRES */}
+      {isAnnuaire && (
+        <div className={Style.annuaire_nav}>
+          <div className={Style.annuaire_title}>ANNUAIRES</div>
+          <div className={Style.annuaire_buttons}>
+            {annuaires.map((annuaire) => {
+              const isActive = pathname === annuaire.path;
+              return (
+                <Link
+                  key={annuaire.path}
+                  href={annuaire.path}
+                  className={`${Style.annuaire_btn} ${isActive ? Style.active : ""}`}
+                  style={{
+                    pointerEvents: isActive ? "none" : "auto",
+                  }}
+                >
+                  <span className={Style.annuaire_icon}>{annuaire.icon}</span>
+                  <span>{annuaire.name}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
