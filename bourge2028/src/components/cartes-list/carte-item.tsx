@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Style from "./carte-Item.module.css";
+import Style from "./carte-item.module.css";
 
 interface CarteItemProps {
   id: number;

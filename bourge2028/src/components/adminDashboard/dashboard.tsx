@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DashboardStats from "./DashboardStats";
-import DashboardTraffic from "./DashboardTraffic";
-import DashboardTopContent from "./DashboardTopContent";
+import DashboardStats from "./dashboardStats";
+import DashboardTraffic from "./dashboardTraffic";
+import DashboardTopContent from "./dashboardTopContent";
 import style from "./admin-dashboard.module.css"
 
 export default function DashboardClient() {
