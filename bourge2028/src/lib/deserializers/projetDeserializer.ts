@@ -24,6 +24,7 @@ export const deserializeProjet = (p: any) => {
 
     return {
         nomProjet: p.nomProjet,
+        nomProjetSearch: p.nomProjetSearch?.toLowerCase(),
         realisation: p.realisation?.id ? { connect: { id: p.realisation.id } } : undefined,
         adresse: p.adresse,
         latitude: p.latitude,

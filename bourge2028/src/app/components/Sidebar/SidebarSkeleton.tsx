@@ -22,14 +22,6 @@ export default function SidebarSkeleton({ onFilterChange }: SidebarSkeletonProps
         />
       </div>
 
-      {/* Header avec bouton collapse */}
-      <div className={Style.sidebar_header}>
-        {open && <span>Menu</span>}
-        <button onClick={() => setOpen(!open)}>
-          {open ? "<" : ">"}
-        </button>
-      </div>
-
       {/* Skeleton des filtres */}
       <ul className={Style.filter_list}>
         {[1, 2, 3, 4, 5].map((i) => (

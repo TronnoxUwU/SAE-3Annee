@@ -44,10 +44,12 @@ export async function GET(req: Request) {
     const categoriesParam = searchParams.get("cats");
     const departementParam = searchParams.get("deps");
     const waitingParam = searchParams.get("waiting");
+    const searchParam = searchParams.get("search")?.toLowerCase();
 
     let categoryIds: number[] | undefined;
     let departementIds: number[] | undefined;
     let waiting: boolean | undefined;
+
 
     if (categoriesParam) {
       categoryIds = categoriesParam
@@ -76,10 +78,19 @@ export async function GET(req: Request) {
             },
           }
         : {}),
+
       ...(categoryIds?.length
         ? {
             cats: {
               some: { categorieId: { in: categoryIds } },
+            },
+          }
+        : {}),
+
+      ...(searchParam
+        ? {
+            nomStructSearch: {
+              contains: searchParam,
             },
           }
         : {}),

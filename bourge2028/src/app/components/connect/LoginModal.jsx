@@ -5,7 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import RegisterModal from "./RegisterModal";
 import Modal from "@/components/Modal";
-import Style from './connect.module.css';
+import Style from "@/app/styles/connect.module.css";
 import TopStyle from "@/components/Topbar.module.css"
 import ForgotPasswordModal from "./ForgotPasswordModal";
 
@@ -71,8 +71,7 @@ function LoginModalContent() {
                 type="button"
                 className={Style.login_switch}
                 onClick={() => {
-                  setShowLogin(false);
-                  setShowRegister(true);
+                  router.push("/inscription");
                 }}
               >
                 Créer un compte
@@ -99,14 +98,14 @@ function LoginModalContent() {
         )}
       </Modal>
 
-      <RegisterModal
+      {/* <RegisterModal
         isOpen={showRegister}
         onClose={() => setShowRegister(false)}
         onSwitchToLogin={() => {
           setShowRegister(false);
           setShowLogin(true);
         }}
-      />
+      /> */}
 
       <ForgotPasswordModal
         isOpen={showForgot}

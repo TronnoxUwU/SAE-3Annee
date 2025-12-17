@@ -8,17 +8,18 @@ export default function ApercuPoint({ id, type }) {
     useEffect(() => {
         switch (type) {
             case "structure":
-                fetch(`/api/structures/${id}`)
+                let structId = id.replace("struct_", "");
+                fetch(`/api/structures/${structId}`)
                     .then((res) => res.json())
                     .then((data) => setPointData(data))
                     .catch((err) => console.error("Erreur chargement structure:", err));
                 break;
-            case "realisation":
-                fetch(`/api/realisations/${id}`)
+            case "projet":
+                let realId = id.replace("projet_", "");
+                fetch(`/api/projets/${realId}`)
                     .then((res) => res.json())
                     .then((data) => setPointData(data))
-                    .catch((err) => console.error("Erreur chargement réalisation:", err));
-                break;
+                    .catch((err) => console.error("Erreur chargement réalisation:", err));                break;
             default:
                 console.error("Type de point inconnu:", type);
         }
@@ -38,10 +39,11 @@ export default function ApercuPoint({ id, type }) {
                     <p>{pointData.adresse}</p>
                     <a href={`/structure/${pointData.id}`}>Voir la fiche complète</a>
                 </div>
-            ) : type === "realisation" ? (
+            ) : type === "projet" ? (
                 <div>
-                    <h3>{pointData.titre}</h3>
-                    <p>{pointData.resume}</p>
+                    <h3>{pointData.realisation.nom}</h3>
+                    <p>{pointData.realisation.description}</p>
+                    <a href={`annuaires/projets/${pointData.realisation.id}`}>Voir la fiche complète</a>
                 </div>
             ) : null}
         </div>
