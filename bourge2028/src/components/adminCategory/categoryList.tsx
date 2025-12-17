@@ -72,6 +72,10 @@ export default function AdminCategory() {
       );
     }
 
+  if (items.length === 0) {
+      return <p>Aucune catégorie disponible, veuillez en créer.</p>;
+  }
+
   // ------------------------------------------------------------
   // ADD
   // ------------------------------------------------------------
