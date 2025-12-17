@@ -7,6 +7,7 @@ import { Paragraphe, ParagrapheHandle } from "./blocks/paragraphe";
 import { Image } from "./blocks/image";
 import { Sidebar } from "./sideEdition";
 import { SavePopup } from "./savepopup";
+import { useRouter } from "next/navigation";
 
 interface Block {
   id: string;
@@ -30,6 +31,7 @@ export const Editor: React.FC<EditorProps> = ({realisation, article}) => {
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [articleTitle, setArticleTitle] = useState<string>("");
+  const router = useRouter();
 
   // 👉 Nouveau : on garde une référence sur CHAQUE paragraphe
   const paragraphRefs = useRef<Record<string, ParagrapheHandle | null>>({});
@@ -84,6 +86,7 @@ useEffect(() => {
   }, [realisation, article]);
 
 const handleSave = async (titre: string) => {
+  console.log(titre)
   const json = {
     titre: titre,
     realisationId: realisation === -1 ? null : Number(realisation),
@@ -148,11 +151,12 @@ const handleSave = async (titre: string) => {
     const result = await response.json();
     console.log("✅ Article sauvegardé avec succès :", result);
     alert(`Article "${titre}" ${realisation === -1 ? 'modifié' : 'créé'} avec succès !`);
+    router.push(`/article/${article.id}`)
   } catch (error) {
     console.error("❌ Erreur lors de la sauvegarde :", error);
     alert("Erreur lors de la sauvegarde !");
   }
-}; // ✅ Fermeture de la fonction handleSave
+};
 
 
   const addBlockAt = (type: string, index: number) => {
@@ -367,6 +371,7 @@ const handleSave = async (titre: string) => {
         isOpen={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}
         onSave={handleSave}
+        initialTitle={articleTitle}
       />
     </div>
   );

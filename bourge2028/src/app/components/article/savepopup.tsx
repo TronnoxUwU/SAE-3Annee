@@ -1,15 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
 interface SavePopupProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (titre: string) => void;
+  initialTitle?: string;
 }
 
-export const SavePopup: React.FC<SavePopupProps> = ({ isOpen, onClose, onSave }) => {
-  const [titre, setTitre] = useState("");
+export const SavePopup: React.FC<SavePopupProps> = ({ isOpen, onClose, onSave, initialTitle = "" }) => {
+  const [titre, setTitre] = useState(initialTitle);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTitre(initialTitle);
+    }
+  }, [isOpen, initialTitle]);
 
   if (!isOpen) return null;
 
