@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Modal from "@/components/Modal";
-import Style from "./connect.module.css";
+import Style from "@/app/styles/connect.module.css";
 
 function RegisterModalContent({ isOpen, onClose, onSwitchToLogin }) {
   const router = useRouter();

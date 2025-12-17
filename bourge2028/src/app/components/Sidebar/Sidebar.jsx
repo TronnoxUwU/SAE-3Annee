@@ -222,8 +222,11 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
     const isLocked = parentChecked;
     return (
       <li key={cat.id} className={Style.category_item}>
-        <div className={`${Style.category_label} ${isLocked ? Style.locked : ""}`}
-          onClick={() => !isLocked && handleCategoryToggle(cat)}>
+        <div 
+          className={`${Style.category_label} ${isLocked ? Style.locked : ""}`}
+          style={{ paddingLeft: `${level * 20}px` }}
+          onClick={() => !isLocked && handleCategoryToggle(cat)}
+        >
           <div className={Style.category_left}>
             {cat.children?.length > 0 ? (
               <button className={Style.expand_btn} onClick={e => { e.stopPropagation(); toggleExpand(cat.id); }}>

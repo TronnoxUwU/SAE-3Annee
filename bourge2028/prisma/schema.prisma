@@ -71,6 +71,9 @@ model Personne {
   dateCreation DateTime @default(now())
   role         String
 
+  resetToken        String?
+  resetTokenExpires DateTime?
+
   structures Appartenir[]
   redactions Rediger[]
 }
