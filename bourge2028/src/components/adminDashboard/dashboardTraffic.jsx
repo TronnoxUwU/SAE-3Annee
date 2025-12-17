@@ -5,7 +5,7 @@ export default function DashboardTraffic({ data, period, onChange }) {
   return (
     <section className={`${style.dashboard_traffic, style.dashboard_bloc}`}>
       <header className="dashboard-header">
-        <h2>Trafic du site</h2>
+        <h2>Trafic du site (nombre de visiteurs uniques)</h2>
 
         <select
           value={period}
