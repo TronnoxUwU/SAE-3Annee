@@ -5,10 +5,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import { useRouter } from "next/navigation";
 
 export default function StructureForm() {
     const { data: session } = useSession();
     const [userData, setUserData] = useState(null);
+    const router = useRouter();
 
 
     useEffect(() => {
@@ -166,7 +168,7 @@ export default function StructureForm() {
                 departements: [],
                 categories: []
             });
-
+            router.push(`/account/${userData.id}`);
         } catch (error) {
             setMessage({ type: 'error', text: error.message });
         } finally {

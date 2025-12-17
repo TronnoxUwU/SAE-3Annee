@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname  } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import StructureItem from "./structure-Item";
 import tempStyle from "./structure-Item.module.css"
 import { useSession } from 'next-auth/react';
+import { prisma } from "@/lib/prisma";
+import { set } from "date-fns";
 
 
-
-export default function Structure({userId}) {
+export default function Structure({ userId }) {
   const router = useRouter();
   const pathname = usePathname()
   const [items, setItems] = useState([]);
@@ -16,26 +17,42 @@ export default function Structure({userId}) {
   const [error, setError] = useState(null);
   var { data: session } = useSession();
   const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+  const [rolesById, setRolesById] = useState({});
 
 
 
   async function loadCategories() {
     const res = await fetch(`/api/users/${userId}`);
     if (!res.ok) {
-      throw new Error("Utilisateur non trouvée");
+      throw new Error("Utilisateur non trouvé");
     }
-    var data = await res.json();
-    data = data["structures"]
-    // console.log(data);
-    setItems(data);
+    const data = await res.json();
+    const structures = data.structures;
+    setItems(structures);
+
+    // charger les rôles une seule fois
+    const roles = {};
+    await Promise.all(
+      structures.map(async (item) => {
+        if (item.role>=0 && !roles[item.role]) {
+          const resRole = await fetch(`/api/role/${item.role}`);
+          if (resRole.ok) {
+            const roleData = await resRole.json();
+            roles[item.role] = roleData.nom;
+          }
+        }
+      })
+    );
+
+    setRolesById(roles);
     setLoading(false);
   }
 
-  useEffect(() => { 
+  useEffect(() => {
     try {
 
       setLoading(true);
-      loadCategories(); 
+      loadCategories();
     } catch (err) {
       setError(err.message);
     }
@@ -61,53 +78,56 @@ export default function Structure({userId}) {
   }
 
   if (error) {
-      return (
-        <>
-          {/* <div className={Style.userPage}> */}
-          <div>
-            <h1>Erreur lors du chargement des structures</h1>
-            <p>{error}</p>
-            {/* <button onClick={() => router.push("/admin")}>
+    return (
+      <>
+        {/* <div className={Style.userPage}> */}
+        <div>
+          <h1>Erreur lors du chargement des structures</h1>
+          <p>{error}</p>
+          {/* <button onClick={() => router.push("/admin")}>
               Retour aux structures
             </button> */}
-          </div>
-        </>
-      );
-    }
+        </div>
+      </>
+    );
+  }
 
   return (
-  <>
-    {items.length === 0 ? session?.user?.id===userId ?(
-      <h3>Vous n'êtes membre d'aucune structure</h3>
-    ): (<h3>Cette personne n'est membre d'aucune structure</h3>) : (
-      <ul className={`${tempStyle.override_list}`}>
-        {items.map((item) => {
-          var canEdit = session?.user?.role === "Admin";
-          if (!canEdit) {
-            canEdit =
-              item.id === session?.user?.id && item.role === "Createur";
-          }
-          var str_role;
-          if (pathname.includes("account/") && pathname !== `account/${userId}`) {
-            str_role = `Cette personne est ${item.role} de cette structure`;
-          }
-          const structure = item.structure;
+    <>
+      {items.length === 0 ? session?.user?.id === userId ? (
+        <h3>Vous n'êtes membre d'aucune structure</h3>
+      ) : (<h3>Cette personne n'est membre d'aucune structure</h3>) : (
+        <ul className={`${tempStyle.override_list}`}>
+          {items.map((item) => {
+            const structure = item.structure;
 
-          return (
-            <StructureItem
-              key={structure.id}
-              id={structure.id}
-              nom={structure.nomStructure}
-              date={structure.dateCreation}
-              description={structure.description}
-              edit={canEdit}
-              role={str_role}
-            />
-          );
-        })}
-      </ul>
-    )}
-  </>
-);
+            let canEdit = session?.user?.role === "Admin";
+            if (!canEdit) {
+              canEdit =
+                item.personneId === session?.user?.id && rolesById[item.role] === "Createur";
+            }
+
+            let str_role;
+            if (pathname.includes("account/") && pathname !== `account/${userId}`) {
+              const nomRole = rolesById[item.role] ?? "";
+              str_role = `Cette personne est ${nomRole} de cette structure`;
+            }
+
+            return (
+              <StructureItem
+                key={structure.id}
+                id={structure.id}
+                nom={structure.nomStructure}
+                date={structure.dateCreation}
+                description={structure.description}
+                edit={canEdit}
+                role={str_role}
+              />
+            );
+          })}
+        </ul>
+      )}
+    </>
+  );
 
 }
