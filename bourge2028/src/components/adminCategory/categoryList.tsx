@@ -72,9 +72,6 @@ export default function AdminCategory() {
       );
     }
 
-  if (items.length === 0) {
-      return <p>Aucune catégorie disponible, veuillez en créer.</p>;
-  }
 
   // ------------------------------------------------------------
   // ADD
@@ -150,6 +147,8 @@ export default function AdminCategory() {
         onUpdate={null}
         onDelete={null}
       />
+
+      {items.length === 0 && (<><p>Aucune catégorie disponible, veuillez en créer.</p></>)}
 
       <ul className="list-group">
         {items

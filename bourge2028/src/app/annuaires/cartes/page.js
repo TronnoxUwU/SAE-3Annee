@@ -88,7 +88,7 @@ export default function AnnuairePage() {
       <Topbar fixed />
 
       {/* Sidebar gère le filtre de la carte */}
-      <Sidebar map={null} onFilterChange={setCatFilter} onGeoFilterChange={setGeoFilter} />
+      <Sidebar map={null} onFilterChange={setCatFilter} onGeoFilterChange={setGeoFilter} isAnnuaire={true}/>
 
       {/* Carte principale */}
       <div className="map-wrapper">

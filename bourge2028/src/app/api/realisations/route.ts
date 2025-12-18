@@ -43,7 +43,7 @@ export async function GET(req: Request) {
     const realisations = await prisma.realisation.findMany({
       where,
       include: {
-        structure: true,
+        structure:  { include: { personnes: true } },
         cats: { include: { categorie: true } },
         projet: {
           include: {

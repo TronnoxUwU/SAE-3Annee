@@ -95,6 +95,15 @@ export default function ProjetView({ id, type }) {
 
   return (
     <div style={{ minHeight: "100vh", paddingBottom: 60 }}>
+      <a
+        href="/annuaires/projets/"
+        title="Retour"
+        className="btn btn-link d-inline-flex align-items-center gap-1 fw-semibold text-dark text-decoration-none"
+      >
+        <i className="bi bi-chevron-left"></i>
+        Retour
+      </a>
+
       <div
         className="container mt-5 p-4"
         style={{ background: "white", borderRadius: 12 }}
@@ -184,7 +193,7 @@ export default function ProjetView({ id, type }) {
                 nom={struct.nomStructure}
                 date={struct.dateCreation}
                 description={struct.description}
-                edit={canEdit}
+                edit={canEdit()}
                 role={str_role}
                 etat={"galerie"}
               />
