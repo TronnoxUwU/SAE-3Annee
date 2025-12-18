@@ -92,10 +92,10 @@ export default function StructureEditPage() {
           })),
           // cats: juste renvoyer ce qui est dans formData.categories
           cats: structureData.cats || [],
-          personnes: structureData.personnes || [],
+          // personnes: structureData.personnes || [],
           realisations: structureData.realisations || []
         });
-
+        console.log(structureData);
         setSelectedDepartements(
           structureData.departements?.map(d => d.departementId) || []
         );
