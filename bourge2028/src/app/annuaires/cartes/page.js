@@ -121,6 +121,13 @@ export default function AnnuairePage() {
       >
         {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’Annuaire ↓"}
       </button>
+
+      <button
+        className = "btn-ajout-map"
+        onClick={() => router.push('/annuaires/cartes/proposition')}
+      >
+        +
+      </button>
     </main>
   );
 }

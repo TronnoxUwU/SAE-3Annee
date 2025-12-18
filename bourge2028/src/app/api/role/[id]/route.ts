@@ -19,7 +19,6 @@ export async function GET(
         { status: 404 }
       );
     }
-    console.log(role);
 
     return NextResponse.json(
       role,

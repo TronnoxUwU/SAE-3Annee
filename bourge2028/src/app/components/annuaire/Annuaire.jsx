@@ -14,9 +14,10 @@ export default function Annuaire({ articles }) {
 
   if (articles[0].lienCarte) {
     return <div className={styles.annuaire}>
-      {articles.map((article) => (
-        <ApercuCarte key={article.id} article={article} />
-      ))}
+      {articles.map((article) => {
+        if (article.waiting) return null;
+        return <ApercuCarte key={article.id} article={article} />
+      })}
     </div>
   }
   if (articles[0].realisation) {
