@@ -62,7 +62,7 @@ export default function ApercuRealisation({ article, editable, onDelete }) {
     }
   };
 
-  console.log(editable)
+  //console.log(editable)
 
   return (
     <div

@@ -77,7 +77,7 @@ export default function CreatePage() {
       }
 
       const result = await res.json();
-      console.log("✅ Résultat:", result);
+      //console.log("✅ Résultat:", result);
 
       // Redirection selon type
       if (type === "projet") {

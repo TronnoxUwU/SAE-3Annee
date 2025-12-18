@@ -84,7 +84,7 @@ export default function EditPage() {
         },
       };
 
-      console.log(payload)
+      //console.log(payload)
 
       const res = await fetch(`/api/realisations/${id}`, {
         method: "PUT",

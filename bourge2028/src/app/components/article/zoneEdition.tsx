@@ -86,7 +86,7 @@ useEffect(() => {
   }, [realisation, article]);
 
 const handleSave = async (titre: string) => {
-  console.log(titre)
+  //console.log(titre)
   const json = {
     titre: titre,
     realisationId: realisation === -1 ? null : Number(realisation),
@@ -129,7 +129,7 @@ const handleSave = async (titre: string) => {
     }).filter(Boolean),
   };
 
-  console.log("📝 Article sauvegardé :", JSON.stringify(json, null, 2));
+  //console.log("📝 Article sauvegardé :", JSON.stringify(json, null, 2));
   
   try {
     // ✅ PUT pour modification, POST pour création
@@ -149,7 +149,7 @@ const handleSave = async (titre: string) => {
     }
 
     const result = await response.json();
-    console.log("✅ Article sauvegardé avec succès :", result);
+    //console.log("✅ Article sauvegardé avec succès :", result);
     alert(`Article "${titre}" ${realisation === -1 ? 'modifié' : 'créé'} avec succès !`);
     router.push(`/article/${article.id}`)
   } catch (error) {
