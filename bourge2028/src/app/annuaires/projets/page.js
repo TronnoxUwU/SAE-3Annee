@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Topbar from "@/components/Topbar.jsx";
 import Sidebar from "@/app/components/Sidebar/SidebarWrapper";
 import "@/app/styles/home.css";
@@ -12,6 +12,7 @@ const Annuaire = dynamic(() => import("@/app/components/annuaire/Annuaire"), { s
 
 export default function AnnuairePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // États UI
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -27,6 +28,14 @@ export default function AnnuairePage() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const searchFromUrl = searchParams.get("search");
+
+    if (searchFromUrl) {
+      setSearchStruct(searchFromUrl);
+    }
+  }, [searchParams]);
 
   // Animation du panneau latéral (drawer)
   useEffect(() => {

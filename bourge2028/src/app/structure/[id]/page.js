@@ -176,7 +176,7 @@ export default function StructureDetailPage() {
         {/* Section Articles */}
         <div className={Style.articlesSection}>
           <a
-            href={`/structure/${params.id}/articles`}
+            href={`/annuaires/projets?search=${structure.nomStructure}`}
             className={Style.articlesLink}
           >
             <div className={Style.articlesContainer}>
@@ -204,10 +204,10 @@ export default function StructureDetailPage() {
 
               <div className={Style.articlesCount}>
                 <div className={Style.countBox}>
-                  <span className={Style.number}>{structure?.articlesCount || 0}</span>
+                  <span className={Style.number}>{structure?.realisations.length || 0}</span>
                   <div className={Style.countLine}></div>
                   <span className={Style.countLabel}>
-                    {structure?.articlesCount > 1 ? "RESSOURCES" : "RESSOURCE"}
+                    {structure?.realisations.length > 1 ? "RESSOURCES" : "RESSOURCE"}
                   </span>
                 </div>
               </div>
