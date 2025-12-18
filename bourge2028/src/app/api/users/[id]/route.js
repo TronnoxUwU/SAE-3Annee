@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/authOptions";
+import { authOptions } from "@/app/api/auth/(old) authOptions";
+import {AuthAdmin, AuthUser} from "@/app/api/api-protection"
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { deserializePersonne } from "@/lib/deserializers";
@@ -12,17 +13,20 @@ import { serializePersonne } from "@/lib/serializers";
  */
 export async function GET(request, { params }) {
   try {
-    // const session = await getServerSession(authOptions);
-    
-    // if (!session) {
-    //   return NextResponse.json(
-    //     { error: "Non authentifié" },
-    //     { status: 401 }
-    //   );
-    // }
-
     const { id } = await params;
     const personneId = parseInt(id);
+
+    const auth = await AuthUser(personneId)
+    if (auth & !auth.access){
+        return auth;
+    }
+    else if (!auth) {
+        return NextResponse.json(
+            { error: "Erreur authentification/serveur" },
+            { status: 500 }
+        );
+    }
+
 
     if (isNaN(personneId)) {
       return NextResponse.json(
@@ -79,13 +83,22 @@ export async function GET(request, { params }) {
  */
 export async function PUT(request, { params }) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
 
     const { id } = await params;
     const personneId = parseInt(id, 10);
+
+
+    const auth = await AuthUser(personneId)
+    if (auth & !auth.access){
+        return auth;
+    }
+    else if (!auth) {
+        return NextResponse.json(
+            { error: "Erreur authentification/serveur" },
+            { status: 500 }
+        );
+    }
+
     if (isNaN(personneId)) {
       return NextResponse.json({ error: "ID invalide" }, { status: 400 });
     }
@@ -207,24 +220,21 @@ export async function PUT(request, { params }) {
  */
 export async function DELETE(request, { params }) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session) {
-      return NextResponse.json(
-        { error: "Non authentifié" },
-        { status: 401 }
-      );
-    }
-
-    // if (session.user.role !== "Admin") {
-    //   return NextResponse.json(
-    //     { error: "Accès refusé - Admin uniquement" },
-    //     { status: 403 }
-    //   );
-    // }
 
     const { id } = params;
     const personneId = parseInt(id);
+
+    const auth = await AuthUser(personneId)
+    const isAdmin = await AuthAdmin(personneId)
+    if ((auth & !auth.access) || (isAdmin & !isAdmin.access)){
+        return auth;
+    }
+    else if (!auth || !isAdmin) {
+        return NextResponse.json(
+            { error: "Erreur authentification/serveur" },
+            { status: 500 }
+        );
+    }
 
     if (isNaN(personneId)) {
       return NextResponse.json(

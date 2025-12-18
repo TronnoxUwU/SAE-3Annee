@@ -11,21 +11,6 @@ import { serializePersonne } from "@/lib/serializers";
  */
 export async function GET() {
   try {
-    // const session = await getServerSession(authOptions);
-
-    // if (!session) {
-    //   return NextResponse.json(
-    //     { error: "Non authentifié" },
-    //     { status: 401 }
-    //   );
-    // }
-
-    // if (session.user.role !== "Admin") {
-    //   return NextResponse.json(
-    //     { error: "Accès refusé" },
-    //     { status: 403 }
-    //   );
-    // }
 
     const isAdmin = await AuthAdmin()
     if (isAdmin & !isAdmin.access){

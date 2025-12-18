@@ -39,7 +39,7 @@ export default function LegalPage() {
             <p>Ce site a été réalisé dans le cadre d’un projet universitaire sous l’IUT d’Orléans.</p>
             <p>
             <strong>Membres du projet :</strong><br></br>
-            <a className={style.lien} href="www.portfolio.shankaclermont.fr" >Shanka Clermont</a><br></br>
+            <a className={style.lien} href="https://www.portfolio.shankaclermont.fr" >Shanka Clermont</a><br></br>
             Baptiste Richard<br></br>
             Tristan Chaloine
             </p>
