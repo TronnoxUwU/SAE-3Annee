@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Topbar from "@/components/Topbar.jsx";
 import Style from "../page.module.css";
+import axios from "axios";
 
 export default function StructureEditPage() {
   const params = useParams();
@@ -23,6 +24,8 @@ export default function StructureEditPage() {
   });
   const [allDepartements, setAllDepartements] = useState([]);
   const [selectedDepartements, setSelectedDepartements] = useState([]);
+  const [categoriesDisponibles, setCategoriesDisponibles] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -72,7 +75,6 @@ export default function StructureEditPage() {
           router.push(`/structure/${params.id}`);
           return;
         }
-        console.log(structureData); // --- IGNORE ---
 
         setFormData({
           nomStructure: structureData.nomStructure,
@@ -104,6 +106,11 @@ export default function StructureEditPage() {
           const depData = await depRes.json();
           setAllDepartements(depData);
         }
+        const catRes = await fetch("/api/categories");
+        if (catRes.ok) {
+          const catData = await catRes.json();
+          setCategoriesDisponibles(catData);
+        }
 
       } catch (err) {
         setError(err.message);
@@ -125,6 +132,44 @@ export default function StructureEditPage() {
     }));
   };
 
+  const toggleCategory = (cat) => {
+    setFormData(prev => {
+      const exists = prev.cats.find(c => c.id === cat.id);
+      if (exists) {
+        return {
+          ...prev,
+          cats: prev.cats.filter(c => c.id !== cat.id)
+        };
+      } else {
+        return {
+          ...prev,
+          cats: [...prev.cats, { id: cat.id, nom: cat.nom }]
+        };
+      }
+    });
+  };
+
+  const renderCategory = (cat, level = 0) => {
+    const isChecked = formData.cats.some(c => c.id === cat.id);
+    return (
+      <div key={cat.id} className="form-check" style={{ marginLeft: 20 }}>
+        <input
+          className="form-check-input"
+          type="checkbox"
+          checked={isChecked}
+          onChange={() => toggleCategory(cat)}
+          id={`category-${cat.id}`}
+        />
+        <label className="form-check-label" htmlFor={`category-${cat.id}`}>{cat.nom}</label>
+
+        {cat.children?.length > 0 && (
+          <div>
+            {cat.children.map(child => renderCategory(child, level + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -313,6 +358,12 @@ export default function StructureEditPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Categories */}
+                <div className="mb-3">
+                  <label className="form-label"><i className="bi bi-funnel"></i>Catégories</label>
+                  {categoriesDisponibles.map(cat => renderCategory(cat))}
+                </div>
 
                 <hr className="my-4" />
 
