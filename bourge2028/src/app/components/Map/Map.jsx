@@ -137,7 +137,8 @@ useEffect(() => {
           label: structure.nomStructure,
           type: "structure",
           categories: structure.cats?.map(cat => cat.id) || [],
-          departementId: structure.departements?.[0]?.id || null
+          departementId: structure.departements?.[0]?.id || null,
+          waiting : structure.waiting
         }));
         setAllPointsStructure(points);
       })
@@ -238,8 +239,7 @@ useEffect(() => {
           />
         )}
         {pointsStructure.map(p => {
-          if (!p.coords || p.coords.includes(null)) return null
-
+          if (!p.coords || p.coords.includes(null)|| p.waiting) return null
           return (
             <Marker
               key={p.id}

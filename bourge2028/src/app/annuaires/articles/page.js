@@ -52,7 +52,6 @@ export default function AnnuairePage() {
         setError(null);
         let url = "/api/articles";
         if (catFilter && catFilter.length > 0) {
-          console.log("Filtres mis à jour :", catFilter);
           const params = new URLSearchParams();
           params.set(
             "cats",

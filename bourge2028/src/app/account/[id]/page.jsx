@@ -97,7 +97,7 @@ export default function AccountPage() {
           },
         });
       }
-      
+
     } catch (err) {
       alert("Erreur : " + err.message);
     }
@@ -171,8 +171,16 @@ export default function AccountPage() {
           <h2>
             {isMine ? "Mes structures" : `Structures de ${user.prenom}`}
           </h2>
+          {isMine && (
+            <button
+              className="btn btn-primary mb-3"
+              onClick={() => router.push(`/structure/create`)}
+            >
+              Créer votre structure
+            </button>
+          )}
 
-          <Structure userId={userId}/>
+          <Structure userId={userId} />
         </div>
       </div>
     </>

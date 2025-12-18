@@ -6,7 +6,6 @@ import { sendMail } from "@/lib/mail";
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
-    console.log("Forgot password request for email:", email);
     if (!email) {
       return NextResponse.json(
         { error: "Email manquant" },

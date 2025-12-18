@@ -53,7 +53,6 @@ export default function AnnuairePage() {
 
         let url = "/api/cartes";
         if (catFilter && catFilter.length > 0) {
-          console.log("Filtres mis à jour :", catFilter);
           const params = new URLSearchParams();
           params.set(
             "cats",
@@ -76,13 +75,6 @@ export default function AnnuairePage() {
     }
 
     fetchArticles();
-  }, [catFilter]);
-
-  // 🔹 Log des changements de filtres
-  useEffect(() => {
-    if (catFilter) {
-      console.log("Filtres mis à jour :", catFilter);
-    }
   }, [catFilter]);
 
   const handleClose = () => {
