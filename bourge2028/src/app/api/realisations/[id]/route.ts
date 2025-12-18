@@ -19,7 +19,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
         cats: { include: { categorie: true } },
         projet: {
           include: {
-            departement: true,
+            departements: true,
           },
         },
         materiaux: true,
@@ -70,7 +70,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         cats: true,
         projet: {
           include: {
-            departement: true,
+            departements: true,
           },
         },
         materiaux: true,

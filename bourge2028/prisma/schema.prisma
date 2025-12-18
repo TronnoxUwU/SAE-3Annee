@@ -274,12 +274,15 @@ model Caroussel {
 }
 
 model Analytics {
-  id         Int      @id @default(autoincrement())
-  page       String
-  ipAddress  String? // need to be hashed
-  userAgent  String? // type d’appareil
-  dateVisite DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  page        String
+  visitorHash String
+  dateVisite  BigInt
+
+  @@index([visitorHash, dateVisite])
+  @@index([page, dateVisite])
 }
+
 
 model Carte {
   id               Int     @id @default(autoincrement())

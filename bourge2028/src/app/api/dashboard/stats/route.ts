@@ -8,13 +8,20 @@ import { NextResponse } from "next/server";
  * Récupère les stats
  */
 export async function GET() {
-  const startMonth = startOfMonth(new Date());
+  const startMonth = Number(startOfMonth(new Date()));
 
   const users = await prisma.personne.count();
 
-  const visitorsMonth = await prisma.analytics.count({
-    where: { dateVisite: { gte: startMonth } },
+  const uniqueVisitors = await prisma.analytics.groupBy({
+    by: ['visitorHash'],
+    where: {
+      dateVisite: {
+        gte: startMonth,
+      },
+    },
   });
+  const visitorsMonth = uniqueVisitors.length;
+
 
   const structures = await prisma.structure.count({
     where: { waiting: false },

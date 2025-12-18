@@ -122,6 +122,7 @@ export async function PUT(
     const updated = await prisma.article.update({
       where: { id: Number(id) },
       data: {
+        titre: data.titre,
         composants: {
           deleteMany: {}, // 🔥 supprime tous les anciens composants
           create: data.composants?.create ?? [], // recrée les nouveaux

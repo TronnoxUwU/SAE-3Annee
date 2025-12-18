@@ -36,6 +36,7 @@ export const deserializeStructure = (
       ? {
         connect: cats.map((c: any) => ({ id: c.id })),
       }
+
       : undefined,
 
     latitude: latitude,

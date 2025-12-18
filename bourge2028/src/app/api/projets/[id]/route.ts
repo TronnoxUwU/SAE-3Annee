@@ -19,6 +19,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
           include: {
             cats: { include: { categorie: true } },
             structure: true,
+            articles: { include: { composants: true } },
           },
         },
         departements: { 
