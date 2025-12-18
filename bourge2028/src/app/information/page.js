@@ -23,7 +23,8 @@ export default function InformationPage() {
           <section className="p-4">
             <h2 className="h4">Cette page n'est plus à jour</h2>
             <p>
-              Vous avez une quoicouphoto de cheval en fond
+              Vous avez une quoicouphoto de cheval en fond<br></br>
+              Umamuslime ugly derby
             </p>
           </section>
         </div>
