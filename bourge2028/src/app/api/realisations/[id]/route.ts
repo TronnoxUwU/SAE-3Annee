@@ -62,21 +62,22 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const body = await req.json();
     const realisationData = deserializeRealisation(body);
 
+    if (realisationData.projet?.create) {
+      realisationData.projet = {
+        update: realisationData.projet.create,
+      };
+    }
+
+    if (realisationData.technique?.create) {
+      realisationData.technique = {
+        update: realisationData.technique.create,
+      };
+    }
+
+
     const updated = await prisma.realisation.update({
       where: { id: realisationId },
       data: realisationData,
-      include: {
-        structure: true,
-        cats: true,
-        projet: {
-          include: {
-            departements: true,
-          },
-        },
-        materiaux: true,
-        technique: true,
-        articles: true,
-      },
     });
 
 
