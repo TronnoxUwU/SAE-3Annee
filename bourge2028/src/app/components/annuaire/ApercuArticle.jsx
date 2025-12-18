@@ -15,6 +15,7 @@ export default function ApercuArticle({ article, editable, onDelete }) {
   const originalSrc =
     firstImageComponent?.image?.lienImage || "/images/default-article.png";
 
+
   const title =
     article.titre?.length > 30
       ? article.titre.substring(0, 27) + "..."

@@ -11,7 +11,7 @@ export default function AdminSidebar() {
 
   const menuItems = [
     { name: "Accueil", path: "/admin", icon: "bi-house-door" },
-    { name: "Dashboard", path: "/admin/dashboard", icon: "bi-speedometer2" },
+    { name: "Statistiques", path: "/admin/dashboard", icon: "bi-speedometer2" },
     { name: "Catégories", path: "/admin/categories", icon: "bi-tags" },
     { name: "Structures", path: "/admin/structures", icon: "bi-diagram-3" },
     { name: "Créations en attente", path: "/admin/waiting", icon: "bi-hourglass-split" },

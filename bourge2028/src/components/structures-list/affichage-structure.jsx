@@ -24,7 +24,6 @@ export default function Structure() {
       throw new Error("Structures non trouvées");
     }
     const data = await res.json();
-    //console.log(data);
     setItems(data);
     setLoading(false);
   }

@@ -14,7 +14,7 @@ generator client {
 }
 
 model Structure {
-  id              Int            @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   nomStructure    String?
   nomStructSearch String?
   description     String?
@@ -22,22 +22,21 @@ model Structure {
   lienPhoto       String?
   dateCreation    DateTime?
   // departementId Int?
-  longitude    Float?
-  latitude     Float?
+  longitude       Float?
+  latitude        Float?
 
-
-  waiting          Boolean
+  waiting Boolean
 
   // relations
-  departements    Situer[]
-  personnes       Appartenir[] // Appartenir (avec role)
-  realisations    Realisation[] // Réaliser
-  cats            StructureCat[] // Avoir
+  departements Situer[]
+  personnes    Appartenir[] // Appartenir (avec role)
+  realisations Realisation[] // Réaliser
+  cats         StructureCat[] // Avoir
 }
 
 model Situer {
   id            Int         @id @default(autoincrement())
-  structure     Structure   @relation(fields: [structureId], references: [id])
+  structure     Structure   @relation(fields: [structureId], references: [id], onDelete: Cascade)
   structureId   Int
   departement   Departement @relation(fields: [departementId], references: [id])
   departementId Int
@@ -84,7 +83,7 @@ model Personne {
 
 model Appartenir {
   id          Int       @id @default(autoincrement())
-  structure   Structure @relation(fields: [structureId], references: [id])
+  structure   Structure @relation(fields: [structureId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   structureId Int
   personne    Personne  @relation(fields: [personneId], references: [id])
   personneId  Int
@@ -103,7 +102,7 @@ model Role {
 }
 
 model Realisation {
-  id           Int         @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   nom          String?
   description  String?
   dateCreation DateTime?
@@ -157,7 +156,7 @@ model RealisationCat {
 
 model StructureCat {
   id          Int       @id @default(autoincrement())
-  structure   Structure @relation(fields: [structureId], references: [id])
+  structure   Structure @relation(fields: [structureId], references: [id], onDelete: Cascade)
   structureId Int
   categorie   Categorie @relation(fields: [categorieId], references: [id])
   categorieId Int
@@ -275,12 +274,15 @@ model Caroussel {
 }
 
 model Analytics {
-  id         Int      @id @default(autoincrement())
-  page       String
-  ipAddress  String? // need to be hashed
-  userAgent  String? // type d’appareil
-  dateVisite DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  page        String
+  visitorHash String
+  dateVisite  BigInt
+
+  @@index([visitorHash, dateVisite])
+  @@index([page, dateVisite])
 }
+
 
 model Carte {
   id               Int     @id @default(autoincrement())

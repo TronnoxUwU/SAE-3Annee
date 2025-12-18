@@ -73,22 +73,19 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
           <div className={Styles.dropdown}>
             <ul>
               <li>
-                <a href="/">Accueil</a>
+                <a href="/">Carte de la culture</a>
               </li>
               <li>
                 <a href="/annuaires">Annuaires</a>
               </li>
-              <li>
+              {/* <li>
                 <a href="/information">Informations</a>
-              </li>
+              </li> */}
               <li>
                 <a href="/structure">Structures</a>
               </li>
               <li>
                 <a href="/contact">Contact</a>
-              </li>
-              <li>
-                <a href="/credit">Crédits</a>
               </li>
               <li>
                 <a href="/legal">Mentions légales</a>

@@ -24,6 +24,5 @@ export const deserializeCategorie = (
       : undefined,
   };
 
-  console.log(deserialized)
   return deserialized;
 };

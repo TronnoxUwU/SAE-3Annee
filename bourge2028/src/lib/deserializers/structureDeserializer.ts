@@ -19,36 +19,35 @@ export const deserializeStructure = (
     realisations,
   } = data;
 
-  console.log(data)
-
   const deserialized: Prisma.StructureCreateInput = {
     nomStructure,
     nomStructSearch: nomStructure.toLowerCase(),
     dateCreation: dateCreation ? new Date(dateCreation) : undefined,
     description,
     adresse,
-    waiting,
+    waiting: waiting ?? true,
 
     departements: departements?.length
-    //   ? { connect: { id: departementId } }
-      ? { connect: departements.map((d: any) => ({ id: d.id })),}
+      //   ? { connect: { id: departementId } }
+      ? { connect: departements.map((d: any) => ({ id: d.id })), }
       : undefined,
 
     cats: cats?.length
       ? {
-          create: cats.map(deserializeCategorie),
-        }
+        connect: cats.map((c: any) => ({ id: c.id })),
+      }
+
       : undefined,
 
     latitude: latitude,
     longitude: longitude,
 
     personnes: personnes?.length
-      ? { connect: personnes.map((p: any) => ({ id: p.id })),}
+      ? { connect: personnes.map((p: any) => ({ id: p.id })), }
       : undefined,
 
     realisations: realisations?.length
-      ? { connect: realisations.map((r: any) => ({ id: r.id })),}
+      ? { connect: realisations.map((r: any) => ({ id: r.id })), }
       : undefined,
   };
 

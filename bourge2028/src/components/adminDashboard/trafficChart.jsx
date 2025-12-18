@@ -46,7 +46,7 @@ export default function TrafficChart({ data }) {
         <Tooltip content={<CustomTooltip />} />
 
         <Bar
-          dataKey="visits"
+          dataKey="visiteurs uniques"
           fill="#6366f1"
           radius={[6, 6, 0, 0]}
           activeBar={{ fill: "#4f46e5" }}

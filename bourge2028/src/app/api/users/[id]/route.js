@@ -46,7 +46,6 @@ export async function GET(request, { params }) {
         }
       }
     });
-
     if (!personne) {
       return NextResponse.json(
         { error: "Utilisateur non trouvé" },
