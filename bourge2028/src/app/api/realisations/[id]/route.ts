@@ -65,13 +65,13 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (realisationData.projet?.create) {
       realisationData.projet = {
         update: realisationData.projet.create,
-      };
+      } as any;
     }
 
     if (realisationData.technique?.create) {
       realisationData.technique = {
         update: realisationData.technique.create,
-      };
+      } as any;
     }
 
 
