@@ -10,7 +10,6 @@ interface ListItemProps {
 
 const ListLocalisation = ({ id, nomDepartement }: ListItemProps) => {
 
-  console.log("feur");
   return (
     <li className={`card p-0 ${Style.item_bloc}`}>
       <div className="d-flex align-items-center p-2">

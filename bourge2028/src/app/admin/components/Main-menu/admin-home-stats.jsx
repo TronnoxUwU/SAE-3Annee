@@ -23,12 +23,12 @@ export default function AdminHomeStats() {
 
 function StatCard({ label, value, icon }) {
   return (
-    <div className={Style.stat_card}>
+    <a className={Style.stat_card} href="/admin/accounts">
       <i className={`bi ${icon} ${Style.icon}`}></i>
       <div>
         <p className={Style.value}>{value}</p>
         <p className={Style.label}>{label}</p>
       </div>
-    </div>
+    </a>
   );
 }

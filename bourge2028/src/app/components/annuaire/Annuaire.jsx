@@ -49,13 +49,12 @@ export default function Annuaire({ articles }) {
 
   /* ===== CARTES ===== */
   if (articles[0].lienCarte) {
-    return (
-      <div className={styles.annuaire}>
-        {articles.map((article) => (
-          <ApercuCarte key={article.id} article={article} />
-        ))}
-      </div>
-    );
+    return <div className={styles.annuaire}>
+      {articles.map((article) => {
+        if (article.waiting) return null;
+        return <ApercuCarte key={article.id} article={article} />
+      })}
+    </div>
   }
 
   /* ===== RÉALISATIONS ===== */
