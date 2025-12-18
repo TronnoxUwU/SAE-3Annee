@@ -62,6 +62,8 @@ export default function ApercuRealisation({ article, editable, onDelete }) {
     }
   };
 
+  console.log(editable)
+
   return (
     <div
       className={styles.apercuArticle}

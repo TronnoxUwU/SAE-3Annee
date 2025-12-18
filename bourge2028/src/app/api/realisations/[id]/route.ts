@@ -103,7 +103,6 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
       prisma.technique.deleteMany({ where: { realisationId } }),
       prisma.projet.deleteMany({ where: { realisationId } }),
       prisma.realisation.delete({ where: { id: realisationId } }),
-      prisma.articles.deleteMany({ where: { realisationId } })
     ]);
 
 
