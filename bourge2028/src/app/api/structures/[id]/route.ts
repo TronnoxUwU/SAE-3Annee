@@ -20,7 +20,6 @@ export async function GET(
         { status: 400 }
       );
     }
-    console.log("Fetching structure with ID:", structureId);  
 
     const structure = await prisma.structure.findUnique({
       where: { id: structureId },

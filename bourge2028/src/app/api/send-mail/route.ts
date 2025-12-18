@@ -13,7 +13,6 @@ export async function POST(req: Request) {
     }
 
     await sendMail(email, subject, message);
-    console.log("Email envoyé avec succès à", email);
 
     return NextResponse.json(
       { success: true, message: "Email envoyé avec succès." },
