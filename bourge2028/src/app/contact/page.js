@@ -17,7 +17,7 @@ export default function ContactPage() {
       <main className="container my-5">
         <div className="card shadow-sm mb-4">
           <div className="card-body p-0">
-            <div className="card-header"><h1 className="card-title p-2">Mentions légales</h1></div>
+            <div className="card-header"><h1 className="card-title p-2">Informations de contact</h1></div>
 
 
           <section className="p-4">

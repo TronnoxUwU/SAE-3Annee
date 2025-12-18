@@ -66,7 +66,8 @@ export default function LegalPage() {
           L’ensemble des contenus présents sur ce site (textes, images, graphismes, logos, icônes, éléments visuels et structure générale) est protégé par le droit d’auteur et le droit de la propriété intellectuelle.
           </p>
           <p>
-          La majorité des images utilisées sont <strong>libres de droits</strong> ou utilisées dans le cadre du <strong>fair use</strong> à des fins pédagogiques et non commerciales.
+          La majorité des images utilisées sont <strong>libres de droits</strong> ou utilisées dans le cadre du <strong>fair use</strong> à des fins pédagogiques et non commerciales.<br></br>
+          L'image "region.png" tirée de <a href="https://www.diegoenfrance.com/fr/goudargues-guide-touristique/">goudargues</a> , utilisée en fond de page administrateur ou dans d'autre page et nommé de la licence "Attribution 4.0 International".
           </p>
           <p>
           Toute reproduction, représentation, modification ou adaptation de tout ou partie des éléments du site est interdite sans autorisation écrite préalable, sauf dans les cas prévus par la loi.
