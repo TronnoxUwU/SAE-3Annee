@@ -193,7 +193,7 @@ export default function ProjetView({ id, type }) {
                 nom={struct.nomStructure}
                 date={struct.dateCreation}
                 description={struct.description}
-                edit={canEdit}
+                edit={canEdit()}
                 role={str_role}
                 etat={"galerie"}
               />
