@@ -76,7 +76,7 @@ export default function Topbar({ title = "Bourges 2028", fixed = false }) {
                 <a href="/">Carte de la culture</a>
               </li>
               <li>
-                <a href="/annuaire">Annuaire</a>
+                <a href="/annuaires">Annuaires</a>
               </li>
               {/* <li>
                 <a href="/information">Informations</a>

@@ -44,6 +44,14 @@ export default function ArticlePage() {
     <>
       <Topbar />
       <div className={styles.articlePage}>
+        <a
+          href="/annuaires/projets/"
+          title="Retour"
+          className="btn btn-link d-inline-flex align-items-center gap-1 fw-semibold text-dark text-decoration-none"
+        >
+          <i className="bi bi-chevron-left"></i>
+          Retour
+        </a>
         <h1>{article.titre}</h1>
 
         {article.composants.map((elt, i) => {

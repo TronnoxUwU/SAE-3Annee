@@ -1,8 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Topbar from "@/components/Topbar.jsx";
 import Sidebar from "@/app/components/Sidebar/SidebarWrapper";
 import "@/app/styles/home.css";
@@ -10,8 +10,10 @@ import "@/app/styles/home.css";
 const Map = dynamic(() => import("@/app/components/Map/Map"), { ssr: false });
 const Annuaire = dynamic(() => import("@/app/components/annuaire/Annuaire"), { ssr: false });
 
-export default function AnnuairePage() {
+// Composant interne qui utilise useSearchParams
+function AnnuaireContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // États UI
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -27,6 +29,14 @@ export default function AnnuairePage() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const searchFromUrl = searchParams.get("search");
+
+    if (searchFromUrl) {
+      setSearchStruct(searchFromUrl);
+    }
+  }, [searchParams]);
 
   // Animation du panneau latéral (drawer)
   useEffect(() => {
@@ -139,8 +149,17 @@ export default function AnnuairePage() {
           }`}
         onClick={handleClose}
       >
-        {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’Annuaire ↓"}
+        {drawerOpen ? "Revenir à la carte ↑" : "Aller à l'Annuaire ↓"}
       </button>
     </main>
+  );
+}
+
+// Composant principal avec Suspense
+export default function AnnuairePage() {
+  return (
+    <Suspense fallback={<div>Chargement...</div>}>
+      <AnnuaireContent />
+    </Suspense>
   );
 }
