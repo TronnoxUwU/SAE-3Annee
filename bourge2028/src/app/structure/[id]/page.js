@@ -161,7 +161,7 @@ export default function StructureDetailPage() {
                   {/* <div className={Style.departementDot}></div> */}
                   <i className="bi bi-pin-map"></i>
                   <span className={Style.departementName}>
-                    {item.nom}
+                    {item.nomDep}
                   </span>
                   <span className={Style.departementNumber}>
                     {String(idx + 1).padStart(2, '0')}

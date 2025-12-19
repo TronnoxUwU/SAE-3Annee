@@ -38,6 +38,7 @@ export default function StructureForm() {
         lienPhoto: '',
         departements: [],
         categories: [],
+        personnes: []
     });
 
     const [departementsDisponibles, setDepartementsDisponibles] = useState([]);

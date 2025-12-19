@@ -74,10 +74,12 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const data = deserializeStructure(body);
+    const data = deserializeStructure(body, true); // ✅ Passer true pour update
 
     // 🔒 Sécurité : empêcher modification du waiting via cette route
     delete (data as any).waiting;
+
+    console.log(data);
 
     const structure = await prisma.structure.update({
       where: { id: structureId },
@@ -105,7 +107,6 @@ export async function PUT(
     );
   }
 }
-
 
 /**
  * DELETE /api/structures/[id]
