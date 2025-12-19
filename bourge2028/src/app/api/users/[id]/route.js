@@ -18,7 +18,7 @@ export async function GET(request, { params }) {
 
     const auth = await AuthUser(personneId)
     if (auth & !auth.access){
-        return auth;
+        return NextResponse.json(auth);
     }
     else if (!auth) {
         return NextResponse.json(
@@ -90,7 +90,7 @@ export async function PUT(request, { params }) {
 
     const auth = await AuthUser(personneId)
     if (auth & !auth.access){
-        return auth;
+        return NextResponse.json(auth);
     }
     else if (!auth) {
         return NextResponse.json(
@@ -227,7 +227,7 @@ export async function DELETE(request, { params }) {
     const auth = await AuthUser(personneId)
     const isAdmin = await AuthAdmin(personneId)
     if ((auth & !auth.access) || (isAdmin & !isAdmin.access)){
-        return auth;
+        return NextResponse.json(auth);
     }
     else if (!auth || !isAdmin) {
         return NextResponse.json(

@@ -17,7 +17,7 @@ export async function GET(req) {
 
   const isAdmin = await AuthAdmin()
   if (isAdmin & !isAdmin.access){
-      return isAdmin;
+      return NextResponse.json(isAdmin);
   }
   else if (!isAdmin) {
       return NextResponse.json(
