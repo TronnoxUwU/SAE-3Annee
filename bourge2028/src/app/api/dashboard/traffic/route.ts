@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { format, startOfWeek } from "date-fns";
 import { fr } from "date-fns/locale";
+import {AuthAdmin} from "@/app/api/api-protection"
 
 
 // function getWeekNumber(date: Date) {
@@ -16,6 +17,15 @@ import { fr } from "date-fns/locale";
  * Récupère le traffic du site (nb de visiteurs uniques)
  */
 export async function GET(req: Request) {
+
+  const isAdmin = await AuthAdmin();
+
+  if (!isAdmin.access) {
+    const { error, status } = isAdmin as { access: false; error: string; status: number };
+    return NextResponse.json({ error }, { status });
+  }
+
+
   const { searchParams } = new URL(req.url);
   const period = searchParams.get("period") || "day";
 

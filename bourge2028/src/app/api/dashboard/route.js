@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
+import {AuthAdmin} from "@/app/api/api-protection"
 
-function getStartDate(filter: string | number): Date {
+function getStartDate(filter) {
   const now = new Date();
 
   if (filter === "year") return new Date(now.getFullYear(), 0, 1);
@@ -8,11 +9,25 @@ function getStartDate(filter: string | number): Date {
   return new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 }
 
-const pageNames: Record<string, string> = {
+const pageNames = {
   "/": "Carte d'accueil",
 };
 
-export async function GET(req: Request) {
+export async function GET(req) {
+
+  const isAdmin = await AuthAdmin()
+  if (isAdmin & !isAdmin.access){
+      return NextResponse.json(isAdmin);
+  }
+  else if (!isAdmin) {
+      return NextResponse.json(
+          { error: "Erreur authentification/serveur" },
+          { status: 500 }
+      );
+  }
+
+
+
   const url = new URL(req.url);
   const filterValue = url.searchParams.get("filter") || "7";
 

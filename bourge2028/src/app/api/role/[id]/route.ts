@@ -25,9 +25,9 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Erreur GET /api/structures/[id] :", error);
+    console.error("Erreur GET /api/role/[id] :", error);
     return NextResponse.json(
-      { error: "Impossible de récupérer la structure" },
+      { error: "Impossible de récupérer le role sur la structure" },
       { status: 500 }
     );
   }
