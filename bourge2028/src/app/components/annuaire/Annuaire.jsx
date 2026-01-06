@@ -13,7 +13,7 @@ export default function Annuaire({ articles }) {
 
   // 🔐 DROIT D'ÉDITION POUR UNE RÉALISATION
   const canEdit = (realisation) => {
-    if (!session || !realisation) return false;
+    if (!session || !realisation || !realisation.structure) return false;
 
     // Admin → OK
     if (session.user.role === "Admin") return true;
