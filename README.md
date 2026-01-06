@@ -10,6 +10,7 @@ Sujet 14 > Annuaire Culture et Ecologie en Région Centre Val de Loir
 - Chaloine Tristan
 
 ## CI
+Last deploy 06/01/26
 
 [![CI](https://github.com/TronnoxUwU/SAE-3Annee/actions/workflows/CI.yml/badge.svg)](https://github.com/TronnoxUwU/SAE-3Annee/actions/workflows/CI.yml)
 
