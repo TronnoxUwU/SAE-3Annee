@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/(old) authOptions";
-import {AuthAdmin, AuthUser} from "@/app/api/api-protection"
+import { authOptions } from "@/app/api/auth/authOptions";
+import { AuthAdmin, AuthUser } from "@/app/api/api-protection";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { deserializePersonne } from "@/lib/deserializers";
 import { serializePersonne } from "@/lib/serializers";
-
 
 /**
  * GET /api/users/[id]
@@ -16,23 +15,18 @@ export async function GET(request, { params }) {
     const { id } = await params;
     const personneId = parseInt(id);
 
-    const auth = await AuthUser(personneId)
-    if (auth & !auth.access){
-        return NextResponse.json(auth);
+    const auth = await AuthUser(personneId);
+    if (auth && !auth.access) {
+      return NextResponse.json(auth);
+    } else if (!auth) {
+      return NextResponse.json(
+        { error: "Erreur authentification/serveur" },
+        { status: 500 }
+      );
     }
-    else if (!auth) {
-        return NextResponse.json(
-            { error: "Erreur authentification/serveur" },
-            { status: 500 }
-        );
-    }
-
 
     if (isNaN(personneId)) {
-      return NextResponse.json(
-        { error: "ID invalide" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
     }
 
     const personne = await prisma.personne.findUnique({
@@ -40,16 +34,17 @@ export async function GET(request, { params }) {
       include: {
         structures: {
           include: {
-            structure: true
-          }
+            structure: true,
+          },
         },
         redactions: {
           include: {
-            article: true
-          }
-        }
-      }
+            article: true,
+          },
+        },
+      },
     });
+
     if (!personne) {
       return NextResponse.json(
         { error: "Utilisateur non trouvé" },
@@ -57,24 +52,11 @@ export async function GET(request, { params }) {
       );
     }
 
-    // verification user
-    // const canView =
-    //   session.user.id === personneId || session.user.role === "Admin";
-    // if (!canView) {
-    //   return NextResponse.json({ error: "Accès refusé" },{ status: 403 });
-    // }
-
-
-    // console.log(session)
-
     const { password, ...personneWithoutPassword } = personne;
     return NextResponse.json(serializePersonne(personneWithoutPassword));
   } catch (error) {
     console.error("Erreur GET user:", error);
-    return NextResponse.json(
-      { error: "Erreur serveur" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
 
@@ -83,20 +65,27 @@ export async function GET(request, { params }) {
  */
 export async function PUT(request, { params }) {
   try {
-
     const { id } = await params;
     const personneId = parseInt(id, 10);
 
-
-    const auth = await AuthUser(personneId)
-    if (auth & !auth.access){
-        return NextResponse.json(auth);
+    // Récupérer la session
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: "Non authentifié" },
+        { status: 401 }
+      );
     }
-    else if (!auth) {
-        return NextResponse.json(
-            { error: "Erreur authentification/serveur" },
-            { status: 500 }
-        );
+
+    const auth = await AuthUser(personneId);
+    if (auth && !auth.access) {
+      return NextResponse.json(auth);
+    } else if (!auth) {
+      return NextResponse.json(
+        { error: "Erreur authentification/serveur" },
+        { status: 500 }
+      );
     }
 
     if (isNaN(personneId)) {
@@ -105,42 +94,40 @@ export async function PUT(request, { params }) {
 
     const body = await request.json();
 
-    // verification user
+    // Verification user
     const canEdit =
       session.user.id === personneId || session.user.role === "Admin";
     if (!canEdit) {
       return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
     }
 
-
-
     const deserializedData = deserializePersonne(body);
-
-
 
     const updateData = {};
 
     // Champs modifiables par l'utilisateur
-    const userEditableFields = ["nom", "prenom", "email", "description", "departement"];
+    const userEditableFields = [
+      "nom",
+      "prenom",
+      "email",
+      "description",
+      "departement",
+    ];
     userEditableFields.forEach((field) => {
       if (deserializedData[field] !== undefined) {
         updateData[field] = deserializedData[field];
       }
     });
 
-    // Champs réservés à l’admin
-    // if (session.user.role === "Admin") {
-    //   if (deserializedData.role !== undefined)
-    //     updateData.role = deserializedData.role;
-    //   if (deserializedData.departement)
-    //     updateData.departement = deserializedData.departement;
-    // }
+    // Champs réservés à l'admin
+    if (session.user.role === "Admin") {
+      if (deserializedData.role !== undefined)
+        updateData.role = deserializedData.role;
+      if (deserializedData.departement)
+        updateData.departement = deserializedData.departement;
+    }
 
-
-
-    // 
     // Mot de passe
-    // 
     if (body.newPassword && body.currentPassword) {
       const personne = await prisma.personne.findUnique({
         where: { id: personneId },
@@ -162,10 +149,7 @@ export async function PUT(request, { params }) {
       updateData.password = hashedPassword;
     }
 
-
-
-
-    // verif email unique
+    // Verif email unique
     if (updateData.email) {
       const existingUser = await prisma.personne.findUnique({
         where: { email: updateData.email },
@@ -179,8 +163,6 @@ export async function PUT(request, { params }) {
       }
     }
 
-
-
     const updatedPersonne = await prisma.personne.update({
       where: { id: personneId },
       data: updateData,
@@ -191,8 +173,6 @@ export async function PUT(request, { params }) {
         },
       },
     });
-
-    
 
     // Supprimer le mot de passe avant envoi
     const { password, ...safePersonne } = updatedPersonne;
@@ -208,10 +188,7 @@ export async function PUT(request, { params }) {
       );
     }
 
-    return NextResponse.json(
-      { error: "Erreur serveur" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
 
@@ -220,59 +197,52 @@ export async function PUT(request, { params }) {
  */
 export async function DELETE(request, { params }) {
   try {
-
-    const { id } = params;
+    const { id } = await params;
     const personneId = parseInt(id);
 
-    const auth = await AuthUser(personneId)
-    const isAdmin = await AuthAdmin(personneId)
-    if ((auth & !auth.access) || (isAdmin & !isAdmin.access)){
-        return NextResponse.json(auth);
-    }
-    else if (!auth || !isAdmin) {
-        return NextResponse.json(
-            { error: "Erreur authentification/serveur" },
-            { status: 500 }
-        );
+    const auth = await AuthUser(personneId);
+    const isAdmin = await AuthAdmin(personneId);
+    
+    if ((auth && !auth.access) || (isAdmin && !isAdmin.access)) {
+      return NextResponse.json(auth || isAdmin);
+    } else if (!auth || !isAdmin) {
+      return NextResponse.json(
+        { error: "Erreur authentification/serveur" },
+        { status: 500 }
+      );
     }
 
     if (isNaN(personneId)) {
-      return NextResponse.json(
-        { error: "ID invalide" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
     }
 
     // Supprimer les relations d'abord
     await prisma.appartenir.deleteMany({
-      where: { personneId: personneId }
+      where: { personneId: personneId },
     });
 
     await prisma.rediger.deleteMany({
-      where: { personneId: personneId }
+      where: { personneId: personneId },
     });
 
     // Supprimer la personne
     await prisma.personne.delete({
-      where: { id: personneId }
+      where: { id: personneId },
     });
 
-    return NextResponse.json({ 
-      message: "Utilisateur supprimé avec succès" 
+    return NextResponse.json({
+      message: "Utilisateur supprimé avec succès",
     });
   } catch (error) {
     console.error("Erreur DELETE user:", error);
-    
-    if (error.code === 'P2025') {
+
+    if (error.code === "P2025") {
       return NextResponse.json(
         { error: "Utilisateur non trouvé" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Erreur serveur" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
