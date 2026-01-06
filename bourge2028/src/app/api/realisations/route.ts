@@ -43,11 +43,11 @@ export async function GET(req: Request) {
     const realisations = await prisma.realisation.findMany({
       where,
       include: {
-        structure: true,
+        structure:  { include: { personnes: true } },
         cats: { include: { categorie: true } },
         projet: {
           include: {
-            departement: true,
+            departements: true,
           },
         },
         materiaux: true,
@@ -77,24 +77,30 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const data = await req.json();
+    const { type } = data; // type = 'materiau' | 'technique' | 'article' | 'projet'
     const realisationData = deserializeRealisation(data);
+
+    const include: any = {
+      structure: true,
+      cats: { include: { categorie: true } },
+
+    };
+
+    if (type === "projet") {
+      include.projet = { include: { departements: true } };
+    }
+
+    if (type === "materiau") {
+      include.materiaux =  true ;
+    }
+
+    if (type === "technique") {
+      include.technique = true ;
+    }
 
     const newRealisation = await prisma.realisation.create({
       data: realisationData,
-      include: {
-        structure: true,
-        cats: { include: { categorie: true } },
-        projet: {
-          include: {
-            departement: true,
-          },
-          materiaux: true,
-          technique: true,
-        },
-        materiaux: true,
-        technique: true,
-        articles: true,
-      },
+      include,
     });
 
     return NextResponse.json(serializeRealisation(newRealisation), { status: 201 });
@@ -103,3 +109,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Impossible de créer la réalisation" }, { status: 500 });
   }
 }
+

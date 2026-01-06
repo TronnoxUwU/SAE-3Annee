@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/authOptions";
+import { authOptions } from "@/app/api/auth/(old) authOptions";
 import prisma from "@/lib/prisma";
 
 export async function GET() {

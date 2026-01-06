@@ -29,6 +29,8 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
   const [pointsStructure, setPointsStructure] = useState([]);
   const [pointsProjet, setPointsProjet] = useState([]);
   const [selectedPoint, setSelectedPoint] = useState(null);
+  const [allPointsStructure, setAllPointsStructure] = useState([]);
+  const [allPointsProjet, setAllPointsProjet] = useState([]);
 
 
   const structIcon = L.icon({
@@ -57,32 +59,6 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
       .then((res) => res.json())
       .then((data) => setGeojsonData(data))
       .catch((err) => console.error("Erreur chargement GeoJSON:", err));
-
-    fetch("/api/structures")
-      .then((res) => res.json())
-      .then((data) => {
-        const points = data.map((structure) => ({
-          id: structure.id,
-          coords: [structure.latitude, structure.longitude],
-          label: structure.nomStructure,
-          type: "structure"
-        }));
-        setPointsStructure(points);
-      })
-
-      .catch((err) => console.error("Erreur chargement structures:", err));
-    fetch("/api/projets")
-      .then((res) => res.json())
-      .then((data) => {
-        const points = data.map((projet) => ({
-          id: projet.id,
-          coords: [projet.latitude, projet.longitude],
-          label: projet.nomProjet,
-          type: "projet"
-        }));
-        setPointsProjet(points);
-      })
-      .catch((err) => console.error("Erreur chargement projets filtrés:", err));
   }, []);
 
   useEffect(() => {
@@ -105,63 +81,131 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
     fetchPosition();
   }, [mapFilter]);
 
-  useEffect(() => {
-    if (!catFilter && !depFilter) return;
+  // useEffect(() => {
+  //   if (!catFilter && !depFilter) return;
 
-    let urlStruct = "/api/structures";
+  //   let urlStruct = "/api/structures";
 
-    if (catFilter && catFilter.length > 0) {
-      const params = new URLSearchParams();
-      params.set("cats", catFilter.map(c => c.id).join(","));
-      urlStruct += `?${params.toString()}`;
-    }
+  //   // if (catFilter && catFilter.length > 0) {
+  //   //   const params = new URLSearchParams();
+  //   //   params.set("cats", catFilter.map(c => c.id).join(","));
+  //   //   urlStruct += `?${params.toString()}`;
+  //   // }
 
-    if (depFilter && depFilter.length > 0) {
-      const params = new URLSearchParams();
-      params.set("deps", depFilter.map(d => d.id).join(","));
-      urlStruct += (urlStruct.includes("?") ? "&" : "?") + params.toString();
-    }
+  //   // if (depFilter && depFilter.length > 0) {
+  //   //   const params = new URLSearchParams();
+  //   //   params.set("deps", depFilter.map(d => d.id).join(","));
+  //   //   urlStruct += (urlStruct.includes("?") ? "&" : "?") + params.toString();
+  //   // }
 
-    fetch(urlStruct)
+  //   fetch(urlStruct)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setAllPointsStructure(data);
+  //     });
+
+  //   let urlProjet = "/api/projets";
+
+  //   // if (catFilter && catFilter.length > 0) {
+  //   //   const params = new URLSearchParams();
+  //   //   params.set("cats", catFilter.map(c => c.id).join(","));
+  //   //   urlProjet += `?${params.toString()}`;
+  //   // }
+
+  //   // if (depFilter && depFilter.length > 0) {
+  //   //   const params = new URLSearchParams();
+  //   //   params.set("deps", depFilter.map(d => d.id).join(","));
+  //   //   urlProjet += (urlProjet.includes("?") ? "&" : "?") + params.toString();
+  //   // }
+
+  //   fetch(urlProjet)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setAllPointsProjet(data);
+  //     });
+
+  // }, [catFilter, depFilter]);
+
+useEffect(() => {
+    // Charger toutes les structures au démarrage
+    fetch("/api/structures")
       .then((res) => res.json())
       .then((data) => {
         const points = data.map((structure) => ({
-          id: structure.id,
+          id: "struct_"+structure.id,
           coords: [structure.latitude, structure.longitude],
           label: structure.nomStructure,
-          type: "structure"
+          type: "structure",
+          categories: structure.cats?.map(cat => cat.id) || [],
+          departementId: structure.departements?.[0]?.id || null,
+          waiting : structure.waiting
         }));
-        setPointsStructure(points);
-      });
+        setAllPointsStructure(points);
+      })
+      .catch(err => console.error("Erreur chargement structures:", err));
 
-    let urlProjet = "/api/projets";
-
-    if (catFilter && catFilter.length > 0) {
-      const params = new URLSearchParams();
-      params.set("cats", catFilter.map(c => c.id).join(","));
-      urlProjet += `?${params.toString()}`;
-    }
-
-    if (depFilter && depFilter.length > 0) {
-      const params = new URLSearchParams();
-      params.set("deps", depFilter.map(d => d.id).join(","));
-      urlProjet += (urlProjet.includes("?") ? "&" : "?") + params.toString();
-    }
-
-    fetch(urlProjet)
+    // Charger tous les projets au démarrage
+    fetch("/api/projets")
       .then((res) => res.json())
       .then((data) => {
         const points = data.map((projet) => ({
-          id: projet.id,
+          id: "projet_"+projet.id,
           coords: [projet.latitude, projet.longitude],
           label: projet.nomProjet,
-          type: "projet"
+          type: "projet",
+          categories: projet.realisation?.cats?.map(cat => cat.id) || [],
+          departementId: projet.departement?.[0]?.id || null
         }));
-        setPointsProjet(points);
-      });
+        setAllPointsProjet(points);
+      })
+      .catch(err => console.error("Erreur chargement projets:", err));
+  }, []);
 
-  }, [catFilter, depFilter]);
+  // Fonction pour filtrer les projets
+  const filterPointsProjet = (points) => {
+    return points.filter(point => {
+      // Filtre par catégorie
+      if (catFilter && catFilter.length > 0) {
+        const catIds = catFilter.map(c => c.id);
+        const hasMatchingCat = point.categories?.some(catId => catIds.includes(catId));
+        if (!hasMatchingCat) return false;
+      }
+      
+      // Filtre par département
+      if (depFilter && depFilter.length > 0) {
+        const depIds = depFilter.map(d => d.id);
+        if (!depIds.includes(point.departementId)) return false;
+      }
+      
+      return true;
+    });
+  };
 
+  // Fonction pour filtrer les structures
+  const filterPointsStructure = (points) => {
+    return points.filter(point => {
+      // Filtre par catégorie
+      if (catFilter && catFilter.length > 0) {
+        const catIds = catFilter.map(c => c.id);
+        const hasMatchingCat = point.categories?.some(catId => catIds.includes(catId));
+        if (!hasMatchingCat) return false;
+      }
+
+      // Filtre par département
+      if (depFilter && depFilter.length > 0) {
+        const depIds = depFilter.map(d => d.id);
+        if (!depIds.includes(point.departementId)) return false;
+      }
+
+      return true;
+    });
+  };
+
+  // Appliquer les filtres quand ils changent
+  useEffect(() => {
+    setPointsProjet(filterPointsProjet(allPointsProjet));
+    setPointsStructure(filterPointsStructure(allPointsStructure));
+  }, [allPointsProjet, allPointsStructure, catFilter, depFilter]);
 
   return (
     <div className="map" style={{ height: "100vh", width: "100%" }}>
@@ -195,8 +239,7 @@ export default function Map({ mapFilter, catFilter, depFilter, onMapReady }) {
           />
         )}
         {pointsStructure.map(p => {
-          if (!p.coords || p.coords.includes(null)) return null
-
+          if (!p.coords || p.coords.includes(null)|| p.waiting) return null
           return (
             <Marker
               key={p.id}

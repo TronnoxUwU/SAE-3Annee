@@ -60,6 +60,10 @@ export default function StructureDetailPage() {
     router.push(`/structure/${params.id}/edit`);
   };
 
+  const handleAdd = () => {
+    router.push(`${params.id}/realisations/creation`);
+  };
+
   if (loading) {
     return (
       <>
@@ -157,7 +161,7 @@ export default function StructureDetailPage() {
                   {/* <div className={Style.departementDot}></div> */}
                   <i className="bi bi-pin-map"></i>
                   <span className={Style.departementName}>
-                    {item.nom}
+                    {item.nomDep}
                   </span>
                   <span className={Style.departementNumber}>
                     {String(idx + 1).padStart(2, '0')}
@@ -170,7 +174,10 @@ export default function StructureDetailPage() {
 
         {/* Section Articles */}
         <div className={Style.articlesSection}>
-          <a href={`/structure/${params.id}/articles`} className={Style.articlesLink}>
+          <a
+            href={`/annuaires/projets?search=${structure.nomStructure}`}
+            className={Style.articlesLink}
+          >
             <div className={Style.articlesContainer}>
               <div className={Style.articlesContent}>
                 <span className={Style.label}>Ressources</span>
@@ -180,18 +187,33 @@ export default function StructureDetailPage() {
                 </p>
               </div>
 
+              {canEdit() && (
+                <button
+                  className={Style.addArticleBtn}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleAdd();
+                  }}
+                  title="Ajouter une réalisation"
+                >
+                  <i className="bi bi-journal-plus"></i>
+                </button>
+              )}
+
               <div className={Style.articlesCount}>
                 <div className={Style.countBox}>
-                  <span className={Style.number}>{structure?.articlesCount || 0}</span>
+                  <span className={Style.number}>{structure?.realisations.length || 0}</span>
                   <div className={Style.countLine}></div>
                   <span className={Style.countLabel}>
-                    {structure?.articlesCount > 1 ? "RESSOURCES" : "RESSOURCE"}
+                    {structure?.realisations.length > 1 ? "RESSOURCES" : "RESSOURCE"}
                   </span>
                 </div>
               </div>
             </div>
           </a>
         </div>
+
 
         {/* Footer */}
         <div className={Style.footer}>

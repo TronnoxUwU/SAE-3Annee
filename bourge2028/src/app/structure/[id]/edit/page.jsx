@@ -4,27 +4,53 @@ import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Topbar from "@/components/Topbar.jsx";
 import Style from "../page.module.css";
+import axios from "axios";
 
 export default function StructureEditPage() {
   const params = useParams();
   const router = useRouter();
   const { data: session, status } = useSession();
-  
+
   const [formData, setFormData] = useState({
-    nomStructure: "",
-    description: "",
-    departements: []
+    nomStructure: '',
+    description: '',
+    adresse: '',
+    longitude: '',
+    latitude: '',
+    lienPhoto: '',
+    departements: [],
+    categories: [],
+    personnes: []
   });
   const [allDepartements, setAllDepartements] = useState([]);
   const [selectedDepartements, setSelectedDepartements] = useState([]);
+  const [categoriesDisponibles, setCategoriesDisponibles] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
+
+  const toggleDep = (dept) => {
+    setFormData(prev => {
+      const exists = prev.departements.find(d => d.id === dept.id);
+      if (exists) {
+        return {
+          ...prev,
+          departements: prev.departements.filter(d => d.id !== dept.id)
+        };
+      } else {
+        return {
+          ...prev,
+          departements: [...prev.departements, { id: dept.id, nomDep: dept.nomDep }]
+        };
+      }
+    });
+  };
   // Vérification des permissions
   useEffect(() => {
     if (status === "loading") return;
-    
+
     if (!session) {
       router.push("/login");
       return;
@@ -36,37 +62,56 @@ export default function StructureEditPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // Charger la structure
         const structureRes = await fetch(`/api/structures/${params.id}`);
         if (!structureRes.ok) {
           throw new Error("Structure non trouvée");
         }
         const structureData = await structureRes.json();
-        
+
         // Vérifier les permissions
         if (session?.user?.role !== "Admin" && session?.user?.structure !== structureData.id) {
           router.push(`/structure/${params.id}`);
           return;
         }
-        
+
         setFormData({
-          nomStructure: structureData.nomStructure || "",
-          description: structureData.description || "",
-          departements: structureData.departements || []
+          nomStructure: structureData.nomStructure,
+          description: structureData.description || null,
+          adresse: structureData.adresse || null,
+          longitude: structureData.longitude ? parseFloat(structureData.longitude) : undefined,
+          latitude: structureData.latitude ? parseFloat(structureData.latitude) : undefined,
+          lienPhoto: structureData.lienPhoto || null,
+          dateCreation: structureData.dateCreation || new Date().toISOString(),
+          waiting: structureData.waiting || true,
+          // departements: {id, nomDep} pour correspondre au console.log du back
+          departements: (structureData.departements || []).map(d => ({
+            id: d.id || d,
+            nomDep: d.nomDep || 'Inconnu'
+          })),
+          // cats: juste renvoyer ce qui est dans formData.categories
+          cats: structureData.cats || [],
+          // personnes: structureData.personnes || [],
+          realisations: structureData.realisations || []
         });
-        
+        console.log(structureData);
         setSelectedDepartements(
           structureData.departements?.map(d => d.departementId) || []
         );
-        
+
         // Charger tous les départements disponibles
         const depRes = await fetch("/api/departements");
         if (depRes.ok) {
           const depData = await depRes.json();
           setAllDepartements(depData);
         }
-        
+        const catRes = await fetch("/api/categories");
+        if (catRes.ok) {
+          const catData = await catRes.json();
+          setCategoriesDisponibles(catData);
+        }
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -87,19 +132,48 @@ export default function StructureEditPage() {
     }));
   };
 
-  const handleDepartementToggle = (departementId) => {
-    setSelectedDepartements(prev => {
-      if (prev.includes(departementId)) {
-        return prev.filter(id => id !== departementId);
+  const toggleCategory = (cat) => {
+    setFormData(prev => {
+      const exists = prev.cats.find(c => c.id === cat.id);
+      if (exists) {
+        return {
+          ...prev,
+          cats: prev.cats.filter(c => c.id !== cat.id)
+        };
       } else {
-        return [...prev, departementId];
+        return {
+          ...prev,
+          cats: [...prev.cats, { id: cat.id, nom: cat.nom }]
+        };
       }
     });
   };
 
+  const renderCategory = (cat, level = 0) => {
+    const isChecked = formData.cats.some(c => c.id === cat.id);
+    return (
+      <div key={cat.id} className="form-check" style={{ marginLeft: 20 }}>
+        <input
+          className="form-check-input"
+          type="checkbox"
+          checked={isChecked}
+          onChange={() => toggleCategory(cat)}
+          id={`category-${cat.id}`}
+        />
+        <label className="form-check-label" htmlFor={`category-${cat.id}`}>{cat.nom}</label>
+
+        {cat.children?.length > 0 && (
+          <div>
+            {cat.children.map(child => renderCategory(child, level + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.nomStructure.trim()) {
       setError("Le nom de la structure est requis");
       return;
@@ -127,7 +201,7 @@ export default function StructureEditPage() {
 
       // Redirection vers la page de détail
       router.push(`/structure/${params.id}`);
-      
+
     } catch (err) {
       setError(err.message);
       setSaving(false);
@@ -169,7 +243,7 @@ export default function StructureEditPage() {
                 <p className="mb-0">{error}</p>
               </div>
             </div>
-            <button 
+            <button
               className="btn btn-primary"
               onClick={() => router.push("/structure")}
             >
@@ -262,40 +336,17 @@ export default function StructureEditPage() {
                     </label>
                     <div className="p-3 bg-light rounded">
                       <div className="row g-3">
-                        {allDepartements.map(dep => (
-                          <div key={dep.id} className="col-md-6">
-                            <div className="form-check p-3 bg-white rounded border" 
-                                 style={{ 
-                                   cursor: 'pointer',
-                                   transition: 'all 0.2s ease',
-                                   borderColor: selectedDepartements.includes(dep.id) ? '#0d6efd' : '#dee2e6'
-                                 }}
-                                 onMouseEnter={(e) => {
-                                   if (!selectedDepartements.includes(dep.id)) {
-                                     e.currentTarget.style.borderColor = '#adb5bd';
-                                   }
-                                 }}
-                                 onMouseLeave={(e) => {
-                                   if (!selectedDepartements.includes(dep.id)) {
-                                     e.currentTarget.style.borderColor = '#dee2e6';
-                                   }
-                                 }}>
+                        {allDepartements.map(dept => (
+                          <div className="col-6" key={dept.id}>
+                            <div className="form-check">
                               <input
                                 type="checkbox"
-                                id={`dep-${dep.id}`}
-                                checked={selectedDepartements.includes(dep.id)}
-                                onChange={() => handleDepartementToggle(dep.id)}
                                 className="form-check-input"
-                                disabled={saving}
-                                style={{ cursor: 'pointer' }}
+                                checked={formData.departements.some(d => d.id === dept.id)}
+                                onChange={() => toggleDep(dept)}
+                                id={`dept-${dept.id}`}
                               />
-                              <label 
-                                htmlFor={`dep-${dep.id}`} 
-                                className="form-check-label ms-2 w-100"
-                                style={{ cursor: 'pointer' }}
-                              >
-                                {dep.nom}
-                              </label>
+                              <label className="form-check-label" htmlFor={`dept-${dept.id}`}>{dept.nomDep}</label>
                             </div>
                           </div>
                         ))}
@@ -307,6 +358,12 @@ export default function StructureEditPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Categories */}
+                <div className="mb-3">
+                  <label className="form-label"><i className="bi bi-funnel"></i>Catégories</label>
+                  {categoriesDisponibles.map(cat => renderCategory(cat))}
+                </div>
 
                 <hr className="my-4" />
 

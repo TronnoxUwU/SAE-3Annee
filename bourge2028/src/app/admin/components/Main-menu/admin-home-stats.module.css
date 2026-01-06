@@ -1,0 +1,35 @@
+.stats_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.stat_card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.stat_card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+}
+
+.icon {
+  font-size: 2.5rem;
+  color: #3b82f6;
+}
+
+.value {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.label {
+  color: #6b7280;
+}

@@ -25,7 +25,7 @@ export function serializePersonne(personne) {
     structures:
       personne.structures?.map((app) => ({
         id: app.id,
-        role: app.role ?? null,
+        role: app.roleId ?? null,
         structure: app.structure
           ? {
               id: app.structure.id,

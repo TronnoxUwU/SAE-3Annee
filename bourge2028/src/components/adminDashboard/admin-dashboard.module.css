@@ -1,0 +1,106 @@
+.dashboard_bloc {
+    margin-bottom: 2em;
+}
+.dashboard_bloc h2 {
+    background: linear-gradient(135deg, #e9d5ff, #dbeafe);
+    padding: 0.5em;
+    border-radius: 12px;
+}
+
+
+
+.dashboard_chart {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.chart_tooltip {
+  background: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  font-size: 0.85rem;
+}
+
+
+.dashboard_stats {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat_card {
+    background-color:rgb(178, 236, 206);
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 1em 2em;
+    border-radius: 12px;
+
+    width: 20%;
+}
+.stat_card.warning {
+    background-color:gold;
+}
+.stat_card i {
+    text-align: center;
+}
+.stat_card div {
+    display: flex;
+    justify-content: center;
+}
+.stat_card div span {
+    margin-right: 12px;
+}
+
+
+.page_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.page_list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+
+  background-color: rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s ease;
+}
+
+.page_list li:hover {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+.page_list li span {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #333;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page_list li strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111;
+
+  background-color: #e9eef3;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+
+  min-width: 2.2rem;
+  text-align: center;
+}

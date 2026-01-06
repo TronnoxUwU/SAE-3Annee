@@ -19,12 +19,11 @@ export default function Structure() {
 
 
   async function loadCategories() {
-    const res = await fetch("/api/structures");
+    const res = await fetch("/api/structures?waiting=false");
     if (!res.ok) {
-      throw new Error("Structure non trouvée");
+      throw new Error("Structures non trouvées");
     }
     const data = await res.json();
-    console.log(data);
     setItems(data);
     setLoading(false);
   }
@@ -94,6 +93,7 @@ export default function Structure() {
             nom={item.nomStructure}
             date={item.dateCreation}
             description={item.description}
+            categories={item.cats}
             edit={canEdit}
             role={str_role}
           />

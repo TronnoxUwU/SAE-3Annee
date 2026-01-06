@@ -53,7 +53,6 @@ export default function AnnuairePage() {
 
         let url = "/api/cartes";
         if (catFilter && catFilter.length > 0) {
-          console.log("Filtres mis à jour :", catFilter);
           const params = new URLSearchParams();
           params.set(
             "cats",
@@ -78,13 +77,6 @@ export default function AnnuairePage() {
     fetchArticles();
   }, [catFilter]);
 
-  // 🔹 Log des changements de filtres
-  useEffect(() => {
-    if (catFilter) {
-      console.log("Filtres mis à jour :", catFilter);
-    }
-  }, [catFilter]);
-
   const handleClose = () => {
     setAnimate(true);
     setDrawerOpen(false);
@@ -96,7 +88,7 @@ export default function AnnuairePage() {
       <Topbar fixed />
 
       {/* Sidebar gère le filtre de la carte */}
-      <Sidebar map={null} onFilterChange={setCatFilter} onGeoFilterChange={setGeoFilter} />
+      <Sidebar map={null} onFilterChange={setCatFilter} onGeoFilterChange={setGeoFilter} isAnnuaire={true}/>
 
       {/* Carte principale */}
       <div className="map-wrapper">
@@ -128,6 +120,13 @@ export default function AnnuairePage() {
         onClick={handleClose}
       >
         {drawerOpen ? "Revenir à la carte ↑" : "Aller à l’Annuaire ↓"}
+      </button>
+
+      <button
+        className = "btn-ajout-map"
+        onClick={() => router.push('/annuaires/cartes/proposition')}
+      >
+        +
       </button>
     </main>
   );

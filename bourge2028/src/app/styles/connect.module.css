@@ -1,0 +1,37 @@
+.connect_form {
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.connect_form input {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.connect_form button {
+    padding: 0.5rem;
+    background-color: goldenrod;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.login_switch {
+  margin-top: 1em;
+}
+
+
+.connect_form button:hover {
+    background-color: rgb(204, 155, 30);
+}
+
+.connect_error {
+    color: red;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}

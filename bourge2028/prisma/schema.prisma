@@ -13,17 +13,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 model Structure {
-  id           Int            @id @default(autoincrement())
-  nomStructure String?
-  description  String?
-  adresse      String?
-  lienPhoto    String?
-  dateCreation DateTime?
+  id              Int       @id @default(autoincrement())
+  nomStructure    String?
+  nomStructSearch String?
+  description     String?
+  adresse         String?
+  lienPhoto       String?
+  dateCreation    DateTime?
   // departementId Int?
-  longitude    Float?
-  latitude     Float?
+  longitude       Float?
+  latitude        Float?
+
+  waiting Boolean
+
   // relations
   departements Situer[]
   personnes    Appartenir[] // Appartenir (avec role)
@@ -33,7 +36,7 @@ model Structure {
 
 model Situer {
   id            Int         @id @default(autoincrement())
-  structure     Structure   @relation(fields: [structureId], references: [id])
+  structure     Structure   @relation(fields: [structureId], references: [id], onDelete: Cascade)
   structureId   Int
   departement   Departement @relation(fields: [departementId], references: [id])
   departementId Int
@@ -71,13 +74,16 @@ model Personne {
   dateCreation DateTime @default(now())
   role         String
 
+  resetToken        String?
+  resetTokenExpires DateTime?
+
   structures Appartenir[]
   redactions Rediger[]
 }
 
 model Appartenir {
   id          Int       @id @default(autoincrement())
-  structure   Structure @relation(fields: [structureId], references: [id])
+  structure   Structure @relation(fields: [structureId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   structureId Int
   personne    Personne  @relation(fields: [personneId], references: [id])
   personneId  Int
@@ -96,15 +102,15 @@ model Role {
 }
 
 model Realisation {
-  id        Int         @id @default(autoincrement())
-  nom       String?
-  description       String?
-  dateCreation      DateTime?
-  structure Structure[]
+  id           Int       @id @default(autoincrement())
+  nom          String?
+  description  String?
+  dateCreation DateTime?
+  structure    Structure[]
 
   // Relations communes
   cats      RealisationCat[]
-  articles   Article[]
+  articles  Article[]
   // relations ISA 1:1
   projet    Projet?
   materiaux Materiau?
@@ -112,15 +118,16 @@ model Realisation {
 }
 
 model Projet {
-  id            Int         @id @default(autoincrement())
-  nomProjet     String
-  realisation   Realisation @relation(fields: [realisationId], references: [id])
-  realisationId Int         @unique
-  adresse       String?
-  latitude      Float?
-  longitude     Float?
+  id              Int         @id @default(autoincrement())
+  nomProjet       String
+  nomProjetSearch String?
+  realisation     Realisation @relation(fields: [realisationId], references: [id])
+  realisationId   Int         @unique
+  adresse         String?
+  latitude        Float?
+  longitude       Float?
 
-  departements ProjetDepartement[] 
+  departements ProjetDepartement[]
 }
 
 model Materiau {
@@ -149,7 +156,7 @@ model RealisationCat {
 
 model StructureCat {
   id          Int       @id @default(autoincrement())
-  structure   Structure @relation(fields: [structureId], references: [id])
+  structure   Structure @relation(fields: [structureId], references: [id], onDelete: Cascade)
   structureId Int
   categorie   Categorie @relation(fields: [categorieId], references: [id])
   categorieId Int
@@ -171,24 +178,24 @@ model Categorie {
 }
 
 model Article {
-  id         Int         @id @default(autoincrement())
-  titre      String
+  id    Int    @id @default(autoincrement())
+  titre String
 
-  composants Composant[]
-  documents  Document[]
-  redigers Rediger[]
-  realisation Realisation @relation(fields: [realisationId], references: [id], onDelete: Cascade)
+  composants    Composant[]
+  documents     Document[]
+  redigers      Rediger[]
+  realisation   Realisation @relation(fields: [realisationId], references: [id], onDelete: Cascade)
   realisationId Int
 }
 
 model Rediger {
-  id            Int         @id @default(autoincrement())
-  article       Article     @relation(fields: [articleId], references: [id])
-  articleId     Int
-  personne      Personne    @relation(fields: [personneId], references: [id])
-  personneId    Int
+  id         Int      @id @default(autoincrement())
+  article    Article  @relation(fields: [articleId], references: [id])
+  articleId  Int
+  personne   Personne @relation(fields: [personneId], references: [id])
+  personneId Int
 
-  dateModif     DateTime
+  dateModif DateTime
 
   @@unique([articleId, personneId, dateModif])
 }
@@ -267,18 +274,22 @@ model Caroussel {
 }
 
 model Analytics {
-  id         Int      @id @default(autoincrement())
-  page       String
-  ipAddress  String? // need to be hashed
-  userAgent  String? // type d’appareil
-  dateVisite DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  page        String
+  visitorHash String
+  dateVisite  BigInt
+
+  @@index([visitorHash, dateVisite])
+  @@index([page, dateVisite])
 }
+
 
 model Carte {
   id               Int     @id @default(autoincrement())
   titre            String?
   descriptionCarte String?
   lienCarte        String
+  waiting          Boolean
 
   categories Categorie[]
 }

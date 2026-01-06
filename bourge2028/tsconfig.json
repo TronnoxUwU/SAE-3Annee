@@ -12,6 +12,7 @@
     "noEmit": true,
     "incremental": true,
     "module": "esnext",
+    "types": ["next-auth"],
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -31,10 +32,11 @@
   },
   "include": [
     "next-env.d.ts",
+    "next-auth.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/admin/dashboard/page.js", "src/app/components/Sidebar.tsx", "src/app/components/Sidebar/SidebarWrapper.tsx", "src/app/components/Sidebar/SidebarSkeleton.tsx", "src/app/structure/[id]/components/showloc (old code)", "src/app/api/users/[id]/route.js", "src/app/account/[id]/components/UserEdit.jsx", "src/app/account/[id]/components/userinfo.jsx", "src/app/api/auth/update/route.js", "src/components/structures-list/affichage-structure.jsx", "src/components/structures-list/structure-Item.tsx", "src/components/structures-list/structure-Item-pretty.tsx"  ],
+, "src/app/admin/dashboard/page.jsx", "src/app/components/Sidebar.tsx", "src/app/components/Sidebar/SidebarWrapper.tsx", "src/app/components/Sidebar/SidebarSkeleton.tsx", "src/app/structure/[id]/components/showloc (old code)", "src/app/api/users/[id]/route.js", "src/app/account/[id]/components/UserEdit.jsx", "src/app/account/[id]/components/userinfo.jsx", "src/app/api/auth/update/route.js", "src/components/structures-list/affichage-structure.jsx", "src/components/structures-list/structure-Item.tsx", "src/components/structures-list/structure-Item-pretty.tsx", "src/components/adminDashboard/trafficChart.jsx", "src/components/User/affichage-personne.jsx", "src/components/User/personne-Item.tsx", "src/app/api/dashboard/route.js", "src/app/api/dashboard/traffic/route.ts", "src/app/api/api-protection.ts"  ],
   "exclude": [
     "node_modules"
   ]

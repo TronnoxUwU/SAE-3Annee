@@ -19,7 +19,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
         cats: { include: { categorie: true } },
         projet: {
           include: {
-            departement: true,
+            departements: true,
           },
         },
         materiaux: true,
@@ -62,21 +62,22 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const body = await req.json();
     const realisationData = deserializeRealisation(body);
 
+    if (realisationData.projet?.create) {
+      realisationData.projet = {
+        update: realisationData.projet.create,
+      } as any;
+    }
+
+    if (realisationData.technique?.create) {
+      realisationData.technique = {
+        update: realisationData.technique.create,
+      } as any;
+    }
+
+
     const updated = await prisma.realisation.update({
       where: { id: realisationId },
       data: realisationData,
-      include: {
-        structure: true,
-        cats: true,
-        projet: {
-          include: {
-            departement: true,
-          },
-        },
-        materiaux: true,
-        technique: true,
-        articles: true,
-      },
     });
 
 
@@ -103,7 +104,6 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
       prisma.technique.deleteMany({ where: { realisationId } }),
       prisma.projet.deleteMany({ where: { realisationId } }),
       prisma.realisation.delete({ where: { id: realisationId } }),
-      prisma.articles.deleteMany({ where: { realisationId } })
     ]);
 
 

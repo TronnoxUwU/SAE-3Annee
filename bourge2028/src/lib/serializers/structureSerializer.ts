@@ -23,6 +23,7 @@ export const serializeStructure = (
   adresse: structure.adresse ?? null,
   dateCreation: structure.dateCreation ?? null,
   description: structure.description ?? null,
+  waiting: structure.waiting ?? true,
 
   departements:
     structure.departements?.map((situer) =>

@@ -13,4 +13,5 @@ export const serializeCarte = (
   categories: carte.categories?.map(categorie => 
       serializeCategorie(categorie)
   ) || [],
+  waiting: carte.waiting,
 });
