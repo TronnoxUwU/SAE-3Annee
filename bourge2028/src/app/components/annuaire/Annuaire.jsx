@@ -19,7 +19,7 @@ export default function Annuaire({ articles }) {
     if (session.user.role === "Admin") return true;
 
     // Membre d’une structure du projet → OK
-    return realisation.structure.some(
+    return realisation.structure?.some(
       (struct) => struct.id === session.user.structure
     );
   };
