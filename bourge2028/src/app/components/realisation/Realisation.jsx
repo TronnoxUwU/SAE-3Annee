@@ -15,7 +15,7 @@ export default function ProjetView({ id, type }) {
   const handleDeleteArticle = async (articleId) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/articles/${articleId}`,
+        `/api/articles/${articleId}`,
         {
           method: "DELETE",
         }
@@ -48,10 +48,10 @@ export default function ProjetView({ id, type }) {
         let res;
         switch (type) {
           case "projet":
-            res = await fetch(`http://localhost:3000/api/projets/${id}`);
+            res = await fetch(`/api/projets/${id}`);
             break; // pas de return
           default :
-            res = await fetch(`http://localhost:3000/api/techniques/${id}`);
+            res = await fetch(`/api/techniques/${id}`);
             break;
         }
         
