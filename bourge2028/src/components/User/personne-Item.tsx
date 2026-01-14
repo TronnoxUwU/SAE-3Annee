@@ -1,54 +1,16 @@
 import style from "./personne-Item.module.css";
 
-function renderDate(date: Date | number | string) {
+function renderDate(date){
   if (!date) return "Date inconnue";
 
-  let d: Date | null = null;
-  if (date instanceof Date && !isNaN(date.getTime())) {
-    d = date;
-    console.log("instance date" + date)
-  }
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "Date invalide";
 
-  // Nombre
-  else if (typeof date === "number") {
-    const str = date.toString();
-
-    // Format YYYYMMDDHHmmss
-    if (str.length === 14) {
-      const year = Number(str.slice(0, 4));
-      const month = Number(str.slice(4, 6)) - 1;
-      const day = Number(str.slice(6, 8));
-      // const hour = Number(str.slice(8, 10));
-      // const min = Number(str.slice(10, 12));
-      // const sec = Number(str.slice(12, 14));
-
-      d = new Date(year, month, day);
-      console.log("reel date" + date)
-    } 
-    // via Timestamp
-    else {
-      d = new Date(date);
-    }
-  }
-
-  else if (typeof date === "string") {
-    const numeric = Number(date);
-    console.log("string date" + date)
-
-    if (!isNaN(numeric)) {
-      return renderDate(numeric);
-    }
-
-    d = new Date(date);
-  }
-
-  if (!d || isNaN(d.getTime())) return "Date invalide";
-
-  return d.toLocaleDateString("fr-FR", {
+  return `${d.toLocaleDateString('fr-FR', {
     year: "numeric",
     month: "long",
-    day: "numeric",
-  });
+    day: "numeric"
+  })}`;
 }
 
 interface PersonneItemProps {

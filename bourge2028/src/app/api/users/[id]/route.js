@@ -209,7 +209,7 @@ export async function DELETE(request, { params }) {
 
     const hasAccess = (authUser && authUser.access) || (authAdmin && authAdmin.access); // fixed ?
     
-    if (hasAccess) {
+    if (!hasAccess) {
       return NextResponse.json(authUser || authAdmin);
     } else if (!authUser || !authAdmin) {
       return NextResponse.json(
