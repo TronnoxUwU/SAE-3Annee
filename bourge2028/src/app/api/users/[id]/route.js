@@ -208,7 +208,7 @@ export async function DELETE(request, { params }) {
     
     if (hasAccess) {
       return NextResponse.json(auth || isAdmin);
-    } else if (!auth || !isAdmin) {
+    } else if (!authUser || !authAdmin) {
       return NextResponse.json(
         { error: "Erreur authentification/serveur" },
         { status: 500 }
