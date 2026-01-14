@@ -21,21 +21,21 @@ export async function AuthAdmin(): Promise<AuthResult> {
     return {
       access: false,
       status: 403,
-      error: "Accès refusé",
+      error: `Accès refusé adm - ${session.user.role}`,
     };
   }
 
   return { access: true };
 }
 
-export async function AuthUser(id: Number): Promise<AuthResult>{
+export async function AuthUser(id: number): Promise<AuthResult>{
   const session = await getServerSession(authOptions);
 
   if (!session) {
     return {
       access: false,
       status: 401,
-      error: "Non authentifié",
+      error: `Non authentifié`,
     };
   }
 
@@ -43,7 +43,7 @@ export async function AuthUser(id: Number): Promise<AuthResult>{
     return {
       access: false,
       status: 403,
-      error: "Accès refusé",
+      error: `Accès refusé - ${session.user.role}`,
     };
   }
 

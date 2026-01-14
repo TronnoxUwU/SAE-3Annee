@@ -6,6 +6,7 @@ function renderDate(date: Date | number | string) {
   let d: Date | null = null;
   if (date instanceof Date && !isNaN(date.getTime())) {
     d = date;
+    console.log("instance date" + date)
   }
 
   // Nombre
@@ -22,6 +23,7 @@ function renderDate(date: Date | number | string) {
       // const sec = Number(str.slice(12, 14));
 
       d = new Date(year, month, day);
+      console.log("reel date" + date)
     } 
     // via Timestamp
     else {
@@ -31,6 +33,7 @@ function renderDate(date: Date | number | string) {
 
   else if (typeof date === "string") {
     const numeric = Number(date);
+    console.log("string date" + date)
 
     if (!isNaN(numeric)) {
       return renderDate(numeric);

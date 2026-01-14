@@ -96,10 +96,13 @@ export async function PUT(request, { params }) {
     const body = await request.json();
 
     // Verification user
-    const canEdit =
-      session.user.id === personneId || session.user.role === "Admin";
+    const canEdit = await checkAdminOrOwner(session, personneId);
+    
     if (!canEdit) {
-      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+      return NextResponse.json({ 
+        access: false, 
+        error: "Accès refusé : Vous n'avez pas les droits pour modifier cet utilisateur" 
+      }, { status: 403 });
     }
 
     const deserializedData = deserializePersonne(body);

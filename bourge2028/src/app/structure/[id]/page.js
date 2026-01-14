@@ -33,6 +33,7 @@ export default function StructureDetailPage() {
   let d = null;
   if (date instanceof Date && !isNaN(date.getTime())) {
     d = date;
+    console.log("instance date" + date)
   }
 
   // Nombre
@@ -49,6 +50,7 @@ export default function StructureDetailPage() {
       // const sec = Number(str.slice(12, 14));
 
       d = new Date(year, month, day);
+      console.log("reel date" + date)
     } 
     // via Timestamp
     else {
@@ -58,6 +60,7 @@ export default function StructureDetailPage() {
 
   else if (typeof date === "string") {
     const numeric = Number(date);
+    console.log("string date" + date)
 
     if (!isNaN(numeric)) {
       return renderDate(numeric);
