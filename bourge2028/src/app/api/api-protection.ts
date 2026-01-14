@@ -39,7 +39,7 @@ export async function AuthUser(id: Number): Promise<AuthResult>{
     };
   }
 
-  if (session.user.id !== id) {
+  if (session.user.id !== Number(id)) {
     return {
       access: false,
       status: 403,
