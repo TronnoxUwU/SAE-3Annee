@@ -9,19 +9,19 @@ import { serializePersonne } from "@/lib/serializers";
 
 /**
  * GET /api/users/[id]
+ * Accessible par : tout utilisateur authentifié
  */
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
     const personneId = parseInt(id);
 
-    const auth = await AuthUser(personneId);
-    if (auth && !auth.access) {
-      return NextResponse.json(auth);
-    } else if (!auth) {
+    // Juste vérifier qu'on est authentifié (pas besoin de vérifier l'ID inshallah)
+    const session = await getServerSession(authOptions);
+    if (!session) {
       return NextResponse.json(
-        { error: "Erreur authentification/serveur" },
-        { status: 500 }
+        { error: "Non authentifié" },
+        { status: 401 }
       );
     }
 
@@ -59,6 +59,7 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
+
 
 /**
  * PUT /api/users/[id]
@@ -200,10 +201,12 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
     const personneId = parseInt(id);
 
-    const auth = await AuthUser(personneId);
-    const isAdmin = await AuthAdmin(personneId);
+    const authUser = await AuthUser(personneId);
+    const authAdmin = await AuthAdmin();
+
+    const hasAccess = (authUser && authUser.access) || (authAdmin && authAdmin.access); // fixed ?
     
-    if ((auth && !auth.access) || (isAdmin && !isAdmin.access)) {
+    if (hasAccess) {
       return NextResponse.json(auth || isAdmin);
     } else if (!auth || !isAdmin) {
       return NextResponse.json(
