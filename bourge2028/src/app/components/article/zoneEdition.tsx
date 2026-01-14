@@ -8,6 +8,7 @@ import { Image } from "./blocks/image";
 import { Sidebar } from "./sideEdition";
 import { SavePopup } from "./savepopup";
 import { useRouter } from "next/navigation";
+import { id } from "date-fns/locale";
 
 interface Block {
   id: string;
@@ -149,9 +150,10 @@ const handleSave = async (titre: string) => {
     }
 
     const result = await response.json();
+    const identifiant = result.id;
     //console.log("✅ Article sauvegardé avec succès :", result);
     alert(`Article "${titre}" ${realisation === -1 ? 'modifié' : 'créé'} avec succès !`);
-    router.push(`/article/${article.id}`)
+    router.push(`/article/${identifiant}`);
   } catch (error) {
     console.error("❌ Erreur lors de la sauvegarde :", error);
     alert("Erreur lors de la sauvegarde !");
