@@ -23,14 +23,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
               include: {
                 composants: {
                   include: {
-                    titre: true,
-                    paragraphe: true,
+                    //titre: true,
+                    //paragraphe: true,
                     image: true,
-                    caroussels: {
-                      include: {
-                        images: true
-                      }
-                    }
+                    // caroussels: {
+                    //   include: {
+                    //     images: true
+                    //   }
+                    // }
                   }
                 }
               }
