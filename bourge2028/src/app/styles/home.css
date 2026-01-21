@@ -98,3 +98,9 @@
   cursor: pointer;
   z-index: 999;
 }
+
+@media (max-width: 724px) {
+  .toggle-btn {
+    left: 25%;
+  }
+}
