@@ -45,22 +45,6 @@ export default function LegalPage() {
               </div>
             </Link>
           </div>
-
-          <div className="col-md-4 mb-4">
-            <Link href="/annuaires/techniques" className="text-decoration-none">
-              <div className="card h-100 shadow-sm hover-card">
-                <div className="card-body text-center d-flex flex-column justify-content-center p-5">
-                  <div className="mb-3">
-                    <i className="bi bi-gear-fill text-warning" style={{ fontSize: "3rem" }}></i>
-                  </div>
-                  <h3 className="card-title fw-bold">Techniques</h3>
-                  <p className="card-text text-muted">
-                    Accédez aux ressources et documentations techniques
-                  </p>
-                </div>
-              </div>
-            </Link>
-          </div>
         </div>
       </div>
 
