@@ -14,16 +14,16 @@ export default function StructureDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  function renderDate(date){
+  function renderDate(date) {
     if (!date) return "Date de fondation inconnue";
 
     const d = new Date(date);
     if (isNaN(d.getTime())) return "Date invalide";
 
     return `${d.toLocaleDateString('fr-FR', {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
+      year: "numeric",
+      month: "long",
+      day: "numeric"
     })}`;
   }
 
@@ -32,12 +32,13 @@ export default function StructureDetailPage() {
       try {
         setLoading(true);
         const response = await fetch(`/api/structures/${params.id}`);
-        
+
         if (!response.ok) {
           throw new Error("Structure non trouvée");
         }
-        
+
         const data = await response.json();
+        console.log("Données de la structure récupérées :", data);
         setStructure(data);
       } catch (err) {
         setError(err.message);
@@ -55,6 +56,22 @@ export default function StructureDetailPage() {
     if (!session || !structure) return false;
     return session.user.role === "Admin" || session.user.structure === structure.id;
   };
+
+  const canHandleMembers = () => {
+    if (!session || !structure) return false;
+    for (const member of structure.personnes) {
+      console.log("Vérification du membre :", member);
+      console.log("Session utilisateur :", session.user);
+      if ((member.personneId === session.user.id && (member.nomRole === "Proprietaire") || session.user.role === "Admin")) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handleMembres = () => {
+    router.push(`/structure/${params.id}/membres`);
+  }
 
   const handleEdit = () => {
     router.push(`/structure/${params.id}/edit`);
@@ -87,7 +104,7 @@ export default function StructureDetailPage() {
         <div className={Style.userPage}>
           <h2>Erreur</h2>
           <p>{error}</p>
-          <button 
+          <button
             className="btn btn-outline-secondary"
             onClick={() => router.push("/structure")}
           >
@@ -102,10 +119,10 @@ export default function StructureDetailPage() {
     <>
       <Topbar />
       <div className={Style.userPage}>
-        
+
         {/* Navigation */}
         <div className={Style.navBar}>
-          <a 
+          <a
             className={`${Style.btn_back} btn btn-link`}
             href="/structure"
             title="Retour"
@@ -113,7 +130,7 @@ export default function StructureDetailPage() {
             <i className="bi bi-chevron-left"></i> Retour
           </a>
           {canEdit() && (
-            <button 
+            <button
               className={`${Style.btn_edit} btn btn-outline-secondary`}
               onClick={handleEdit}
               title="Modifier la structure"
@@ -128,7 +145,7 @@ export default function StructureDetailPage() {
           <div className={Style.heroContent}>
             <span className={Style.label}>Structure régionale depuis le {renderDate(structure.dateCreation)}</span>
             <h2 className={Style.mainTitle}>{structure?.nomStructure || "Structure inconnue"}</h2>
-            
+
             {/* {structure?.dateCreation && (
               <p className={Style.dateInfo}>
                 
@@ -140,22 +157,22 @@ export default function StructureDetailPage() {
             </p>
           </div>
 
-            <img
-                src="/images/default.jpg"     // A REMPLACER PAR L IMAGE DE LA STRUCTURE
-                alt="representation structure"
-                className={Style.showImage}
-            />
+          <img
+            src="/images/default.jpg"     // A REMPLACER PAR L IMAGE DE LA STRUCTURE
+            alt="representation structure"
+            className={Style.showImage}
+          />
         </div>
 
         {/* Départements */}
         {structure?.departements && structure.departements.length > 0 && (
           <div className={Style.departementSection}>
             <span className={Style.label}>Notre présence dans la région</span>
-            
+
             <div className={Style.departementsList}>
               {structure.departements.map((item, idx) => (
-                <div 
-                  key={item.id} 
+                <div
+                  key={item.id}
                   className={`${Style.departementItem} `} //${idx % 2 === 1 ? Style.offsetRight : ''}
                 >
                   {/* <div className={Style.departementDot}></div> */}
@@ -171,6 +188,44 @@ export default function StructureDetailPage() {
             </div>
           </div>
         )}
+
+        {/*Membres */}
+        <div className={Style.membersSection}>
+          <div className={Style.sectionHeader}>
+            <span className={Style.label}>Nos membres</span>
+            {canHandleMembers() && (
+              <button
+                className={`${Style.btn_edit} btn btn-outline-secondary`}
+                onClick={handleMembres}
+                title="Gérer les membres"
+              >
+                <i className="bi bi-people-fill"></i> Gérer les membres
+              </button>
+            )}
+          </div>
+          <div className={Style.membersList}>
+            {structure?.personnes && structure.personnes.length > 0 ? (
+              structure.personnes.map((member) => (
+                <div key={member.id} className={Style.memberCard}>
+                  <div className={Style.avatarSection}>
+                    <div className={Style.avatar}>
+                      <div className={Style.defaultAvatar}>
+                        {member.prenom?.[0]}
+                        {member.nom?.[0]}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={Style.memberInfo}>
+                    <h3 className={Style.memberName}>{member.nom} {member.prenom}</h3>
+                    <p className={Style.memberRole}>{member.nomRole}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className={Style.noMembers}>Aucun membre répertorié pour cette structure.</p>
+            )}
+          </div>
+        </div>
 
         {/* Section Articles */}
         <div className={Style.articlesSection}>

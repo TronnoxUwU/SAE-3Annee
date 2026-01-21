@@ -91,7 +91,7 @@ model Appartenir {
   role   Role @relation(fields: [roleId], references: [id])
   roleId Int
 
-  @@unique([structureId, personneId])
+  @@unique([structureId, personneId, roleId])
 }
 
 model Role {

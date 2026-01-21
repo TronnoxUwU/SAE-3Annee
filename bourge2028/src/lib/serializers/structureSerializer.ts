@@ -40,6 +40,9 @@ export const serializeStructure = (
     id: p.id,
     personneId: p.personneId,
     role: p.roleId,
+    nomRole: p.role?.nom ?? null,
+    nom: p.personne?.nom ?? null,
+    prenom: p.personne?.prenom ?? null,
   })) ?? [],
 
   realisations: structure.realisations?.map(r => ({

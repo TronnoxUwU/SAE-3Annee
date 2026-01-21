@@ -28,7 +28,7 @@ export async function GET(
         cats: { include: { categorie: true } },
         realisations: true,
         personnes: {
-          include: { personne: true },
+          include: { personne: true, role: true },
         },
       },
     });
@@ -89,7 +89,7 @@ export async function PUT(
         cats: { include: { categorie: true } },
         realisations: true,
         personnes: {
-          include: { personne: true },
+          include: { personne: true, role: true },
         },
       },
     });
