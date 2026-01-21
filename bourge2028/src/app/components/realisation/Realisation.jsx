@@ -56,6 +56,7 @@ export default function ProjetView({ id, type }) {
         }
         
         const json = await res.json();
+        console.log("Données chargées:", json);
         setData(json);
         if (res.status === 404) {
           router.push("/404"); // ou router.replace("/404")

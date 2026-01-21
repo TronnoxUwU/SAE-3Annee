@@ -59,6 +59,7 @@ export default function Annuaire({ articles }) {
 
   /* ===== RÉALISATIONS ===== */
   if (!articles[0].projet) {
+    // console.log(articles);
     return (
       <div className={styles.annuaire}>
         {articles.map((realisation) => (
