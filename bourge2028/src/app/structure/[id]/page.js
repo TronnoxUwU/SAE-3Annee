@@ -38,7 +38,7 @@ export default function StructureDetailPage() {
         }
 
         const data = await response.json();
-        console.log("Données de la structure récupérées :", data);
+        // console.log("Données de la structure récupérées :", data);
         setStructure(data);
       } catch (err) {
         setError(err.message);
