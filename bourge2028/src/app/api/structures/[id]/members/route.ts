@@ -25,7 +25,7 @@ export async function POST(
       );
     }
 
-    const member = await prisma.structurePersonne.create({
+    const member = await prisma.appartenir.create({
       data: {
         structureId: structureId,
         personneId: personneId,

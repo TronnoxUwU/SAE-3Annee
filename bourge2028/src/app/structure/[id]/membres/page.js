@@ -20,8 +20,8 @@ export default function MembersPage() {
     const canHandleMembers = () => {
         if (!session || !structure) return false;
         for (const member of structure.personnes) {
-            console.log("Vérification du membre :", member);
-            console.log("Session utilisateur :", session.user);
+            // console.log("Vérification du membre :", member);
+            // console.log("Session utilisateur :", session.user);
             if ((member.personneId === session.user.id && (member.nomRole === "Proprietaire") || session.user.role === "Admin")) {
                 return true;
             }
@@ -63,26 +63,80 @@ export default function MembersPage() {
         }
     }, [params.id]);
 
-    const handleSubmit = async (e, memberId, selectedRole) => {
+    const handleSubmit = async (e, personneId, selectedRoleId) => {
         e.preventDefault();
-
         try {
-            const res = await fetch(`/api/structures/${params.id}/members/${memberId}`, {
+            const body = { roleId: selectedRoleId };
+            console.log("Body à envoyer:", JSON.stringify(body));
+
+            const res = await fetch(`/api/structures/${params.id}/members/${personneId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ nomRole: selectedRole }),
+                body: JSON.stringify(body),
             });
 
+            console.log("Status de la réponse:", res.status);
+
+            const data = await res.json();
+            console.log("Réponse complète:", data);
+
             if (!res.ok) {
-                throw new Error("Erreur API");
+                console.error("Erreur API:", data);
+                throw new Error(data.error || "Erreur API");
             }
 
+            alert("Rôle mis à jour avec succès");
+
         } catch (err) {
-            console.error(err);
+            console.error("Erreur lors de la mise à jour:", err);
+            alert("Erreur lors de la mise à jour du rôle");
         }
     };
+
+    const handleDelete = async (personneId) => {
+        if (!confirm("Êtes-vous sûr de vouloir supprimer ce membre ?")) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/structures/${params.id}/members/${personneId}`, {
+                method: "DELETE",
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                console.error("Erreur API:", data);
+                throw new Error(data.error || "Erreur API");
+            }
+
+            // Mettre à jour l'état local pour retirer le membre supprimé
+            setStructure(prev => ({
+                ...prev,
+                personnes: prev.personnes.filter(p => p.personneId !== personneId)
+            }));
+
+            alert("Membre supprimé avec succès");
+
+        } catch (err) {
+            console.error("Erreur lors de la suppression:", err);
+            alert("Erreur lors de la suppression du membre");
+        }
+    };
+
+    const handleAjout = () => {
+        // show popup d'ajout de membre (à implémenter)
+    }
+
+    if (loading) {
+        return <div>Chargement...</div>;
+    }
+
+    if (error) {
+        return <div>Erreur : {error}</div>;
+    }
 
     return (
         <>
@@ -97,6 +151,15 @@ export default function MembersPage() {
                     >
                         <i className="bi bi-chevron-left"></i> Retour
                     </a>
+                    {canHandleMembers() && (
+                        <button
+                            className={`${Style.btn_add} btn btn-outline-secondary`}
+                            onClick={handleAjout}
+                            title="Ajouter un membre"
+                        >
+                            <i className="bi bi-plus-square"></i> Ajouter un membre
+                        </button>
+                    )}
                 </div>
                 <div className={Style.membersSection}>
                     <div className={Style.sectionHeader}>
@@ -116,35 +179,42 @@ export default function MembersPage() {
                                     </div>
                                     <div className={Style.memberInfo}>
                                         <h3 className={Style.memberName}>{member.nom} {member.prenom}</h3>
-                                        {/* <p className={Style.memberRole}>{member.nomRole}</p> */}
+                                        <p className={Style.memberRole}>{member.nomRole}</p>
                                         {canHandleMembers() && roles.length > 0 && (
-                                            <form 
-                                            // onSubmit={(e) => handleSubmit(e, member.id, member.nomRole)}
-                                            >
-                                                <select
-                                                    className={Style.roleSelect}
-                                                    defaultValue={member.nomRole}
-                                                    onChange={(e) =>
-                                                        setStructure(prev => ({
-                                                            ...prev,
-                                                            personnes: prev.personnes.map(p =>
-                                                                p.id === member.id ? { ...p, nomRole: e.target.value } : p
-                                                            )
-                                                        }))
-                                                    }
+                                            <>
+                                                <form
+                                                    onSubmit={(e) => handleSubmit(e, member.personneId, member.role)}
                                                 >
-                                                    {roles.map((role) => (
-                                                        <option key={role.id} value={role.nom}>
-                                                            {role.nom}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <input type="hidden" name="memberId" value={member.id} />
-                                                <button type="submit" className={Style.btn_save}>
-                                                    Sauvegarder
-                                                </button>
-                                            </form>
-                                        )}
+                                                    <select
+                                                        className={Style.roleSelect}
+                                                        defaultValue={member.role} // Utiliser roleId au lieu de nomRole
+                                                        onChange={(e) => {
+                                                            const selectedRoleId = e.target.value; // Récupère l'id du rôle
+                                                            const selectedRole = roles.find(r => r.id === parseInt(selectedRoleId));
+
+                                                            setStructure(prev => ({
+                                                                ...prev,
+                                                                personnes: prev.personnes.map(p =>
+                                                                    p.personneId === member.personneId
+                                                                        ? { ...p, role: parseInt(selectedRoleId), nomRole: selectedRole?.nom }
+                                                                        : p
+                                                                )
+                                                            }))
+                                                        }}
+                                                    >
+                                                        {roles.map((role) => (
+                                                            <option key={role.id} value={role.id}> {/* value doit être l'id */}
+                                                                {role.nom}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <input type="hidden" name="memberId" value={member.personneId} />
+                                                    <button type="submit" className={Style.btn_save}>
+                                                        Sauvegarder
+                                                    </button>
+                                                </form>
+                                                <button className={Style.btn_delete} onClick={() => handleDelete(member.personneId)}>Supprimer</button>
+                                            </>)}
                                     </div>
                                 </div>
                             ))
