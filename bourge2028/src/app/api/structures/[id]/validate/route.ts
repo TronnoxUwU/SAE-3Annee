@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { serializeStructure } from "@/lib/serializers";
 import { NextResponse } from "next/server";
+import { AuthAdmin } from "@/app/api/api-protection";
 
 /**
  * PATCH /api/structures/[id]/validate
@@ -19,6 +20,12 @@ export async function PATCH(
         { error: "ID invalide" },
         { status: 400 }
       );
+    }
+
+    const admin = await AuthAdmin();
+    
+    if (!admin.access){
+      return NextResponse.json(admin)
     }
 
     const structure = await prisma.structure.update({

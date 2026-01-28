@@ -82,14 +82,14 @@ export async function POST(req: Request) {
     const realisationData = deserializeRealisation(data);
 
     const membre = await AuthStructureRole(data?.structure[0].id, ['Proprietaire']);
-      const admin = await AuthAdmin();
-      
-      if (!admin.access && !membre.access){
-        if(!membre.access){
-          return NextResponse.json(membre)
-        }
-        return NextResponse.json(admin)
-      };
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+      if(!membre.access){
+        return NextResponse.json(membre)
+      }
+      return NextResponse.json(admin)
+    };
 
     const include: any = {
       structure: true,
