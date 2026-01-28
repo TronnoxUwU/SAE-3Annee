@@ -112,19 +112,50 @@ export async function GET(req: Request) {
  */
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
-    const projetData = deserializeProjet(data);
+    const body = await req.json();
 
-    const membre = await AuthStructureRole(data?.structure[0].id, ['Proprietaire']);
-    const admin = await AuthAdmin();
-    
-    if (!admin.access && !membre.access){
-      if(!membre.access){
-        return NextResponse.json(membre)
-      }
-      return NextResponse.json(admin)
+    // 1️⃣ Récupérer realisationId depuis le body
+    const realisationId = body?.realisation?.id;
+    if (!realisationId) {
+      return NextResponse.json(
+        { error: "realisation.id obligatoire" },
+        { status: 400 }
+      );
     }
 
+    // 2️⃣ Trouver la structure liée à la réalisation
+    const result = await prisma.realisation.findUnique({
+      where: { id: Number(realisationId) },
+      select: {
+        structure: {
+          select: { id: true },
+          take: 1,
+          orderBy: { id: "asc" },
+        },
+      },
+    });
+
+    const structureId = result?.structure?.[0]?.id ?? null;
+    if (!structureId) {
+      return NextResponse.json(
+        { error: "Réalisation ou structure introuvable" },
+        { status: 404 }
+      );
+    }
+
+    // 3️⃣ Sécurité
+    const membre = await AuthStructureRole(structureId, ["Proprietaire"]);
+    const admin = await AuthAdmin();
+
+    if (!admin.access && !membre.access) {
+      if (!membre.access) return NextResponse.json(membre);
+      return NextResponse.json(admin);
+    }
+
+    // 4️⃣ Désérialiser le body pour Prisma
+    const projetData = deserializeProjet(body);
+
+    // 5️⃣ Créer le projet
     const newProjet = await prisma.projet.create({
       data: projetData,
       include: {
@@ -134,15 +165,16 @@ export async function POST(req: Request) {
             structure: true,
           },
         },
-        departements: {
-          include: { departement: true }
-        }
+        departements: { include: { departement: true } },
       },
     });
 
     return NextResponse.json(serializeProjet(newProjet), { status: 201 });
   } catch (error) {
     console.error("Erreur POST /api/projet :", error);
-    return NextResponse.json({ error: "Impossible de créer le projet" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Impossible de créer le projet" },
+      { status: 500 }
+    );
   }
 }
