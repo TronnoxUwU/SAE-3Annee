@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { serializeCategorie } from "@/lib/serializers";
+import { AuthAdmin } from "@/app/api/api-protection";
 
 /**
  * ----- GET /api/categories/[id] -----
@@ -68,6 +69,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const admin = await AuthAdmin();
+    
+    if (!admin.access){
+      return NextResponse.json(admin)
+    }
     const { id } = await params;
     const categoryId = Number(id);
 
