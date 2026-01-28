@@ -3,6 +3,7 @@ import { serializeProjet } from "@/lib/serializers";
 import { deserializeProjet } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { AuthAdmin, AuthStructureRole } from "@/app/api/api-protection";
 
 /**
  * ----- GET /api/projet -----
@@ -113,6 +114,16 @@ export async function POST(req: Request) {
   try {
     const data = await req.json();
     const projetData = deserializeProjet(data);
+
+    const membre = await AuthStructureRole(data?.structure[0].id, ['Proprietaire']);
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+      if(!membre.access){
+        return NextResponse.json(membre)
+      }
+      return NextResponse.json(admin)
+    }
 
     const newProjet = await prisma.projet.create({
       data: projetData,
