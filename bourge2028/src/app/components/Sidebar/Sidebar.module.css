@@ -17,9 +17,9 @@
   flex-direction: column;
 }
 
-.sidebar.collapsed {
+/* .sidebar.collapsed {
   width: 60px;
-}
+} */
 
 /* Zone de recherche */
 .sidebar_search {
@@ -121,14 +121,20 @@
 }
 
 .expand_btn {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 12px;
-  width: 20px;
   display: inline-flex;
   justify-content: center;
+  
+  background: none;
+  cursor: pointer;
+  font-size: x-large;
+  font-weight: bold;
+
+  width: 50px;
+  border-radius: 10px;
+  color: white;
+  border: none;
+  background-color: rgba(95, 158, 160, 0.2);
+  
 }
 
 .expand_btn_placeholder {
@@ -234,26 +240,86 @@
   padding-left: 10px;
 }
 
-@media (max-width:724px) {
+
+
+
+.mobile_toggle {
+  display: none;
+}
+
+@media (max-width: 724px) {
   .sidebar {
     position: fixed;
-    top: 8vh;
+    top: 10vh;
     left: 0;
+
+    width: 65vw;
+    /* max-width: 360px; */
     height: 80vh;
-    /* width:auto; */
-    width: -moz-available;
-    width: -webkit-fill-available;
-    max-height: 80vh;
-    min-width: 10vw;
-    /* width: 16vw; */
-    margin: 2vh;
-    border-radius: 20px;
-    background-color: rgba(31, 29, 52, 0.9);
-    color: white;
-    transition: width 0.3s;
-    overflow: hidden;
-    z-index: 998;
-    display: flex;
-    flex-direction: column;
+    margin: 0;
+
+    border-radius: 0 20px 20px 0;
+
+    transition: transform 0.3s ease;
+    z-index: 1000;
+
+    font-size: xx-large;
   }
+  .sidebar_search input {
+    font-size: x-large;
+  }
+  .search_results {
+    max-height: 25vh;
+  }
+
+  .mobile_toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    position: fixed;
+    top: 50%;
+    left: 15px;
+
+    z-index: 1100;
+
+    background: rgba(31, 29, 52, 0.9);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 20px;
+
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }.mobile_toggle:hover {
+    transform: translateX(2px);
+  }.toggle_arrow {
+    font-size: x-large;
+    font-weight: bold;
+    line-height: 1;
+    transition: transform 0.25s ease;
+  }
+
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .mobile_toggle.open {
+    transform: translateX(65vw);
+  }.mobile_toggle.open .toggle_arrow {
+    transform: rotate(0deg);
+  }
+
+
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+  }
+  .mobile_toggle.collapsed {
+    transform: translateX(0);
+  }.mobile_toggle.collapsed .toggle_arrow {
+    transform: rotate(0deg);
+  }
+
+
 }

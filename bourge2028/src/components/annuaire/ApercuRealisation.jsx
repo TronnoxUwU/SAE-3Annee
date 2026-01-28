@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import styles from "../../styles/apercu_article.module.css";
+import styles from "./apercu_article.module.css";
 
 export default function ApercuRealisation({ article, editable, onDelete }) {
   const router = useRouter();

@@ -3,7 +3,7 @@
 import ApercuArticle from "./ApercuArticle";
 import ApercuCarte from "./ApercuCarte";
 import ApercuRealisation from "./ApercuRealisation";
-import styles from "../../styles/annuaire.module.css";
+import styles from "./annuaire.module.css";
 import { useSession } from "next-auth/react";
 
 import { useRouter } from "next/navigation";
