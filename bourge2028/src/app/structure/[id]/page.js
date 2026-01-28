@@ -60,8 +60,8 @@ export default function StructureDetailPage() {
   const canHandleMembers = () => {
     if (!session || !structure) return false;
     for (const member of structure.personnes) {
-      console.log("Vérification du membre :", member);
-      console.log("Session utilisateur :", session.user);
+      // console.log("Vérification du membre :", member);
+      // console.log("Session utilisateur :", session.user);
       if ((member.personneId === session.user.id && (member.nomRole === "Proprietaire") || session.user.role === "Admin")) {
         return true;
       }
@@ -79,6 +79,31 @@ export default function StructureDetailPage() {
 
   const handleAdd = () => {
     router.push(`${params.id}/realisations/creation`);
+  };
+
+  const candidate = () => {
+    try {
+      fetch(`/api/structures/${params.id}/candidate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: session.user.id }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erreur lors de la candidature');
+        }
+        alert('Candidature envoyée avec succès !');
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de la candidature. Auriez-vous déjà candidaté ?');
+      });
+    } catch (err) {
+      console.error('Erreur:', err);
+      alert('Une erreur est survenue lors de la candidature. Auriez-vous déjà candidaté ?');
+    }
   };
 
   if (loading) {
@@ -136,6 +161,14 @@ export default function StructureDetailPage() {
               title="Modifier la structure"
             >
               <i className="bi bi-pencil-square"></i> Modifier
+            </button>
+          )}
+          {!canEdit() && session && (
+            <button className={`${Style.btn_join} btn btn-outline-secondary`}
+            onClick={candidate}
+            title="Candidater à la structure"
+            >
+              <i className="bi bi-person-plus-fill"></i> Candidater
             </button>
           )}
         </div>

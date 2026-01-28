@@ -17,6 +17,7 @@ export default function MembersPage() {
     const [error, setError] = useState(null);
     const [roles, setRoles] = useState([]);
 
+
     const canHandleMembers = () => {
         if (!session || !structure) return false;
         for (const member of structure.personnes) {
@@ -50,6 +51,14 @@ export default function MembersPage() {
                 const rolesData = await res.json();
                 // console.log("Rôles récupérés :", rolesData);
                 setRoles(rolesData);
+
+                const candidaturesRes = await fetch(`/api/structures/${params.id}/candidate`);
+                if (!candidaturesRes.ok) {
+                    throw new Error("Erreur lors de la récupération des candidatures");
+                }
+                const candidaturesData = await candidaturesRes.json();
+                // console.log("Candidatures récupérées :", candidaturesData);
+                setStructure(prev => ({ ...prev, candidatures: candidaturesData }));
 
             } catch (err) {
                 setError(err.message);
@@ -126,9 +135,63 @@ export default function MembersPage() {
         }
     };
 
-    const handleAjout = () => {
-        // show popup d'ajout de membre (à implémenter)
-    }
+    const handleAccept = async (e, personneId, selectedRoleId) => {
+        e.preventDefault();
+        try {
+            const body = { roleId: selectedRoleId };
+            console.log("Body à envoyer pour acceptation:", JSON.stringify(body));
+
+            const res = await fetch(`/api/structures/${params.id}/candidate/${personneId}?action=accepter`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            });
+
+            console.log("Status de la réponse d'acceptation:", res.status);
+
+            const data = await res.json();
+            console.log("Réponse complète d'acceptation:", data);
+
+            if (!res.ok) {
+                console.error("Erreur API lors de l'acceptation:", data);
+                throw new Error(data.error || "Erreur API");
+            }
+
+            alert("Candidature acceptée avec succès");
+            router.refresh();
+
+        } catch (err) {
+            console.error("Erreur lors de l'acceptation:", err);
+            alert("Erreur lors de l'acceptation de la candidature");
+        }
+    };
+
+    const handleRefus = (personneId) => async () => {
+        if (!confirm("Êtes-vous sûr de vouloir refuser cette candidature ?")) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/structures/${params.id}/candidate/${personneId}?action=refuser`, {
+                method: "DELETE",
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                console.error("Erreur API lors du refus:", data);
+                throw new Error(data.error || "Erreur API");
+            }
+
+            alert("Candidature refusée avec succès");
+            router.refresh();
+
+        } catch (err) {
+            console.error("Erreur lors du refus:", err);
+            alert("Erreur lors du refus de la candidature");
+        }
+    };
 
     if (loading) {
         return <div>Chargement...</div>;
@@ -151,15 +214,6 @@ export default function MembersPage() {
                     >
                         <i className="bi bi-chevron-left"></i> Retour
                     </a>
-                    {canHandleMembers() && (
-                        <button
-                            className={`${Style.btn_add} btn btn-outline-secondary`}
-                            onClick={handleAjout}
-                            title="Ajouter un membre"
-                        >
-                            <i className="bi bi-plus-square"></i> Ajouter un membre
-                        </button>
-                    )}
                 </div>
                 <div className={Style.membersSection}>
                     <div className={Style.sectionHeader}>
@@ -223,6 +277,68 @@ export default function MembersPage() {
                         )}
                     </div>
                 </div>
+                {canHandleMembers() && (
+                    <div className={Style.membersSection} >
+                        <div className={Style.sectionHeader}>
+                            <span className={Style.label}>Candidatures</span>
+                        </div>
+                        <div className={Style.membersList}>
+                            {structure?.candidatures && structure.candidatures.length > 0 ? (
+                                structure.candidatures.map((candidate) => (
+                                    <div key={candidate.personne.id} className={Style.memberCard}>
+                                        <div className={Style.avatarSection}>
+                                            <div className={Style.avatar}>
+                                                <div className={Style.defaultAvatar}>
+                                                    {candidate.personne.prenom?.[0]}
+                                                    {candidate.personne.nom?.[0]}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className={Style.memberInfo}>
+                                            <h3 className={Style.memberName}>{candidate.personne.nom} {candidate.personne.prenom}</h3>
+                                            <p className={Style.memberRole}>Candidat</p>
+                                            <form
+                                                onSubmit={(e) => handleAccept(e, candidate.personne.id, candidate.role)}
+                                            >
+                                                <select
+                                                    className={Style.roleSelect}
+                                                    defaultValue={"..."}
+                                                    onChange={(e) => {
+                                                        const selectedRoleId = e.target.value; // Récupère l'id du rôle
+                                                        const selectedRole = roles.find(r => r.id === parseInt(selectedRoleId));
+
+                                                        setStructure(prev => ({
+                                                            ...prev,
+                                                            personnes: prev.personnes.map(p =>
+                                                                p.personneId === candidate.personne.id
+                                                                    ? { ...p, role: parseInt(selectedRoleId), nomRole: selectedRole?.nom }
+                                                                    : p
+                                                            )
+                                                        }))
+                                                    }}
+                                                >
+                                                    <option value="..." disabled>Choisir un rôle</option>
+                                                    {roles.map((role) => (
+                                                        <option key={role.id} value={role.id}> {/* value doit être l'id */}
+                                                            {role.nom}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <input type="hidden" name="memberId" value={candidate.personne.id} />
+                                                <button type="submit" className={Style.btn_save}>
+                                                    Accepter
+                                                </button>
+                                            </form>
+                                            <button className={Style.btn_reject} onClick={handleRefus(candidate.personne.id)}>Refuser</button>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className={Style.noMembers}>Aucune candidature en attente.</p>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );
