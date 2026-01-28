@@ -3,6 +3,7 @@ import { serializeRealisation } from "@/lib/serializers";
 import { deserializeRealisation } from "@/lib/deserializers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { AuthAdmin, AuthStructureRole } from "@/app/api/api-protection";
 
 /**
  * ----- GET /api/realisation -----
@@ -79,6 +80,16 @@ export async function POST(req: Request) {
     const data = await req.json();
     const { type } = data; // type = 'materiau' | 'technique' | 'article' | 'projet'
     const realisationData = deserializeRealisation(data);
+
+    const membre = await AuthStructureRole(data?.structure[0].id, ['Proprietaire']);
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+      if(!membre.access){
+        return NextResponse.json(membre)
+      }
+      return NextResponse.json(admin)
+    };
 
     const include: any = {
       structure: true,

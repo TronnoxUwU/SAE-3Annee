@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { serializeArticle } from "@/lib/serializers/articleSerializer";
 import { deserializeArticle } from "@/lib/deserializers/articleDeserializer";
+import { AuthAdmin, AuthStructureRole } from "@/app/api/api-protection";
 
 /**
  * ----- GET /api/articles/[id] -----
@@ -59,9 +60,40 @@ export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
   try {
     const tmp = await params;
     const id = Number(tmp.id);
+    const result = await prisma.article.findUnique({
+      where: { id: id },
+      select: {
+        realisation: {
+          select: {
+            structure: {
+              select: {
+                id: true,
+              },
+              take: 1,
+              orderBy: {
+                id: 'asc', // optionnel mais recommandé pour être déterministe
+              },
+            },
+          },
+        },
+      },
+    })
+  
+  const structureId = result?.realisation?.structure?.[0]?.id ?? null
+
+  const membre = await AuthStructureRole(structureId, ['Proprietaire']);
+  const admin = await AuthAdmin();
+  
+  if (!admin.access && !membre.access){
+    if(!membre.access){
+      return NextResponse.json(membre)
+    }
+    return NextResponse.json(admin)
+  }
 
     // 1️⃣ Récupérer les composants de l'article
     const composants = await prisma.composant.findMany({
@@ -114,6 +146,37 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await req.json();
+
+    const result = await prisma.article.findUnique({
+      where: { id: Number(id) },
+      select: {
+        realisation: {
+          select: {
+            structure: {
+              select: {
+                id: true,
+              },
+              take: 1,
+              orderBy: {
+                id: 'asc', // optionnel mais recommandé pour être déterministe
+              },
+            },
+          },
+        },
+      },
+    })
+  
+  const structureId = result?.realisation?.structure?.[0]?.id ?? null
+
+  const membre = await AuthStructureRole(structureId, ['Proprietaire']);
+  const admin = await AuthAdmin();
+  
+  if (!admin.access && !membre.access){
+    if(!membre.access){
+      return NextResponse.json(membre)
+    }
+    return NextResponse.json(admin)
+  }
 
     // Transformer le corps de la requête en structure Prisma
     const data = deserializeArticle(body);
