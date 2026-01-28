@@ -271,6 +271,7 @@ useEffect(() => {
         <ApercuPoint
           id={selectedPoint.id}
           type={selectedPoint.type}
+          onClose={() => setSelectedPoint(null)}
         />
       )}
 
