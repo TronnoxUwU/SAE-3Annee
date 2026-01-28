@@ -66,6 +66,12 @@ export default function ApercuArticle({ article, editable, onDelete }) {
       className={styles.apercuArticle}
       onClick={() => router.push(`/article/${article.id}`)}
     >
+    <h2
+        className={styles.apercuArticleTitle}
+        data-fulltitle={article.titre}
+      >
+        {title}
+      </h2>
       {editable && (
         <div className={styles.actions}>
           <button
@@ -95,12 +101,7 @@ export default function ApercuArticle({ article, editable, onDelete }) {
         className={styles.apercuArticleImage}
       />
 
-      <h2
-        className={styles.apercuArticleTitle}
-        data-fulltitle={article.titre}
-      >
-        {title}
-      </h2>
+      
     </div>
   );
 }

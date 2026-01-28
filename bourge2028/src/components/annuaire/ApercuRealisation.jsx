@@ -71,6 +71,12 @@ export default function ApercuRealisation({ article, editable, onDelete }) {
         router.push(`/annuaires/projets/${article.id}`)
       }
     >
+      <h2
+        className={styles.apercuArticleTitle}
+        data-fulltitle={article.nomProjet}
+      >
+        {title}
+      </h2>
       {editable && (
         <div className={styles.actions}>
           <button
@@ -100,12 +106,6 @@ export default function ApercuRealisation({ article, editable, onDelete }) {
         className={styles.apercuArticleImage}
       />
 
-      <h2
-        className={styles.apercuArticleTitle}
-        data-fulltitle={article.nomProjet}
-      >
-        {title}
-      </h2>
     </div>
   );
 }

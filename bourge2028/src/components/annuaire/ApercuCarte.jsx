@@ -91,9 +91,9 @@ export default function ApercuCarte({ article }) {
 
   return (
     <a href={article.lienCarte}>
+        <h2>{title}</h2>
       <div className={styles.apercuArticle}>
         <img src={imageSrc} alt={title} className={styles.apercuArticleImage} />
-        <h2>{title}</h2>
       </div>
     </a>
   );

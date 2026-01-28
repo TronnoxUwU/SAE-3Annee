@@ -1,18 +1,27 @@
 .annuaire {
   position: absolute;
-  top: 17vh !important;
-  left: 18vw !important;
-  height: 80vh !important;
+  top: 17vh;
+  left: 18vw;
+  height: 80vh;
+
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 16px;
+  gap: 20px;
   justify-items: center;
   align-items: start;
   padding: 16px;
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
+
+  scrollbar-width: none;
+  z-index: 1000;
 }
 
 .annuaire::-webkit-scrollbar {
-  display: none; /* Chrome, Edge, Safari */
+  display: none;
+}
+
+@media (max-width: 724px) {
+  .annuaire {
+  grid-template-columns: repeat(1, 1fr);
+  }
 }
