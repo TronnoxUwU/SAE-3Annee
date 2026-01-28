@@ -27,6 +27,7 @@ export default function StructureDetailPage() {
     })}`;
   }
 
+
   useEffect(() => {
     const fetchStructure = async () => {
       try {
