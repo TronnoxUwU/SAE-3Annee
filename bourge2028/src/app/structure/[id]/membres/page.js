@@ -215,7 +215,11 @@ export default function MembersPage() {
             }
 
             alert("Candidature refusée avec succès");
-            router.refresh();
+            // Mettre à jour l'état local pour retirer la candidature refusée
+            setStructure(prev => ({
+                ...prev,
+                candidatures: prev.candidatures.filter(c => c.personne.id !== personneId)
+            }));
 
         } catch (err) {
             console.error("Erreur lors du refus:", err);

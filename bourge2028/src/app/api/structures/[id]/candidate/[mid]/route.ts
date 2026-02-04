@@ -4,7 +4,7 @@ import { sendMail } from "@/lib/mail";
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string; mid: string } }
+    { params }: { params: Promise<{ id: string; mid: string }> }
 ) {
     const { id, mid } = await params;
     const { searchParams } = new URL(request.url);
@@ -37,7 +37,7 @@ export async function DELETE(
     const user = await prisma.personne.findUnique({
         where: { id: candidature.personneId },
     });
-    
+
     const structure = await prisma.structure.findUnique({
         where: { id: parseInt(id) },
     });

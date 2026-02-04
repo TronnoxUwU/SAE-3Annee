@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const { userId } = await request.json();
 
   // Vérifier si la structure existe
@@ -25,7 +25,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
   return NextResponse.json(candidature, { status: 201 });
 }
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   // Récupérer les candidatures pour la structure donnée
