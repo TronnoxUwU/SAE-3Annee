@@ -36,7 +36,7 @@
   transition: transform 0.6s ease;
   z-index: 10;
   border-radius: 16px 16px 0 0;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.2);
+  /* box-shadow: 0 -8px 24px rgba(0,0,0,0.2); */
 }
 
 .section-annuaire.show {
@@ -101,6 +101,6 @@
 
 @media (max-width: 724px) {
   .toggle-btn {
-    left: 25%;
+    left: 20%;
   }
 }

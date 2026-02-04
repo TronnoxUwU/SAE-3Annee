@@ -56,13 +56,10 @@ export default function ApercuRealisation({ article, editable, onDelete }) {
 
   const handleDelete = (e) => {
     e.stopPropagation();
-
     if (confirm("Supprimer ce projet ?")) {
       onDelete(article.id);
     }
   };
-
-  //console.log(editable)
 
   return (
     <div
@@ -71,41 +68,47 @@ export default function ApercuRealisation({ article, editable, onDelete }) {
         router.push(`/annuaires/projets/${article.id}`)
       }
     >
-      <h2
-        className={styles.apercuArticleTitle}
-        data-fulltitle={article.nomProjet}
-      >
-        {title}
-      </h2>
-      {editable && (
-        <div className={styles.actions}>
-          <button
-            className={styles.editButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/annuaires/projets/${article.id}/edit`);
-            }}
-            aria-label="Éditer le projet"
-          >
-            <i className="bi bi-pencil" />
-          </button>
+      {/* HEADER FIXE */}
+      <header className={styles.header}>
+        <h2
+          className={styles.apercuArticleTitle}
+          data-fulltitle={article.nomProjet}
+        >
+          {title}
+        </h2>
 
-          <button
-            className={styles.deleteButton}
-            onClick={handleDelete}
-            aria-label="Supprimer le projet"
-          >
-            <i className="bi bi-trash" />
-          </button>
-        </div>
-      )}
+        {editable && (
+          <div className={styles.actions}>
+            <button
+              className={styles.editButton}
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/annuaires/projets/${article.id}/edit`);
+              }}
+              aria-label="Éditer le projet"
+            >
+              <i className="bi bi-pencil" />
+            </button>
 
-      <img
-        src={imageSrc}
-        alt={title}
-        className={styles.apercuArticleImage}
-      />
+            <button
+              className={styles.deleteButton}
+              onClick={handleDelete}
+              aria-label="Supprimer le projet"
+            >
+              <i className="bi bi-trash" />
+            </button>
+          </div>
+        )}
+      </header>
 
+      {/* CONTENU AVEC PADDING */}
+      <div className={styles.content}>
+        <img
+          src={imageSrc}
+          alt={title}
+          className={styles.apercuArticleImage}
+        />
+      </div>
     </div>
   );
 }

@@ -43,32 +43,47 @@ export default function Annuaire({ articles }) {
     }
   };
 
+  // const getTypeLabel = (item) => {
+  //   if (item.lienCarte) return "Cartes";
+  //   if (!item.projet) return "Réalisations";
+  //   return "Articles";
+  // };
+
+
   if (!articles?.length) {
     return <p>Aucun élément trouvé.</p>;
   }
 
   /* ===== CARTES ===== */
   if (articles[0].lienCarte) {
-    return <div className={styles.annuaire}>
-      {articles.map((article) => {
-        if (article.waiting) return null;
-        return <ApercuCarte key={article.id} article={article} />
-      })}
-    </div>
+    return (
+      <div className={styles.bloc_annuaire}>
+        <div className={styles.titre_annuaire}>Cartes annexes</div>
+        <div className={styles.annuaire}>
+          {articles.map((article) => {
+            if (article.waiting) return null;
+            return <ApercuCarte key={article.id} article={article} />
+          })}
+        </div>
+      </div>
+    )
   }
 
   /* ===== RÉALISATIONS ===== */
   if (!articles[0].projet) {
     return (
-      <div className={styles.annuaire}>
-        {articles.map((realisation) => (
-          <ApercuRealisation
-            key={realisation.id}
-            article={realisation}
-            editable={canEdit(realisation)}
-            onDelete={handleDeleteRealisation}
-          />
-        ))}
+      <div className={styles.bloc_annuaire}>
+        <div className={styles.titre_annuaire}>Projets</div>
+        <div className={styles.annuaire}>
+          {articles.map((realisation) => (
+            <ApercuRealisation
+              key={realisation.id}
+              article={realisation}
+              editable={canEdit(realisation)}
+              onDelete={handleDeleteRealisation}
+            />
+          ))}
+        </div>
       </div>
     );
   }

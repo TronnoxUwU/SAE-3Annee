@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./apercu_article.module.css";
 
@@ -17,14 +16,14 @@ export default function ApercuCarte({ article }) {
   const title = article.titre || "Article sans titre";
 
   // ------------------------------
-  // PRELOAD IMAGE (obligatoire)
+  // PRELOAD IMAGE
   // ------------------------------
   async function preloadImage(url) {
     try {
       const img = new Image();
       img.src = url;
 
-      const loaded = await new Promise((resolve, reject) => {
+      await new Promise((resolve, reject) => {
         const timeout = setTimeout(() => reject(), 4000);
 
         img.onload = () => {
@@ -38,16 +37,14 @@ export default function ApercuCarte({ article }) {
         };
       });
 
-      if (loaded) {
-        setImageSrc(url);
-      }
+      setImageSrc(url);
     } catch {
       setImageSrc("/images/default-article.png");
     }
   }
 
   // ------------------------------
-  // FETCH OG IMAGE depuis ton API
+  // FETCH OG IMAGE
   // ------------------------------
   async function getOgImage(url) {
     try {
@@ -65,13 +62,12 @@ export default function ApercuCarte({ article }) {
   }
 
   // ------------------------------
-  // LOAD IMAGE PRINCIPALE
+  // LOAD IMAGE
   // ------------------------------
   useEffect(() => {
     let canceled = false;
 
     async function loadImage() {
-      // 1. Cherche og:image (Discord style)
       const og = await getOgImage(article.lienCarte);
 
       if (og && !canceled) {
@@ -79,7 +75,6 @@ export default function ApercuCarte({ article }) {
         return;
       }
 
-      // 2. Sinon → image interne
       preloadImage(originalSrc);
     }
 
@@ -90,10 +85,29 @@ export default function ApercuCarte({ article }) {
   }, [article.lienCarte, originalSrc]);
 
   return (
-    <a href={article.lienCarte}>
-        <h2>{title}</h2>
-      <div className={styles.apercuArticle}>
-        <img src={imageSrc} alt={title} className={styles.apercuArticleImage} />
+    <a
+      href={article.lienCarte}
+      className={styles.apercuArticle}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {/* HEADER */}
+      <header className={styles.header}>
+        <h2
+          className={styles.apercuArticleTitle}
+          data-fulltitle={article.titre}
+        >
+          {title}
+        </h2>
+      </header>
+
+      {/* CONTENU */}
+      <div className={styles.content}>
+        <img
+          src={imageSrc}
+          alt={title}
+          className={styles.apercuArticleImage}
+        />
       </div>
     </a>
   );

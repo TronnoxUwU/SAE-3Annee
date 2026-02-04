@@ -35,6 +35,10 @@
         {
             "folderPath": "SAE-3Annee\\bourge2028\\src\\app\\structure\\",
             "color": "foldercolorizer.color_00cc99"
+        },
+        {
+            "folderPath": "SAE-3Annee\\bourge2028\\src\\app\\components\\Sidebar\\",
+            "color": "foldercolorizer.color_006699"
         }
     ]
 }

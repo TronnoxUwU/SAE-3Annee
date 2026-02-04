@@ -17,11 +17,27 @@
   padding: 16px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0.5em 0.75em;
+  background: linear-gradient(90deg, rgb(110, 202, 131) 0%, rgba(255, 255, 255, 0.5) 100%);
+
+  width: 100%;
+
+  border-radius: 20px 20px 0 0;
+}
 
 .apercuArticle:hover {
   transform: translateY(-6px);
   box-shadow: 0 12px 20px rgba(0,0,0,0.15);
   cursor: pointer;
+}
+
+.content {
+  padding: 16px;
 }
 
 .apercuArticle img {
@@ -120,6 +136,11 @@
 @media (max-width: 724px) {
 
   .apercuArticle {
-    max-width: 90%;
+    max-width: 80%;
+    width: 80%;
+
+    /* top: 80px; */
+
+    overflow: visible;
   }
 }

@@ -250,7 +250,8 @@
 @media (max-width: 724px) {
   .sidebar {
     position: fixed;
-    top: 10vh;
+    /* top: 10vh; */
+    top: calc(2vh + 1.2em + 80px);
     left: 0;
 
     width: 65vw;

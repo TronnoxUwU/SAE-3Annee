@@ -1,8 +1,14 @@
-.annuaire {
+.bloc_annuaire {
+  border-top: 60px;
   position: absolute;
-  top: 17vh;
-  left: 18vw;
-  height: 80vh;
+  left: 20vw;
+  top: 180px;
+
+}
+
+.annuaire {
+  /* position: absolute; */
+  /* height: 80vh; */
 
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -20,8 +26,39 @@
   display: none;
 }
 
+
+.titre_annuaire {
+  background: linear-gradient(90deg, rgb(176, 132, 196) 0%, rgba(255, 255, 255, 0.5) 100%);
+
+  margin-bottom: 1em;
+  padding: 0.5em;
+  border-radius: 20px;
+
+  color: black;
+  font-weight: bold;
+  font-size: xx-large;
+}
+
+
+
 @media (max-width: 724px) {
+
+  .bloc_annuaire {
+    border-top: 60px;
+    margin: 0 4vw;
+    position: absolute;
+    left: 0;
+    top: 180px;
+    overflow-y: auto;
+
+    scrollbar-width: none;
+  }
   .annuaire {
-  grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(1, 1fr);
+    left: 0vw;
+    max-width: 100%;
+    width: 100%;
+
+    padding-top: 60px;
   }
 }
