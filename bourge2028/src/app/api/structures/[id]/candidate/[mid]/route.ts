@@ -54,9 +54,11 @@ export async function DELETE(
     try {
         const body = await request.json();
         roleId = body.roleId;
+        console.log("Body reçu:", body);
     } catch {
         // Pas de body → normal si c'est un refus
     }
+    console.log("Action:", action, "RoleId:", roleId);
 
     if (action === "accepter") {
         if (roleId === null) {

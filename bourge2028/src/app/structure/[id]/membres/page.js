@@ -16,6 +16,8 @@ export default function MembersPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [roles, setRoles] = useState([]);
+    const [selectedRoles, setSelectedRoles] = useState({});
+
 
 
     const canHandleMembers = () => {
@@ -135,10 +137,19 @@ export default function MembersPage() {
         }
     };
 
-    const handleAccept = async (e, personneId, selectedRoleId) => {
+    const handleAccept = async (e, personneId) => {
         e.preventDefault();
+
+        // Récupérer le rôle sélectionné pour ce candidat
+        const selectedRoleId = selectedRoles[personneId];
+
+        if (!selectedRoleId || selectedRoleId === "...") {
+            alert("Veuillez sélectionner un rôle avant d'accepter la candidature");
+            return;
+        }
+
         try {
-            const body = { roleId: selectedRoleId };
+            const body = { roleId: parseInt(selectedRoleId) };
             console.log("Body à envoyer pour acceptation:", JSON.stringify(body));
 
             const res = await fetch(`/api/structures/${params.id}/candidate/${personneId}?action=accepter`, {
@@ -160,7 +171,26 @@ export default function MembersPage() {
             }
 
             alert("Candidature acceptée avec succès");
-            router.refresh();
+
+            // Mettre à jour l'état local
+            setStructure(prev => ({
+                ...prev,
+                candidatures: prev.candidatures.filter(c => c.personne.id !== personneId),
+                personnes: [...prev.personnes, {
+                    personneId: personneId,
+                    nom: data.nom || prev.candidatures.find(c => c.personne.id === personneId)?.personne.nom,
+                    prenom: data.prenom || prev.candidatures.find(c => c.personne.id === personneId)?.personne.prenom,
+                    role: parseInt(selectedRoleId),
+                    nomRole: roles.find(r => r.id === parseInt(selectedRoleId))?.nom
+                }]
+            }));
+
+            // Réinitialiser le rôle sélectionné
+            setSelectedRoles(prev => {
+                const newState = { ...prev };
+                delete newState[personneId];
+                return newState;
+            });
 
         } catch (err) {
             console.error("Erreur lors de l'acceptation:", err);
@@ -297,34 +327,24 @@ export default function MembersPage() {
                                         <div className={Style.memberInfo}>
                                             <h3 className={Style.memberName}>{candidate.personne.nom} {candidate.personne.prenom}</h3>
                                             <p className={Style.memberRole}>Candidat</p>
-                                            <form
-                                                onSubmit={(e) => handleAccept(e, candidate.personne.id, candidate.role)}
-                                            >
+                                            <form onSubmit={(e) => handleAccept(e, candidate.personne.id)}>
                                                 <select
                                                     className={Style.roleSelect}
-                                                    defaultValue={"..."}
+                                                    value={selectedRoles[candidate.personne.id] || "..."}
                                                     onChange={(e) => {
-                                                        const selectedRoleId = e.target.value; // Récupère l'id du rôle
-                                                        const selectedRole = roles.find(r => r.id === parseInt(selectedRoleId));
-
-                                                        setStructure(prev => ({
+                                                        setSelectedRoles(prev => ({
                                                             ...prev,
-                                                            personnes: prev.personnes.map(p =>
-                                                                p.personneId === candidate.personne.id
-                                                                    ? { ...p, role: parseInt(selectedRoleId), nomRole: selectedRole?.nom }
-                                                                    : p
-                                                            )
-                                                        }))
+                                                            [candidate.personne.id]: e.target.value
+                                                        }));
                                                     }}
                                                 >
                                                     <option value="..." disabled>Choisir un rôle</option>
                                                     {roles.map((role) => (
-                                                        <option key={role.id} value={role.id}> {/* value doit être l'id */}
+                                                        <option key={role.id} value={role.id}>
                                                             {role.nom}
                                                         </option>
                                                     ))}
                                                 </select>
-                                                <input type="hidden" name="memberId" value={candidate.personne.id} />
                                                 <button type="submit" className={Style.btn_save}>
                                                     Accepter
                                                 </button>
