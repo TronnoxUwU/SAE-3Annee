@@ -228,11 +228,37 @@ export default function MembersPage() {
     };
 
     if (loading) {
-        return <div>Chargement...</div>;
+        return (
+            <>
+                <Topbar />
+                <div className={Style.userPage}>
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: "250px" }}>
+                        <div className="text-center">
+                            <div className="spinner-border text-primary mb-3" />
+                            <p className="text-muted">Chargement des données...</p>
+                        </div>
+                    </div>
+                </div>
+            </>
+        );
     }
 
     if (error) {
-        return <div>Erreur : {error}</div>;
+        return (
+            <>
+                <Topbar />
+                <div className={Style.userPage}>
+                    <h2>Erreur</h2>
+                    <p>{error}</p>
+                    <button
+                        className="btn btn-outline-secondary"
+                        onClick={() => router.push(`/structure/${params.id}`)}
+                    >
+                        Retour à la structure
+                    </button>
+                </div>
+            </>
+        );
     }
 
     return (
