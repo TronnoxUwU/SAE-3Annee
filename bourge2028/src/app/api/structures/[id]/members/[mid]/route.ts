@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { AuthAdmin, AuthStructureRole } from "@/app/api/api-protection";
 
 export async function PUT(
   req: Request,
@@ -11,6 +12,16 @@ export async function PUT(
     const { id, mid } = await params;
     const structureId = Number(id);
     const personneId = Number(mid);
+
+    const membre = await AuthStructureRole(structureId, ['Proprietaire']);
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+      if(!membre.access){
+        return NextResponse.json(membre)
+      }
+      return NextResponse.json(admin)
+    };
 
     console.log("1. Params reçus - Structure ID :", structureId, "Personne ID :", personneId);
 
@@ -154,6 +165,16 @@ export async function DELETE(
     const { id, mid } = await params;
     const structureId = Number(id);
     const personneId = Number(mid);
+
+    const membre = await AuthStructureRole(structureId, ['Proprietaire']);
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+      if(!membre.access){
+        return NextResponse.json(membre)
+      }
+      return NextResponse.json(admin)
+    };
 
     if (isNaN(structureId) || isNaN(personneId)) {
       return NextResponse.json(

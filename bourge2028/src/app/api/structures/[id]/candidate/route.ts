@@ -1,9 +1,21 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { AuthAdmin, AuthStructureRole } from "@/app/api/api-protection";
+
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { userId } = await request.json();
+
+  const membre = await AuthStructureRole(Number(id), ['Proprietaire']);
+  const admin = await AuthAdmin();
+  
+  if (!admin.access && !membre.access){
+    if(!membre.access){
+      return NextResponse.json(membre)
+    }
+    return NextResponse.json(admin)
+  };
 
   // Vérifier si la structure existe
   const structure = await prisma.structure.findUnique({
