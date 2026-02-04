@@ -79,6 +79,13 @@ Le projet s’est recentré exclusivement sur les **acteurs culturels**, les str
 
 ## 🚀 Lancer le projet
 
+### Générer le client Prisma
+
+```bash
+npx prisma generate
+npx prisma migrate reset
+```
+
 ### Développement
 
 ```bash
