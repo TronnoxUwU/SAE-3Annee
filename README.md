@@ -102,7 +102,6 @@ npm run start
 > NEXT_PUBLIC_APP_URL=
 > NEXT_PUBLIC_API_URL=
 > 
-> 
 > MAIL_HOST=
 > MAIL_PORT=
 > MAIL_USER=
