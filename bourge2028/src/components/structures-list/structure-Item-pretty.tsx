@@ -25,6 +25,7 @@ function renderDate(date){
   })}`;
 }
 
+
 const StructureItem = ({ id, nom, date, description, edit, role, etat }: ListItemProps) => {
 
     if(etat==="liste") {

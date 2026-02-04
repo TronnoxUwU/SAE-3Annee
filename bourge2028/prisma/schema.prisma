@@ -32,6 +32,7 @@ model Structure {
   personnes    Appartenir[] // Appartenir (avec role)
   realisations Realisation[] // Réaliser
   cats         StructureCat[] // Avoir
+  candidatures Candidature[]
 }
 
 model Situer {
@@ -79,6 +80,7 @@ model Personne {
 
   structures Appartenir[]
   redactions Rediger[]
+  candidatures Candidature[]
 }
 
 model Appartenir {
@@ -90,6 +92,16 @@ model Appartenir {
 
   role   Role @relation(fields: [roleId], references: [id])
   roleId Int
+
+  @@unique([structureId, personneId, roleId])
+}
+
+model Candidature {
+  id          Int       @id @default(autoincrement())
+  structure   Structure @relation(fields: [structureId], references: [id], onDelete: Cascade)
+  structureId Int
+  personne    Personne  @relation(fields: [personneId], references: [id])
+  personneId  Int
 
   @@unique([structureId, personneId])
 }

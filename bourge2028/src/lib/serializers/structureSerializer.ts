@@ -6,6 +6,8 @@ import {
   Categorie,
   Realisation,
   Appartenir,
+  Role,
+  Personne,
 } from "@prisma/client";
 import { serializeDepartement } from "./departementSerializer";
 import { serializeCategorie } from "./categorieSerializer";
@@ -15,7 +17,10 @@ export const serializeStructure = (
     departements?: (Situer & { departement?: Departement | null })[];
     cats?: (StructureCat & { categorie: Categorie })[];
     realisations?: Realisation[];
-    personnes?: Appartenir[];
+    personnes?: (Appartenir & {
+      role?: Role | null;
+      personne?: Personne | null;
+    })[];
   }
 ) => ({
   id: structure.id,
@@ -40,6 +45,9 @@ export const serializeStructure = (
     id: p.id,
     personneId: p.personneId,
     role: p.roleId,
+    nomRole: p.role?.nom ?? null,
+    nom: p.personne?.nom ?? null,
+    prenom: p.personne?.prenom ?? null,
   })) ?? [],
 
   realisations: structure.realisations?.map(r => ({

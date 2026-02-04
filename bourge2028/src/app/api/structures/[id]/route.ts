@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { serializeStructure } from "@/lib/serializers";
 import { deserializeStructure } from "@/lib/deserializers";
+import { AuthAdmin, AuthStructureRole } from "@/app/api/api-protection";
 
 /**
  * GET /api/structures/[id]
@@ -28,7 +29,7 @@ export async function GET(
         cats: { include: { categorie: true } },
         realisations: true,
         personnes: {
-          include: { personne: true },
+          include: { personne: true, role: true },
         },
       },
     });
@@ -73,6 +74,16 @@ export async function PUT(
       );
     }
 
+    const membre = await AuthStructureRole(structureId, ['Proprietaire']);
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+      if(!membre.access){
+        return NextResponse.json(membre)
+      }
+      return NextResponse.json(admin)
+    };
+
     const body = await req.json();
     const data = deserializeStructure(body, true); // ✅ Passer true pour update
 
@@ -89,7 +100,7 @@ export async function PUT(
         cats: { include: { categorie: true } },
         realisations: true,
         personnes: {
-          include: { personne: true },
+          include: { personne: true, role: true },
         },
       },
     });
@@ -117,6 +128,17 @@ export async function DELETE(
 ) {
   try {
     const { id } = await context.params;
+
+    
+    const membre = await AuthStructureRole(Number(id), ['Proprietaire']);
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+      if(!membre.access){
+        return NextResponse.json(membre)
+      }
+      return NextResponse.json(admin)
+    };
 
     const deleted = await prisma.structure.delete({
       where: { id: Number(id) },

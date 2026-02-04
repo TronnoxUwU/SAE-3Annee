@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import {serializeDepartement} from "@/lib/serializers";
 import {deserializeDepartement} from "@/lib/deserializers";
+import { AuthAdmin } from "@/app/api/api-protection";
 
 /**
  * GET /api/departement/[id]
@@ -44,6 +45,11 @@ export async function PUT(
     context: { params: Promise<{ id: string }> }
 ) {
     try {
+        const admin = await AuthAdmin();
+        
+        if (!admin.access){
+            return NextResponse.json(admin)
+        }
 
         const {id} = await context.params;
         const body = await req.json();
@@ -72,6 +78,11 @@ export async function DELETE(
     context: { params: Promise<{ id: string }> }
 ) {
     try {
+        const admin = await AuthAdmin();
+        
+        if (!admin.access){
+            return NextResponse.json(admin)
+        }
         const {id} = await context.params;
 
         await prisma.departement.delete({

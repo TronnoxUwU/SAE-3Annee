@@ -35,7 +35,6 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
   const annuaires = [
     { name: "Projets", path: "/annuaires/projets", icon: "📁" },
     { name: "Cartes", path: "/annuaires/cartes", icon: "🗺️" },
-    { name: "Techniques", path: "/annuaires/techniques", icon: "⚙️" },
   ];
 
   // ------------------- INITIALISATION -------------------

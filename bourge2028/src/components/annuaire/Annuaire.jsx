@@ -71,6 +71,7 @@ export default function Annuaire({ articles }) {
 
   /* ===== RÉALISATIONS ===== */
   if (!articles[0].projet) {
+    // console.log(articles);
     return (
       <div className={styles.bloc_annuaire}>
         <div className={styles.titre_annuaire}>Projets</div>
