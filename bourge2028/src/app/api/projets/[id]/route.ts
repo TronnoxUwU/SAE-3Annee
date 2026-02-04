@@ -15,16 +15,31 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
     const projet = await prisma.projet.findUnique({
       where: { id: projetId },
-      include: { 
+      include: {
         realisation: {
           include: {
             cats: { include: { categorie: true } },
             structure: true,
-            articles: { include: { composants: true } },
+            articles: {
+              include: {
+                composants: {
+                  include: {
+                    //titre: true,
+                    //paragraphe: true,
+                    image: true,
+                    // caroussels: {
+                    //   include: {
+                    //     images: true
+                    //   }
+                    // }
+                  }
+                }
+              }
+            },
           },
         },
-        departements: { 
-          include: { departement: true } 
+        departements: {
+          include: { departement: true }
         }
       },
     });
@@ -97,14 +112,16 @@ export async function PUT(
     const updated = await prisma.projet.update({
       where: { id: projetId },
       data: projetData,
-      include: {
+      include: { 
         realisation: {
           include: {
             cats: { include: { categorie: true } },
             structure: true,
           },
         },
-        departements: { include: { departement: true } },
+        departements: { 
+          include: { departement: true } 
+        }
       },
     });
 
