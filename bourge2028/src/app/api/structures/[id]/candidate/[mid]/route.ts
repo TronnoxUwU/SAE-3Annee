@@ -67,7 +67,7 @@ export async function DELETE(
         }
 
         // Créer directement le membre au lieu d'appeler fetch
-        await prisma.membre.create({
+        await prisma.appartenir.create({
             data: {
                 personneId: candidature.personneId,
                 structureId: structure.id,

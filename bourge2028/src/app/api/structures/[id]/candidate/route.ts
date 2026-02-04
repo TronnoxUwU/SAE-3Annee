@@ -26,14 +26,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
 }
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+  const { id } = await params;
 
   // Récupérer les candidatures pour la structure donnée
   const candidatures = await prisma.candidature.findMany({
     where: { structureId: parseInt(id) },
     include: { personne: true },
   });
-  console.log("Candidatures récupérées :", candidatures);
+  // console.log("Candidatures récupérées :", candidatures);
 
   return NextResponse.json(candidatures, { status: 200 });
 }
