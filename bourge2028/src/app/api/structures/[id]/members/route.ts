@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { AuthAdmin, AuthStructureRole } from "@/app/api/api-protection";
 
 export async function POST(
   req: Request,
@@ -15,6 +16,16 @@ export async function POST(
         { status: 400 }
       );
     }
+
+    const membre = await AuthStructureRole(structureId, ['Proprietaire']);
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+      if(!membre.access){
+        return NextResponse.json(membre)
+      }
+      return NextResponse.json(admin)
+    };
 
     const { personneId, roleId } = await req.json();
 

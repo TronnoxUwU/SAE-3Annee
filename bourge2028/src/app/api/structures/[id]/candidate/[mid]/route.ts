@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { sendMail } from "@/lib/mail";
+import { AuthAdmin, AuthStructureRole } from "@/app/api/api-protection";
 
 export async function DELETE(
     request: Request,
@@ -9,6 +10,16 @@ export async function DELETE(
     const { id, mid } = await params;
     const { searchParams } = new URL(request.url);
     const action = searchParams.get("action"); // "accepter" | "refuser"
+
+    const membre = await AuthStructureRole(Number(id), ['Proprietaire']);
+    const admin = await AuthAdmin();
+    
+    if (!admin.access && !membre.access){
+        if(!membre.access){
+        return NextResponse.json(membre)
+        }
+        return NextResponse.json(admin)
+    };
 
     if (!action || !["accepter", "refuser"].includes(action)) {
         return NextResponse.json(
