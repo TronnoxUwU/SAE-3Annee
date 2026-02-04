@@ -91,16 +91,16 @@ export default function StructureDetailPage() {
         },
         body: JSON.stringify({ userId: session.user.id }),
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Erreur lors de la candidature');
-        }
-        alert('Candidature envoyée avec succès !');
-      })
-      .catch(error => {
-        console.error('Erreur:', error);
-        alert('Une erreur est survenue lors de la candidature. Auriez-vous déjà candidaté ?');
-      });
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erreur lors de la candidature');
+          }
+          alert('Candidature envoyée avec succès !');
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          alert('Une erreur est survenue lors de la candidature. Auriez-vous déjà candidaté ?');
+        });
     } catch (err) {
       console.error('Erreur:', err);
       alert('Une erreur est survenue lors de la candidature. Auriez-vous déjà candidaté ?');
@@ -166,8 +166,8 @@ export default function StructureDetailPage() {
           )}
           {!canEdit() && session && (
             <button className={`${Style.btn_join} btn btn-outline-secondary`}
-            onClick={candidate}
-            title="Candidater à la structure"
+              onClick={candidate}
+              title="Candidater à la structure"
             >
               <i className="bi bi-person-plus-fill"></i> Candidater
             </button>
@@ -240,18 +240,16 @@ export default function StructureDetailPage() {
           <div className={Style.membersList}>
             {structure?.personnes && structure.personnes.length > 0 ? (
               structure.personnes.map((member) => (
-                <div key={member.id} className={Style.memberCard}>
-                  <div className={Style.avatarSection}>
-                    <div className={Style.avatar}>
-                      <div className={Style.defaultAvatar}>
-                        {member.prenom?.[0]}
-                        {member.nom?.[0]}
-                      </div>
+                <div key={member.id} className={Style.fullCard}>
+                  <div className={Style.memberCard}>
+                    <div className={Style.avatarSection}>
+                      {member.prenom?.[0]}
+                      {member.nom?.[0]}
                     </div>
-                  </div>
-                  <div className={Style.memberInfo}>
-                    <h3 className={Style.memberName}>{member.nom} {member.prenom}</h3>
-                    <p className={Style.memberRole}>{member.nomRole}</p>
+                    <div className={Style.memberInfo}>
+                      <h3 className={Style.memberName}>{member.nom} {member.prenom}</h3>
+                      <p className={Style.memberRole}>{member.nomRole}</p>
+                    </div>
                   </div>
                 </div>
               ))

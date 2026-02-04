@@ -256,54 +256,53 @@ export default function MembersPage() {
                     <div className={Style.membersList}>
                         {structure?.personnes && structure.personnes.length > 0 ? (
                             structure.personnes.map((member) => (
-                                <div key={member.id} className={Style.memberCard}>
-                                    <div className={Style.avatarSection}>
-                                        <div className={Style.avatar}>
-                                            <div className={Style.defaultAvatar}>
-                                                {member.prenom?.[0]}
-                                                {member.nom?.[0]}
-                                            </div>
+                                <div key={member.id} className={Style.fullCard}>
+                                    <div className={Style.memberCard}>
+                                        <div className={Style.avatarSection}>
+                                            {member.prenom?.[0]}
+                                            {member.nom?.[0]}
+                                        </div>
+                                        <div className={Style.memberInfo}>
+                                            <h3 className={Style.memberName}>{member.nom} {member.prenom}</h3>
+                                            <p className={Style.memberRole}>{member.nomRole}</p>
                                         </div>
                                     </div>
-                                    <div className={Style.memberInfo}>
-                                        <h3 className={Style.memberName}>{member.nom} {member.prenom}</h3>
-                                        <p className={Style.memberRole}>{member.nomRole}</p>
-                                        {canHandleMembers() && roles.length > 0 && (
-                                            <>
-                                                <form
-                                                    onSubmit={(e) => handleSubmit(e, member.personneId, member.role)}
-                                                >
-                                                    <select
-                                                        className={Style.roleSelect}
-                                                        defaultValue={member.role} // Utiliser roleId au lieu de nomRole
-                                                        onChange={(e) => {
-                                                            const selectedRoleId = e.target.value; // Récupère l'id du rôle
-                                                            const selectedRole = roles.find(r => r.id === parseInt(selectedRoleId));
+                                    {canHandleMembers() && roles.length > 0 && (
+                                        <div className={Style.memberActions}>
+                                            <form
+                                                onSubmit={(e) => handleSubmit(e, member.personneId, member.role)}
+                                            >
+                                                <select
+                                                    className={Style.roleSelect}
+                                                    defaultValue={member.role} // Utiliser roleId au lieu de nomRole
+                                                    onChange={(e) => {
+                                                        const selectedRoleId = e.target.value; // Récupère l'id du rôle
+                                                        const selectedRole = roles.find(r => r.id === parseInt(selectedRoleId));
 
-                                                            setStructure(prev => ({
-                                                                ...prev,
-                                                                personnes: prev.personnes.map(p =>
-                                                                    p.personneId === member.personneId
-                                                                        ? { ...p, role: parseInt(selectedRoleId), nomRole: selectedRole?.nom }
-                                                                        : p
-                                                                )
-                                                            }))
-                                                        }}
-                                                    >
-                                                        {roles.map((role) => (
-                                                            <option key={role.id} value={role.id}> {/* value doit être l'id */}
-                                                                {role.nom}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                    <input type="hidden" name="memberId" value={member.personneId} />
-                                                    <button type="submit" className={Style.btn_save}>
-                                                        Sauvegarder
-                                                    </button>
-                                                </form>
-                                                <button className={Style.btn_delete} onClick={() => handleDelete(member.personneId)}>Supprimer</button>
-                                            </>)}
-                                    </div>
+                                                        setStructure(prev => ({
+                                                            ...prev,
+                                                            personnes: prev.personnes.map(p =>
+                                                                p.personneId === member.personneId
+                                                                    ? { ...p, role: parseInt(selectedRoleId), nomRole: selectedRole?.nom }
+                                                                    : p
+                                                            )
+                                                        }))
+                                                    }}
+                                                >
+                                                    {roles.map((role) => (
+                                                        <option key={role.id} value={role.id}> {/* value doit être l'id */}
+                                                            {role.nom}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <input type="hidden" name="memberId" value={member.personneId} />
+                                                <button type="submit" className={Style.btn_save}>
+                                                    Sauvegarder
+                                                </button>
+                                            </form>
+                                            <button className={Style.btn_delete} onClick={() => handleDelete(member.personneId)}>Supprimer</button>
+                                        </div>)}
+
                                 </div>
                             ))
                         ) : (
@@ -319,18 +318,18 @@ export default function MembersPage() {
                         <div className={Style.membersList}>
                             {structure?.candidatures && structure.candidatures.length > 0 ? (
                                 structure.candidatures.map((candidate) => (
-                                    <div key={candidate.personne.id} className={Style.memberCard}>
-                                        <div className={Style.avatarSection}>
-                                            <div className={Style.avatar}>
-                                                <div className={Style.defaultAvatar}>
-                                                    {candidate.personne.prenom?.[0]}
-                                                    {candidate.personne.nom?.[0]}
-                                                </div>
+                                    <div key={candidate.personne.id} className={Style.fullCard}>
+                                        <div className={Style.memberCard}>
+                                            <div className={Style.avatarSection}>
+                                                {candidate.personne.prenom?.[0]}
+                                                {candidate.personne.nom?.[0]}
+                                            </div>
+                                            <div className={Style.memberInfo}>
+                                                <h3 className={Style.memberName}>{candidate.personne.nom} {candidate.personne.prenom}</h3>
+                                                <p className={Style.memberRole}>Candidat</p>
                                             </div>
                                         </div>
-                                        <div className={Style.memberInfo}>
-                                            <h3 className={Style.memberName}>{candidate.personne.nom} {candidate.personne.prenom}</h3>
-                                            <p className={Style.memberRole}>Candidat</p>
+                                        <div className={Style.memberActions}>
                                             <form onSubmit={(e) => handleAccept(e, candidate.personne.id)}>
                                                 <select
                                                     className={Style.roleSelect}
@@ -353,7 +352,7 @@ export default function MembersPage() {
                                                     Accepter
                                                 </button>
                                             </form>
-                                            <button className={Style.btn_reject} onClick={handleRefus(candidate.personne.id)}>Refuser</button>
+                                            <button className={Style.btn_delete} onClick={handleRefus(candidate.personne.id)}>Refuser</button>
                                         </div>
                                     </div>
                                 ))
