@@ -2,12 +2,18 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { serializeCategorie } from "@/lib/serializers";
 import { deserializeCategorie } from "@/lib/deserializers";
+import { AuthAdmin } from "@/app/api/api-protection";
 
 /**
  * POST /api/categories
  */
 export async function POST(req: Request) {
   try {
+    const admin = await AuthAdmin();
+    
+    if (!admin.access){
+      return NextResponse.json(admin)
+    }
     const body = await req.json();
     const data = deserializeCategorie(body);
 

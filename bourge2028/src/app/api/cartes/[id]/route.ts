@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { serializeCarte } from "@/lib/serializers"; // adapte le chemin selon ton projet
 import { deserializeCarte } from "@/lib/deserializers"; 
+import { AuthAdmin } from "@/app/api/api-protection";
 
 const prisma = new PrismaClient();
 
@@ -42,6 +43,12 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const admin = await AuthAdmin();
+    
+    if (!admin.access){
+      return NextResponse.json(admin)
+    }
+
     const body = await req.json();
     const data = deserializeCarte(body); // on réutilise la version "create" pour tout écraser
     const tmp = await params;
@@ -85,6 +92,12 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const admin = await AuthAdmin();
+    
+    if (!admin.access){
+      return NextResponse.json(admin)
+    }
+
     const tmp = await params;
     const id = Number(tmp.id);
     const existing = await prisma.carte.findUnique({

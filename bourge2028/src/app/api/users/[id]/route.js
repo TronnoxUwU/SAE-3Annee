@@ -9,19 +9,19 @@ import { serializePersonne } from "@/lib/serializers";
 
 /**
  * GET /api/users/[id]
+ * Accessible par : tout utilisateur authentifié
  */
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
     const personneId = parseInt(id);
 
-    const auth = await AuthUser(personneId);
-    if (auth && !auth.access) {
-      return NextResponse.json(auth);
-    } else if (!auth) {
+    // Juste vérifier qu'on est authentifié (pas besoin de vérifier l'ID inshallah)
+    const session = await getServerSession(authOptions);
+    if (!session) {
       return NextResponse.json(
-        { error: "Erreur authentification/serveur" },
-        { status: 500 }
+        { error: "Non authentifié" },
+        { status: 401 }
       );
     }
 
@@ -60,6 +60,7 @@ export async function GET(request, { params }) {
   }
 }
 
+
 /**
  * PUT /api/users/[id]
  */
@@ -95,10 +96,13 @@ export async function PUT(request, { params }) {
     const body = await request.json();
 
     // Verification user
-    const canEdit =
-      session.user.id === personneId || session.user.role === "Admin";
+    const canEdit = await checkAdminOrOwner(session, personneId);
+    
     if (!canEdit) {
-      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+      return NextResponse.json({ 
+        access: false, 
+        error: "Accès refusé : Vous n'avez pas les droits pour modifier cet utilisateur" 
+      }, { status: 403 });
     }
 
     const deserializedData = deserializePersonne(body);
@@ -200,12 +204,14 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
     const personneId = parseInt(id);
 
-    const auth = await AuthUser(personneId);
-    const isAdmin = await AuthAdmin(personneId);
+    const authUser = await AuthUser(personneId);
+    const authAdmin = await AuthAdmin();
+
+    const hasAccess = (authUser && authUser.access) || (authAdmin && authAdmin.access); // fixed ?
     
-    if ((auth && !auth.access) || (isAdmin && !isAdmin.access)) {
-      return NextResponse.json(auth || isAdmin);
-    } else if (!auth || !isAdmin) {
+    if (!hasAccess) {
+      return NextResponse.json(authUser || authAdmin);
+    } else if (!authUser || !authAdmin) {
       return NextResponse.json(
         { error: "Erreur authentification/serveur" },
         { status: 500 }

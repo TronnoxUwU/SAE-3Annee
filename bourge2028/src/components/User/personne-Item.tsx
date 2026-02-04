@@ -1,13 +1,16 @@
 import style from "./personne-Item.module.css";
 
-function renderDate(date: Date) {
+function renderDate(date){
   if (!date) return "Date inconnue";
+
   const d = new Date(date);
-  return d.toLocaleDateString("fr-FR", {
+  if (isNaN(d.getTime())) return "Date invalide";
+
+  return `${d.toLocaleDateString('fr-FR', {
     year: "numeric",
     month: "long",
-    day: "numeric",
-  });
+    day: "numeric"
+  })}`;
 }
 
 interface PersonneItemProps {

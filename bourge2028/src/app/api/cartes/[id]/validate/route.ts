@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { serializeCarte } from "@/lib/serializers";
 import { NextResponse } from "next/server";
+import { AuthAdmin } from "@/app/api/api-protection";
 
 /**
  * PATCH /api/cartes/[id]/validate
@@ -11,6 +12,12 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const admin = await AuthAdmin();
+    
+    if (!admin.access){
+      return NextResponse.json(admin)
+    }
+
     const { id } = await params;
     const carteId = Number(id);
 
