@@ -7,7 +7,9 @@ import axios from "axios";
 import Style from "./Sidebar.module.css";
 
 export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSearchStructChange, isAnnuaire }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(
+    typeof window !== "undefined" ? window.innerWidth > 724 : true
+  );
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [provider, setProvider] = useState(null);
@@ -274,7 +276,21 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
 
   // ------------------- RENDU SIDEBAR -------------------
   return (
-    <div className={Style.sidebar}>
+    <>
+    <button
+      className={`${Style.mobile_toggle} ${open ? Style.open : Style.collapsed}`}
+      onClick={() => setOpen(o => !o)}
+      aria-label={open ? "Cacher les filtres" : "Afficher les filtres"}
+    >
+      <span className={Style.toggle_arrow}>
+        {open ? "<" : ">"}
+      </span>
+      <span className={Style.toggle_text}>
+        {open ? "Cacher" : "Filtres"}
+      </span>
+    </button>
+
+    <div className={`${Style.sidebar} ${open ? Style.open : Style.collapsed}`}>
       <div className={Style.sidebar_search} ref={searchRef}>
         <input
           type="text"
@@ -341,5 +357,6 @@ export default function Sidebar({ map, onFilterChange, onDepFilterChange, onSear
         </div>
       )}
     </div>
+    </>
   );
 }

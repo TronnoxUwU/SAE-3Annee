@@ -8,7 +8,7 @@ import Sidebar from "@/app/components/Sidebar/SidebarWrapper";
 import "@/app/styles/home.css";
 
 const Map = dynamic(() => import("@/app/components/Map/Map"), { ssr: false });
-const Annuaire = dynamic(() => import("@/app/components/annuaire/Annuaire"), { ssr: false });
+const Annuaire = dynamic(() => import("@/components/annuaire/Annuaire"), { ssr: false });
 
 export default function AnnuairePage() {
   const router = useRouter();

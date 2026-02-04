@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import styles from "../../styles/apercu_article.module.css";
+import styles from "./apercu_article.module.css";
 
 export default function ApercuArticle({ article, editable, onDelete }) {
   const router = useRouter();
@@ -14,7 +14,6 @@ export default function ApercuArticle({ article, editable, onDelete }) {
 
   const originalSrc =
     firstImageComponent?.image?.lienImage || "/images/default-article.png";
-
 
   const title =
     article.titre?.length > 30
@@ -31,10 +30,12 @@ export default function ApercuArticle({ article, editable, onDelete }) {
 
         await new Promise((resolve, reject) => {
           const timeout = setTimeout(() => reject(), 4000);
+
           img.onload = () => {
             clearTimeout(timeout);
             resolve(true);
           };
+
           img.onerror = () => {
             clearTimeout(timeout);
             reject();
@@ -55,7 +56,6 @@ export default function ApercuArticle({ article, editable, onDelete }) {
 
   const handleDelete = (e) => {
     e.stopPropagation();
-
     if (confirm("Supprimer cet article ?")) {
       onDelete(article.id);
     }
@@ -66,41 +66,47 @@ export default function ApercuArticle({ article, editable, onDelete }) {
       className={styles.apercuArticle}
       onClick={() => router.push(`/article/${article.id}`)}
     >
-      {editable && (
-        <div className={styles.actions}>
-          <button
-            className={styles.editButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/article/${article.id}/edit`);
-            }}
-            aria-label="Éditer l’article"
-          >
-            <i className="bi bi-pencil" />
-          </button>
+      {/* HEADER */}
+      <header className={styles.header}>
+        <h2
+          className={styles.apercuArticleTitle}
+          data-fulltitle={article.titre}
+        >
+          {title}
+        </h2>
 
-          <button
-            className={styles.deleteButton}
-            onClick={handleDelete}
-            aria-label="Supprimer l’article"
-          >
-            <i className="bi bi-trash" />
-          </button>
-        </div>
-      )}
+        {editable && (
+          <div className={styles.actions}>
+            <button
+              className={styles.editButton}
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/article/${article.id}/edit`);
+              }}
+              aria-label="Éditer l’article"
+            >
+              <i className="bi bi-pencil" />
+            </button>
 
-      <img
-        src={imageSrc}
-        alt={title}
-        className={styles.apercuArticleImage}
-      />
+            <button
+              className={styles.deleteButton}
+              onClick={handleDelete}
+              aria-label="Supprimer l’article"
+            >
+              <i className="bi bi-trash" />
+            </button>
+          </div>
+        )}
+      </header>
 
-      <h2
-        className={styles.apercuArticleTitle}
-        data-fulltitle={article.titre}
-      >
-        {title}
-      </h2>
+      {/* CONTENU */}
+      <div className={styles.content}>
+        <img
+          src={imageSrc}
+          alt={title}
+          className={styles.apercuArticleImage}
+        />
+      </div>
     </div>
   );
 }
