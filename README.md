@@ -24,7 +24,7 @@ Last deploy 12/01/26
 
 
 ### Page d'acceuil
-- [x]Carte
+- [x] Carte
 - Pins sur la cartes
 - Carte de preview quand on hover sur un pin (style popup victoria ? + accès à la page complète de la structre/projet)
 - ℹ️Barre de filtres
