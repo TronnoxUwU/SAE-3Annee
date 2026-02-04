@@ -21,7 +21,7 @@ Le projet s’est recentré exclusivement sur les **acteurs culturels**, les str
 
 ## 🧑‍🤝‍🧑 Équipe
 
-- **Baptiste Richard** — Chef de projet, responsable base de données  
+- **Baptiste Richard** — Chef de projet, développeur, responsable base de données  
 - **Shanka Clermont** — Développeur, responsable production  
 - **Tristan Chaloine** — Développeur  
 
