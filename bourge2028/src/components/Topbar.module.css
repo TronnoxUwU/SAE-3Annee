@@ -162,6 +162,7 @@
 
 .dropdown li {
   /* padding: 10px 16px; */
+  width: 100%;
   cursor: pointer;
   color: white;
   transition: background-color 0.2s;
@@ -175,4 +176,26 @@
 .dropdown li:hover {
   background-color: #374151;
   border-radius: inherit;
+}
+
+
+@media (max-width: 724px) {
+  .topbar_fixed {
+    position: fixed;
+    /* z-index: 999; */
+    min-width: 92vw;
+    max-width: 1000vw;
+
+    margin: 2vh 4vw;
+    padding: 0.6em 2em;
+
+    border-radius: 20px;
+
+    font-size: larger !important;
+  }
+
+  .dropdown {
+    margin-top: 5%;
+    max-width: 150px;
+  }
 }

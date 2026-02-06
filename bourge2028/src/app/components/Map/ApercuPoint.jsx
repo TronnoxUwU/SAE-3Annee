@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import "./apercu_point.css";
+import Style from "./apercu_point.module.css";
 
-export default function ApercuPoint({ id, type }) {
+export default function ApercuPoint({ id, type, onClose }) {
     const router = useRouter();
     const [pointData, setPointData] = useState(null);
     const [imageSrc, setImageSrc] = useState("/images/default-article.png");
@@ -68,24 +68,57 @@ export default function ApercuPoint({ id, type }) {
     if (!pointData) return null;
 
     return (
-        <div className="apercu-point">
-            {type === "structure" ? (
-                <div>
-                    <h3>{pointData.nomStructure}</h3>
-                    <div className="apercu-point-image-container">
-                        <img src={imageSrc} alt={pointData.nomStructure} />
-                    </div>
-                    <p>{pointData.description}</p>
-                    <p>{pointData.adresse}</p>
-                    <a href={`/structure/${pointData.id}`}>Voir la fiche complète</a>
-                </div>
-            ) : type === "projet" ? (
-                <div>
-                    <h3>{pointData.nomProjet}</h3>
-                    <p>{pointData.realisation?.description}</p>
-                    <a href={`annuaires/projets/${pointData.realisation?.id}`}>Voir la fiche complète</a>
-                </div>
-            ) : null}
+        <>
+        <div className={Style["apercu-point"]}>
+        <div className={Style["apercu-content"]}>
+
+            <div className={Style["apercu-point-header"]}>
+                <h3 className={Style["apercu-title"]}>
+                    {type === "structure" ? pointData.nomStructure : pointData.nomProjet}
+                </h3>
+                <button className={Style["apercu-close"]} onClick={onClose}>
+                    ✕
+                </button>
+            </div>
+
+            <span className={Style["apercu-label"]}>
+                {type === "structure" ? "Structure" : "Projet"}
+            </span>
+            
+
+            {type === "structure" && (
+            <>
+                <p className={Style["apercu-description"]}>
+                {pointData.description}
+                </p>
+                <p className={Style["apercu-meta"]}>
+                {pointData.adresse}
+                </p>
+            </>
+            )}
+
+            {type === "projet" && (
+            <p className={Style["apercu-description"]}>
+                {pointData.realisation?.description}
+            </p>
+            )}
+
+            <a
+            className={Style["apercu-link"]}
+            href={
+                type === "structure"
+                ? `/structure/${pointData.id}`
+                : `/annuaires/projets/${pointData.realisation?.id}`
+            }
+            >
+            Voir la fiche complète →
+            </a>
         </div>
+
+        <div className={Style["apercu-image"]}>
+            <img src={imageSrc} alt="" />
+        </div>
+        </div>
+        </>
     );
 }

@@ -1,0 +1,146 @@
+.apercuArticleLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.apercuArticle {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 320px;
+  background: linear-gradient(145deg, #ffffff, #f4f9f4);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0.5em 0.75em;
+  background: linear-gradient(90deg, rgb(110, 202, 131) 0%, rgba(255, 255, 255, 0.5) 100%);
+
+  width: 100%;
+
+  border-radius: 20px 20px 0 0;
+}
+
+.apercuArticle:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+.content {
+  padding: 16px;
+}
+
+.apercuArticle img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: transform 0.25s ease;
+}
+
+.apercuArticle:hover img {
+  transform: scale(1.03);
+}
+
+.apercuArticle h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: center;
+  color: #1f2937; /* gris foncé */
+  margin: 8px 0;
+  word-break: break-word;
+}
+
+.apercuArticleTitle {
+  position: relative;
+  cursor: pointer;
+}
+
+.apercuArticleTitle::after {
+  content: attr(data-fulltitle);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.apercuArticleTitle:hover::after {
+  opacity: 1;
+}
+
+/* ------------------------
+   ACTION BUTTONS
+------------------------ */
+.actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.editButton,
+.deleteButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editButton {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+.editButton:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.deleteButton {
+  background: rgba(220, 53, 69, 0.85);
+  color: #fff;
+}
+
+.deleteButton:hover {
+  background: rgb(220, 53, 69);
+}
+
+
+@media (max-width: 724px) {
+
+  .apercuArticle {
+    max-width: 80%;
+    width: 80%;
+
+    /* top: 80px; */
+
+    overflow: visible;
+  }
+}

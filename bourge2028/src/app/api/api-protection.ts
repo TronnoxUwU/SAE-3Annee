@@ -103,15 +103,3 @@ export async function AuthStructureRole(
     };
   }
 }
-
-export async function AuthAdminOrStructureRole(
-  structureId: number,
-  allowedRoles: string[]
-): Promise<AuthResult> {
-  const adminCheck = await AuthAdmin();
-  if (adminCheck.access) {
-    return { access: true };
-  }
-
-  return await AuthStructureRole(structureId, allowedRoles);
-}
