@@ -119,7 +119,7 @@ npm run start
 ---
 
 ## 🌐 Déploiement
-
+(06/02/2026)
 - Build et image Docker générés via la branche `production`
 - Déploiement de test effectué sur un serveur personnel (OVH)
 - Base de données hébergée séparément
